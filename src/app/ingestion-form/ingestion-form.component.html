@@ -1,0 +1,38 @@
+<form autocomplete="off" novalidate [formGroup]="ingestionForm">
+    <div>
+        <label for="concen">Concentration: </label>
+        <input
+          type="number"
+          id="concen"
+          formControlName="concen"
+          />
+    </div>
+    <div>
+        <label for="intake">Intake: </label>
+        <input
+          type="number"
+          id="intake"
+          formControlName="intake"
+          />
+    </div>
+    <div>
+        <label for="weight">Body Weight: </label>
+        <input
+          type="number"
+          id="weight"
+          formControlName="weight"
+          />
+    </div>
+    <div>
+        <label for="dose">Dose: </label>
+        <input
+          type="number"
+          id="dose"
+          formControlName="dose"
+          /> mg/kg body weight/day
+    </div>
+    <div>
+        <button (click)="calculate()" [disabled]="!ingestionForm.valid">Calculate!</button>
+        <button (click)="clear()">Clear</button>
+    </div>
+</form>
