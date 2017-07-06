@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-import { UnitService } from './shared/unit.service';
 import { ValidationService } from './shared/validation.service';
 import { CalcService } from './shared/calc.service';
 
@@ -10,10 +9,8 @@ import { CalcService } from './shared/calc.service';
     styleUrls: ['./app.component.css'],
     providers: [
         CalcService,
-        UnitService,
         ValidationService
     ]
 })
 export class AppComponent {
-    title = 'app works!';
 }

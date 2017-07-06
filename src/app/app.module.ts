@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { IngestionFormComponent } from './ingestion-form/ingestion-form.component';
 import { CalcService } from './shared/calc.service';
 import { ValidationService } from './shared/validation.service';
-import { UnitService } from './shared/unit.service';
 
 @NgModule({
   declarations: [
@@ -21,8 +20,7 @@ import { UnitService } from './shared/unit.service';
   ],
     providers: [
         CalcService,
-        ValidationService,
-        UnitService
+        ValidationService
     ],
   bootstrap: [AppComponent]
 })

@@ -22,7 +22,7 @@ import { CONCEN_RATIOS_MASS_VOL, CONCEN_RATIOS_VOL_VOL, INTAKE_RATIOS, WEIGHT_RA
 export class IngestionFormComponent implements OnInit {
     toxicology: Toxicology;
     submitted = false;
-    pastToxicology: Toxicology[];
+    pastToxicology: Toxicology[]; //TODO: use to implement history
 
     ingestionForm: FormGroup;
 
@@ -38,7 +38,7 @@ export class IngestionFormComponent implements OnInit {
             intake: [null, this.validationService.nonNegative],
             weight: [null, this.validationService.nonNegative],
             dose: [null, this.validationService.nonNegative]
-        }, {validator: this.validationService.coreValidation('concen', 'intake', 'weight', 'dose')});
+        }, {validator: this.validationService.coreValidation('concen', 'intake', 'weight', 'dose')}); //ensures 3 fields have values
     }
 
     ngOnInit() {
@@ -46,7 +46,7 @@ export class IngestionFormComponent implements OnInit {
         this.createForm();
         this.toxicology = new Toxicology();
     }
-
+    //TODO: change calculate function to accept numbers instead of Toxicology object. Toxicology object also needs to be refactored to only represent one value
     calculate(): void {
         this.toxicology.concen = this.ingestionForm.get('concen').value;
         this.toxicology.intake = this.ingestionForm.get('intake').value;

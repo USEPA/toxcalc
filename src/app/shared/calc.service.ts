@@ -1,16 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 
 import { Toxicology } from '../toxicology/toxicology';
-import { UnitService } from './unit.service';
 
 @Injectable()
 export class CalcService {
-
-    //constructor(@Inject(UnitService) unitService: UnitService) { }
-    
-    /* convertConcen(toxicology: Toxicology): number {
-        return this.unitService.standardConcen(toxicology.concen, toxicology.concenUnitsTop, toxicology.concenUnitsBottom);
-    } */
 
     calculateDose(toxicology: Toxicology): number {
         return toxicology.concen * toxicology.intake / toxicology.weight;
