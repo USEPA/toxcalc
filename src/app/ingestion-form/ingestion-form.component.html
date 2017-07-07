@@ -6,6 +6,11 @@
           id="concen"
           formControlName="concen"
           />
+        <select formControlName="concenUnitsMassVol">
+            <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio.value">
+                {{ratio.units}}
+            </option>
+        </select>
     </div>
     <div>
         <label for="intake">Intake: </label>
