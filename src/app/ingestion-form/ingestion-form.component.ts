@@ -20,7 +20,11 @@ import { CONCEN_RATIOS_MASS_VOL, CONCEN_RATIOS_VOL_VOL, INTAKE_RATIOS, WEIGHT_RA
     ]
 })
 export class IngestionFormComponent implements OnInit {
-    toxicology: Toxicology;
+    toxicology: Toxicology; //TODO: remove
+    concenUnit: Toxicology;
+    intakeUnit: Toxicology;
+    weightUnit: Toxicology;
+    doseUnit: Toxicology;
     submitted = false;
     pastToxicology: Toxicology[]; //TODO: use to implement history
 
@@ -44,25 +48,37 @@ export class IngestionFormComponent implements OnInit {
     ngOnInit() {
         this.pastToxicology = [];
         this.createForm();
-        this.toxicology = new Toxicology();
+        //this.toxicology = new Toxicology();//TODO: remove
+        this.concenUnit = new Toxicology(new ToxUnit(UnitTypes.CONCENTRATION, new ToxRatio('mg/L', 1)), null);
+        this.intakeUnit = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('L/day', 1)), null);
+        this.weightUnit = new Toxicology(new ToxUnit(UnitTypes.BODY_WEIGHT, new ToxRatio('kg', 1)), null);
+        this.doseUnit = new Toxicology(new ToxUnit(UnitTypes.DOSE, new ToxRatio('mg/kg BW/day', 1)), null);
     }
-    //TODO: change calculate function to accept numbers instead of Toxicology object. Toxicology object also needs to be refactored to only represent one value
+    //TODO: change calculate function to accept new Toxicology object style
     calculate(): void {
-        this.toxicology.concen = this.ingestionForm.get('concen').value;
-        this.toxicology.intake = this.ingestionForm.get('intake').value;
-        this.toxicology.weight = this.ingestionForm.get('weight').value;
-        this.toxicology.dose = this.ingestionForm.get('dose').value;
+        let solution = this.calcService.newCalculate(
+            this.ingestionForm.get('concen').value,
+            this.ingestionForm.get('intake').value,
+            this.ingestionForm.get('weight').value,
+            this.ingestionForm.get('dose').value
+        );
 
-        this.toxicology = this.calcService.calculate(this.toxicology);
-        let variable = this.toxicology.foundValue.variable;
-        console.log(variable);
-        let value = this.toxicology.foundValue.value;
-        console.log(value);
+        this.concenUnit.inputData = solution[0];
+        this.intakeUnit.inputData = solution[1];
+        this.weightUnit.inputData = solution[2];
+        this.doseUnit.inputData = solution[3];
+
+        //this.toxicology = this.calcService.calculate(this.toxicology);
+        //let variable = this.toxicology.foundValue.variable;
+        //console.log(variable);
+        //let value = this.toxicology.foundValue.value;
+        //console.log(value);
+
         this.ingestionForm.patchValue({
-            concen: this.toxicology.concen,
-            intake: this.toxicology.intake,
-            weight: this.toxicology.weight,
-            dose: this.toxicology.dose
+            concen: this.concenUnit.inputData,
+            intake: this.intakeUnit.inputData,
+            weight: this.weightUnit.inputData,
+            dose: this.doseUnit.inputData
         });
         this.submitted = true;
     }

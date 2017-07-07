@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 
 import { Toxicology } from '../toxicology/toxicology';
+import { ToxUnit } from '../toxicology/tox-unit';
 
 @Injectable()
 export class CalcService {
@@ -42,4 +43,12 @@ export class CalcService {
         return toxicology;
     }
 
+    //TODO: accept modifiers
+    newCalculate(concen: number, intake: number, weight: number, dose: number): number[] {
+        if (!concen) concen = dose * weight / intake;
+        else if (!intake) intake = dose * weight / concen;
+        else if (!weight) weight = concen * intake / dose;
+        else if (!dose) dose = concen * intake / weight;
+        return [concen, intake, weight, dose];
+    }
 }

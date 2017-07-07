@@ -1,6 +1,6 @@
 export enum UnitTypes {
-    CONCENTRATION = 1,
-    INTAKE_RATE = 2,
-    BODY_WEIGHT = 3,
-    DOSE = 4
+    CONCENTRATION,
+    INTAKE_RATE,
+    BODY_WEIGHT,
+    DOSE
 }
