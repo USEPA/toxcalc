@@ -7,7 +7,7 @@
           formControlName="concen"
           />
         <select formControlName="concenUnitsMassVol">
-            <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio.value">
+            <option *ngFor="let ratio of concenUnitsMassVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
@@ -19,6 +19,11 @@
           id="intake"
           formControlName="intake"
           />
+        <select formControlName="intakeUnits">
+            <option *ngFor="let ratio of intakeUnitsOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
     </div>
     <div>
         <label for="weight">Body Weight: </label>
@@ -27,6 +32,11 @@
           id="weight"
           formControlName="weight"
           />
+        <select formControlName="weightUnits">
+            <option *ngFor="let ratio of weightUnitsOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
     </div>
     <div>
         <label for="dose">Dose: </label>

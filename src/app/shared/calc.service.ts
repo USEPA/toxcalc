@@ -6,49 +6,28 @@ import { ToxUnit } from '../toxicology/tox-unit';
 @Injectable()
 export class CalcService {
 
-    calculateDose(toxicology: Toxicology): number {
-        return toxicology.concen * toxicology.intake / toxicology.weight;
-    }
-
-    calculateConcen(toxicology: Toxicology): number {
-        return toxicology.dose * toxicology.weight / toxicology.intake;
-    }
-
-    calculateIntake(toxicology: Toxicology): number {
-        return toxicology.dose * toxicology.weight / toxicology.concen;
-    }
-
-    calculateWeight(toxicology: Toxicology): number {
-        return toxicology.concen * toxicology.intake / toxicology.dose;
-    }
-
-    calculate(toxicology: Toxicology): Toxicology {
-        if (!toxicology.dose) {
-            toxicology.foundValue.variable = 'Dose';
-            toxicology.dose = this.calculateDose(toxicology);
-            toxicology.foundValue.value = toxicology.dose;
-        } else if (!toxicology.concen) {
-            toxicology.foundValue.variable = 'Concentration';
-            toxicology.concen = this.calculateConcen(toxicology);
-            toxicology.foundValue.value = toxicology.concen;
-        } else if (!toxicology.intake) {
-            toxicology.foundValue.variable = 'Intake ratio';
-            toxicology.intake = this.calculateIntake(toxicology);
-            toxicology.foundValue.value = toxicology.intake;
-        } else if (!toxicology.weight) {
-            toxicology.foundValue.variable = 'Body weight';
-            toxicology.weight = this.calculateWeight(toxicology);
-            toxicology.foundValue.value = toxicology.weight;
+    calculateMultiplier(array: number[]): number {
+        var multiplier = 1;
+        if (array.length == 0) return multiplier;
+        for (var i in array) {
+            multiplier *= array[i];
         }
-        return toxicology;
+        return multiplier;
     }
 
-    //TODO: accept modifiers
-    newCalculate(concen: number, intake: number, weight: number, dose: number): number[] {
-        if (!concen) concen = dose * weight / intake;
-        else if (!intake) intake = dose * weight / concen;
-        else if (!weight) weight = concen * intake / dose;
-        else if (!dose) dose = concen * intake / weight;
+    newCalculate(
+        concen: number, 
+        concenMultiplier: number, 
+        intake: number, 
+        intakeMultiplier: number, 
+        weight: number,
+        weightMultiplier: number,
+        dose: number
+    ): number[] {
+        if (!concen) concen = dose * weight * weightMultiplier / (intake * intakeMultiplier * concenMultiplier);
+        else if (!intake) intake = dose * weight * weightMultiplier / (concen * concenMultiplier * intakeMultiplier);
+        else if (!weight) weight = concen * concenMultiplier * intake * intakeMultiplier / (dose * weightMultiplier);
+        else if (!dose) dose = concen * concenMultiplier * intake * intakeMultiplier / (weight * weightMultiplier);
         return [concen, intake, weight, dose];
     }
 }

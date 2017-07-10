@@ -27,10 +27,16 @@ export class IngestionFormComponent implements OnInit {
     doseTox: Toxicology;
     concenUnitsMassVolOptions = CONCEN_RATIOS_MASS_VOL;
     concenUnitsVolVolOptions = CONCEN_RATIOS_VOL_VOL;
-    intakeUnitOptions = INTAKE_RATIOS;
+    intakeUnitsOptions = INTAKE_RATIOS;
     weightUnitsOptions = WEIGHT_RATIOS;
     submitted = false;
-    pastToxicology: Toxicology[]; //TODO: use to implement history
+    pastToxicology: Toxicology[]; //TODO: find a way to implement history
+
+    concenModifiers: number[];
+    intakeModifiers: number[];
+    weightModifiers: number[];
+
+    //selectedConcenUnitMassVol: ToxRatio;
 
     ingestionForm: FormGroup;
 
@@ -43,9 +49,12 @@ export class IngestionFormComponent implements OnInit {
     createForm() {
         this.ingestionForm = this.fb.group({
             concen: [null, this.validationService.nonNegative],
-            concenUnits: [this.concenUnitsMassVolOptions[0], Validators.required], //TODO: set initial value (how???), properly bind selection
+            concenUnitsMassVol: [''],//, Validators.required], //TODO: set initial value (how???), properly bind selection
+            concenUnitsVolVol: [''],//, Validators.required],
             intake: [null, this.validationService.nonNegative],
+            intakeUnits: [''],//, Validators.required],
             weight: [null, this.validationService.nonNegative],
+            weightUnits: [''],//, Validators.required],
             dose: [null, this.validationService.nonNegative]
         }, {validator: this.validationService.coreValidation('concen', 'intake', 'weight', 'dose')}); //ensures 3 fields have values
     }
@@ -58,14 +67,36 @@ export class IngestionFormComponent implements OnInit {
         this.intakeTox = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('L/day', 1)), null);
         this.weightTox = new Toxicology(new ToxUnit(UnitTypes.BODY_WEIGHT, new ToxRatio('kg', 1)), null);
         this.doseTox = new Toxicology(new ToxUnit(UnitTypes.DOSE, new ToxRatio('mg/kg BW/day', 1)), null);
-        //const selectedConcenUnit = this.concenUnitsMassVolOptions.find(concenUnits => concenUnits.value
+        
+        (<FormGroup>this.ingestionForm)
+            .patchValue({
+                concenUnitsMassVol: this.concenUnitsMassVolOptions[0],
+                intakeUnits: this.intakeUnitsOptions[0],
+                weightUnits: this.weightUnitsOptions[0]
+            });
+
+        this.concenModifiers = [];
+        this.intakeModifiers = [];
+        this.weightModifiers = [];
     }
 
     calculate(): void {
+
+        this.concenModifiers.push(this.ingestionForm.get('concenUnitsMassVol').value.value);
+        this.intakeModifiers.push(this.ingestionForm.get('intakeUnits').value.value);
+        this.weightModifiers.push(this.ingestionForm.get('weightUnits').value.value);
+
+        let concenMultiplier = this.calcService.calculateMultiplier(this.concenModifiers);
+        let intakeMultiplier = this.calcService.calculateMultiplier(this.intakeModifiers);
+        let weightMultiplier = this.calcService.calculateMultiplier(this.weightModifiers);
+
         let solution = this.calcService.newCalculate(
             this.ingestionForm.get('concen').value,
+            concenMultiplier,
             this.ingestionForm.get('intake').value,
+            intakeMultiplier,
             this.ingestionForm.get('weight').value,
+            weightMultiplier,
             this.ingestionForm.get('dose').value
         );
 
