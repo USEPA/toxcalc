@@ -36,7 +36,7 @@ export class IngestionFormComponent implements OnInit {
     intakeModifiers: number[];
     weightModifiers: number[];
 
-    //selectedConcenUnitMassVol: ToxRatio;
+    concenUnitsTypeOptions = ['mass/volume', 'volume/volume', 'mol/volume', 'mass/mass'];
 
     ingestionForm: FormGroup;
 
@@ -49,14 +49,24 @@ export class IngestionFormComponent implements OnInit {
     createForm() {
         this.ingestionForm = this.fb.group({
             concen: [null, this.validationService.nonNegative],
-            concenUnitsMassVol: [''],//, Validators.required], //TODO: set initial value (how???), properly bind selection
+            concenUnitsType: ['mass/volume'],
+            concenUnitsMassVol: [''],//, Validators.required], 
             concenUnitsVolVol: [''],//, Validators.required],
+            substanceDensity: [null], //TODO: write validation function to determine if required
             intake: [null, this.validationService.nonNegative],
             intakeUnits: [''],//, Validators.required],
             weight: [null, this.validationService.nonNegative],
             weightUnits: [''],//, Validators.required],
             dose: [null, this.validationService.nonNegative]
         }, {validator: this.validationService.coreValidation('concen', 'intake', 'weight', 'dose')}); //ensures 3 fields have values
+        //initialize dropdowns:
+        this.ingestionForm.patchValue({
+            concenUnitsType: this.concenUnitsTypeOptions[0],
+            concenUnitsMassVol: this.concenUnitsMassVolOptions[0],
+            concenUnitsVolVol: this.concenUnitsVolVolOptions[0],
+            intakeUnits: this.intakeUnitsOptions[0],
+            weightUnits: this.weightUnitsOptions[0]
+        });
     }
 
     ngOnInit() {
@@ -68,21 +78,23 @@ export class IngestionFormComponent implements OnInit {
         this.weightTox = new Toxicology(new ToxUnit(UnitTypes.BODY_WEIGHT, new ToxRatio('kg', 1)), null);
         this.doseTox = new Toxicology(new ToxUnit(UnitTypes.DOSE, new ToxRatio('mg/kg BW/day', 1)), null);
         
-        (<FormGroup>this.ingestionForm)
-            .patchValue({
-                concenUnitsMassVol: this.concenUnitsMassVolOptions[0],
-                intakeUnits: this.intakeUnitsOptions[0],
-                weightUnits: this.weightUnitsOptions[0]
-            });
-
         this.concenModifiers = [];
         this.intakeModifiers = [];
         this.weightModifiers = [];
     }
 
     calculate(): void {
+        
+        switch (this.ingestionForm.get('concenUnitsType').value) {
+            case 'mass/volume':
+                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMassVol').value.value);
+                break;
+            case 'volume/volume':
+                this.concenModifiers.push(this.ingestionForm.get('concenUnitsVolVol').value.value);
+                this.concenModifiers.push(this.ingestionForm.get('substanceDensity').value);
+                break;
+        }
 
-        this.concenModifiers.push(this.ingestionForm.get('concenUnitsMassVol').value.value);
         this.intakeModifiers.push(this.ingestionForm.get('intakeUnits').value.value);
         this.weightModifiers.push(this.ingestionForm.get('weightUnits').value.value);
 
@@ -120,10 +132,15 @@ export class IngestionFormComponent implements OnInit {
             dose: this.doseTox.inputData
         });
         this.submitted = true;
+
+        //clear modifiers so they don't affect next calculation:
+        this.concenModifiers = [];
+        this.intakeModifiers = [];
+        this.weightModifiers = [];
     }
 
     clear(): void {
-        this.ingestionForm.reset();
+        this.createForm();
         this.submitted = false;
     }
 
