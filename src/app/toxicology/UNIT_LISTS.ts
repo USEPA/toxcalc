@@ -15,6 +15,11 @@ export const CONCEN_RATIOS_VOL_VOL: ToxRatio[] = [
     {units: '\u03BCL/mL', value: 1000}
 ];
 
+export const CONCEN_RATIOS_MOL_VOL: ToxRatio[] = [
+    {units: 'mol/L', value: 1000},
+    {units: '\u03BCmol/L', value: 1}
+];
+
 export const INTAKE_RATIOS: ToxRatio[] = [
     {units: 'L/day', value: 1},
     {units: 'mL/day', value: 0.001}
@@ -23,4 +28,9 @@ export const INTAKE_RATIOS: ToxRatio[] = [
 export const WEIGHT_RATIOS: ToxRatio[] = [
     {units: 'kg', value: 1},
     {units: 'g', value: 0.001}
+];
+
+export const DOSE_RATIOS: ToxRatio[] = [
+    {units: 'mg/kg BW/day', value: 1},
+    {units: '\u03BCg/kg BW/day', value: 0.001}
 ];
