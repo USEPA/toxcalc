@@ -7,7 +7,7 @@ import { ValidationService } from '../shared/validation.service';
 import { ToxUnit } from '../toxicology/tox-unit';
 import { ToxRatio } from '../toxicology/tox-ratio';
 import { UnitTypes } from '../toxicology/unit-types.enum';
-import { CONCEN_RATIOS_MASS_VOL, CONCEN_RATIOS_VOL_VOL, CONCEN_RATIOS_MOL_VOL, INTAKE_RATIOS, WEIGHT_RATIOS, DOSE_RATIOS } from '../toxicology/UNIT_LISTS';
+import { CONCEN_RATIOS_MASS_VOL, CONCEN_RATIOS_VOL_VOL, CONCEN_RATIOS_MOL_VOL, CONCEN_RATIOS_MASS_MASS, INTAKE_RATIOS, WEIGHT_RATIOS, DOSE_RATIOS } from '../toxicology/UNIT_LISTS';
 
 @Component({
     selector: 'app-ingestion-form',
@@ -27,10 +27,15 @@ export class IngestionFormComponent implements OnInit {
     concenUnitsMassVolOptions = CONCEN_RATIOS_MASS_VOL;
     concenUnitsVolVolOptions = CONCEN_RATIOS_VOL_VOL;
     concenUnitsMolVolOptions = CONCEN_RATIOS_MOL_VOL;
+    concenUnitsMassMassOptions = CONCEN_RATIOS_MASS_MASS;
     intakeUnitsOptions = INTAKE_RATIOS;
     weightUnitsOptions = WEIGHT_RATIOS;
     doseUnitsOptions = DOSE_RATIOS;
+    molarMassNeeded = false;
+    substanceDensityNeeded = false;
+    solutionDensityNeeded = false;
     submitted = false;
+
     pastToxicology: Toxicology[]; //TODO: find a way to implement history
 
     concenModifiers: number[];
@@ -55,8 +60,10 @@ export class IngestionFormComponent implements OnInit {
             concenUnitsMassVol: [''],//, Validators.required], 
             concenUnitsVolVol: [''],//, Validators.required],
             concenUnitsMolVol: [''],
-            substanceDensity: [null], //TODO: write validation function to determine if required
-            molarMass: [null], //TODO: write validation function to determine if required
+            concenUnitsMassMass: [''],
+            substanceDensity: [null, this.validationService.nonNegative], //TODO: write validation function to determine if required
+            solutionDensity: [null, this.validationService.nonNegative],
+            molarMass: [null, this.validationService.nonNegative], //TODO: write validation function to determine if required
             intake: [null, this.validationService.nonNegative],
             intakeUnits: [''],//, Validators.required],
             weight: [null, this.validationService.nonNegative],
@@ -70,10 +77,13 @@ export class IngestionFormComponent implements OnInit {
             concenUnitsMassVol: this.concenUnitsMassVolOptions[0],
             concenUnitsVolVol: this.concenUnitsVolVolOptions[0],
             concenUnitsMolVol: this.concenUnitsMolVolOptions[0],
+            concenUnitsMassMass: this.concenUnitsMassMassOptions[0],
             intakeUnits: this.intakeUnitsOptions[0],
             weightUnits: this.weightUnitsOptions[0],
             doseUnits: this.doseUnitsOptions[0]
         });
+        //track changes
+        this.ingestionForm.valueChanges.subscribe(data => console.log('Form changes', data)); 
     }
 
     ngOnInit() {
@@ -92,6 +102,32 @@ export class IngestionFormComponent implements OnInit {
         this.doseModifiers = [];
     }
 
+    onBaseChange(event: Event): void {
+        switch (this.ingestionForm.get('concenUnitsType').value) {
+            case 'mass/volume':
+                this.substanceDensityNeeded = false;
+                this.solutionDensityNeeded = false;
+                this.molarMassNeeded = false;
+                break;
+            case 'volume/volume':
+                this.substanceDensityNeeded = true;
+                this.solutionDensityNeeded = false;
+                this.molarMassNeeded = false;
+                break;
+            case 'mol/volume':
+                this.substanceDensityNeeded = false;
+                this.solutionDensityNeeded = false;
+                this.molarMassNeeded = true;
+                break;
+            case 'mass/mass':
+                this.substanceDensityNeeded = false;
+                this.solutionDensityNeeded = true;
+                this.molarMassNeeded = false;
+                break;
+        }
+        return;
+    }
+
     calculate(): void {
         
         switch (this.ingestionForm.get('concenUnitsType').value) {
@@ -105,6 +141,10 @@ export class IngestionFormComponent implements OnInit {
             case 'mol/volume':
                 this.concenModifiers.push(this.ingestionForm.get('concenUnitsMolVol').value.value);
                 this.concenModifiers.push(this.ingestionForm.get('molarMass').value);
+                break;
+            case 'mass/mass':
+                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMassMass').value.value);
+                this.concenModifiers.push(this.ingestionForm.get('solutionDensity').value);
                 break;
         }
 

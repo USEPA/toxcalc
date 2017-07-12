@@ -20,6 +20,11 @@ export const CONCEN_RATIOS_MOL_VOL: ToxRatio[] = [
     {units: '\u03BCmol/L', value: 1}
 ];
 
+export const CONCEN_RATIOS_MASS_MASS: ToxRatio[] = [
+    {units: 'mg/kg', value: 1},
+    {units: '\u03BCg/kg', value: 0.001}
+];
+
 export const INTAKE_RATIOS: ToxRatio[] = [
     {units: 'L/day', value: 1},
     {units: 'mL/day', value: 0.001}
