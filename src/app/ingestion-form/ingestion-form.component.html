@@ -22,13 +22,18 @@
                 {{ratio.units}}
             </option>
         </select>
+        <select formControlName="concenUnitsMolVol" *ngIf="ingestionForm.get('concenUnitsType').value === 'mol/volume'">
+            <option *ngFor="let ratio of concenUnitsMolVolOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
     </div>
     <!--TODO: bind unit type to boolean/enum in ts file when selection is changed-->
     <div *ngIf="ingestionForm.get('concenUnitsType').value === 'volume/volume'">
         <label for="substanceDensity">Substance density: </label>
         <input type="number" id="substanceDensity" formControlName="substanceDensity" /> g/mL
     </div>
-    <div *ngIf="ingestionForm.get('concenUnitsType').value === 'mol/volueme'">
+    <div *ngIf="ingestionForm.get('concenUnitsType').value === 'mol/volume'">
         <label for="molarMass">Molar mass of substance: </label>
         <input type="number" id="molarMass" formControlName="molarMass" /> g/mol
     </div>
