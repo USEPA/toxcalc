@@ -38,6 +38,7 @@
             </option>
         </select>
     </div>
+    <div *ngIf="ingestionForm.get('concen').hasError('invalidNegative')">Negative numbers not permitted!</div>
     <div>
         <label for="intake">Intake: </label>
         <input

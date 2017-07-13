@@ -22,12 +22,13 @@ export class CalcService {
         intakeMultiplier: number, 
         weight: number,
         weightMultiplier: number,
-        dose: number
+        dose: number,
+        doseMultiplier: number
     ): number[] {
-        if (!concen) concen = dose * weight * weightMultiplier / (intake * intakeMultiplier * concenMultiplier);
-        else if (!intake) intake = dose * weight * weightMultiplier / (concen * concenMultiplier * intakeMultiplier);
-        else if (!weight) weight = concen * concenMultiplier * intake * intakeMultiplier / (dose * weightMultiplier);
-        else if (!dose) dose = concen * concenMultiplier * intake * intakeMultiplier / (weight * weightMultiplier);
+        if (!concen) concen = dose * doseMultiplier * weight * weightMultiplier / (intake * intakeMultiplier * concenMultiplier);
+        else if (!intake) intake = dose * doseMultiplier * weight * weightMultiplier / (concen * concenMultiplier * intakeMultiplier);
+        else if (!weight) weight = concen * concenMultiplier * intake * intakeMultiplier / (dose * doseMultiplier * weightMultiplier);
+        else if (!dose) dose = concen * concenMultiplier * intake * intakeMultiplier / (weight * weightMultiplier * doseMultiplier);
         return [concen, intake, weight, dose];
     }
 }
