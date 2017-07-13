@@ -27,6 +27,11 @@
                 {{ratio.units}}
             </option>
         </select>
+        <select formControlName="concenUnitsMolMass" *ngIf="ingestionForm.get('concenUnitsType').value === 'mol/mass'">
+            <option *ngFor="let ratio of concenUnitsMolMassOptions" [ngValue="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
         <select formControlName="concenUnitsMassMass" *ngIf="ingestionForm.get('concenUnitsType').value === 'mass/mass'">
             <option *ngFor="let ratio of concenUnitsMassMassOptions" [ngValue]="ratio">
                 {{ratio.units}}

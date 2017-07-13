@@ -27,6 +27,17 @@ export class ValidationService {
         }
     }
 
+    validateBases(concenBaseKey: string, intakeBaseKey: string) {
+        return (group: FormGroup): {[key: string]: any} => {
+            let concenBase = group.controls[concenBaseKey].value;
+            let intakeBase = group.controls[intakeBaseKey].value;
+
+            if ((concenBase === 'mass/mass' || concenBase === 'mol/mass') && intakeBase === 'volume/time') {
+                return {invalidBases: true};
+            }
+        }
+    }
+
     nonNegative(control: FormControl): {[key: string]: any} {
         if (control.value && control.value < 0) {
             return {invalidNegative: true};

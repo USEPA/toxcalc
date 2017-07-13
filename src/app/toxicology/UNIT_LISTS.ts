@@ -12,12 +12,22 @@ export const CONCEN_RATIOS_MASS_VOL: ToxRatio[] = [
 export const CONCEN_RATIOS_VOL_VOL: ToxRatio[] = [
     {units: 'mL/L', value: 1000},
     {units: '\u03BCL/L', value: 1},
-    {units: '\u03BCL/mL', value: 1000}
+    {units: '\u03BCL/mL', value: 1000},
+    {units: 'ppm (v/v)', value: 1},
+    {units: 'ppb (v/v)', value: 0.001},
+    {units: '% (v/v)', value: 10000}
 ];
 
 export const CONCEN_RATIOS_MOL_VOL: ToxRatio[] = [
     {units: 'mol/L', value: 1000},
-    {units: '\u03BCmol/L', value: 1}
+    {units: 'mmol/L', value: 1},
+    {units: '\u03BCmol/L', value: 0.001}
+];
+
+export const CONCEN_RATIOS_MOL_MASS: ToxRatio[] = [
+    {units: 'mol/kg', value: 1000},
+    {units: 'mmol/kg', value: 1},
+    {units: '\u03BCmol/kg', value: 0.001}
 ];
 
 export const CONCEN_RATIOS_MASS_MASS: ToxRatio[] = [
