@@ -38,6 +38,12 @@ export class ValidationService {
         }
     }
 
+    validateModifiers(control: FormControl, required: boolean): {[key: string]: any} {
+        if (!control.value && required) {
+            return {invalidModifier: true};
+        }
+    }
+
     nonNegative(control: FormControl): {[key: string]: any} {
         if (control.value && control.value < 0) {
             return {invalidNegative: true};
