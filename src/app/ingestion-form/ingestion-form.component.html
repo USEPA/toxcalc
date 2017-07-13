@@ -33,6 +33,29 @@
             </option>
         </select>
     </div>
+    <div>
+        <label for="intake">Intake: </label>
+        <input
+          type="number"
+          id="intake"
+          formControlName="intake"
+          />
+        <select formControlName="intakeUnitsType" (change)="onBaseChange($event)">
+            <option *ngFor="let option of intakeUnitsTypeOptions" [value]="option">
+                {{option}}
+            </option>
+        </select>
+        <select *ngIf="this.ingestionForm.get('intakeUnitsType').value === 'volume/time'" formControlName="intakeUnitsVolTime">
+            <option *ngFor="let ratio of intakeUnitsVolTimeOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
+        <select *ngIf="this.ingestionForm.get('intakeUnitsType').value === 'mass/time'" formControlName="intakeUnitsMassTime">
+            <option *ngFor="let ratio of intakeUnitsMassTimeOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
+    </div>
     <!--TODO: bind unit type to boolean/enum in ts file when selection is changed-->
     <div *ngIf="substanceDensityNeeded">
         <label for="substanceDensity">Substance density: </label>
@@ -45,19 +68,6 @@
     <div *ngIf="solutionDensityNeeded">
         <label for="solutionDensity">Density of the entire solution: </label>
         <input type="number" id="solutionDensity" formControlName="solutionDensity" /> g/mL
-    </div>
-    <div>
-        <label for="intake">Intake: </label>
-        <input
-          type="number"
-          id="intake"
-          formControlName="intake"
-          />
-        <select formControlName="intakeUnits">
-            <option *ngFor="let ratio of intakeUnitsOptions" [ngValue]="ratio">
-                {{ratio.units}}
-            </option>
-        </select>
     </div>
     <div>
         <label for="weight">Body Weight: </label>
