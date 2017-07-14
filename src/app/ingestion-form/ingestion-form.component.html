@@ -95,7 +95,7 @@
           id="dose"
           formControlName="dose"
           />
-        <select formContolName="doseUnits">
+        <select formControlName="doseUnits" (change)="onBaseChange($event)">
             <option *ngFor="let ratio of doseUnitsOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>

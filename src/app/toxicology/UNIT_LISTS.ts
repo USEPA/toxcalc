@@ -52,5 +52,7 @@ export const WEIGHT_RATIOS: ToxRatio[] = [
 
 export const DOSE_RATIOS: ToxRatio[] = [
     {units: 'mg/kg BW/day', value: 1},
-    {units: '\u03BCg/kg BW/day', value: 0.001}
+    {units: '\u03BCg/kg BW/day', value: 0.001},
+    {units: 'mol/kg BW/day', value: 1000},
+    {units: 'mmol/kg BW/day', value: 1}
 ];

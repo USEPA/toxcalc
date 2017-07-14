@@ -114,6 +114,10 @@ export class IngestionFormComponent implements OnInit {
         this.doseModifiers = [];
     }
 
+    xOr(first: boolean, second: boolean): boolean {
+        return ((first && !second) || (!first && second));
+    }
+
     onBaseChange(event: Event): void {
         /*switch (this.ingestionForm.get('concenUnitsType').value) {
             case 'mass/volume':
@@ -140,7 +144,10 @@ export class IngestionFormComponent implements OnInit {
 
         let concenUnitsType = this.ingestionForm.get('concenUnitsType').value;
         let intakeUnitsType = this.ingestionForm.get('intakeUnitsType').value;
-        this.molarMassNeeded = (concenUnitsType === 'mol/volume' || concenUnitsType === 'mol/mass');
+        let doseUnitsType = this.ingestionForm.get('doseUnits').value.units;
+        console.log(doseUnitsType);
+        console.log(this.ingestionForm.get('weightUnits').value.units);
+        this.molarMassNeeded = this.xOr((concenUnitsType === 'mol/volume' || concenUnitsType === 'mol/mass'), (doseUnitsType === 'mol/kg BW/day' || doseUnitsType === 'mmol/kg BW/day'));
         this.substanceDensityNeeded = (concenUnitsType === 'volume/volume' && intakeUnitsType === 'volume/time');
         this.solutionDensityNeeded = (((concenUnitsType === 'mass/mass' || concenUnitsType === 'mol/mass') && intakeUnitsType === 'volume/time') || (concenUnitsType === 'mass/volume' || concenUnitsType === 'mol/volume') && intakeUnitsType === 'mass/time'); // I'm not proud of this
     }
