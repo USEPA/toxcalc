@@ -32,7 +32,7 @@ export class ValidationService {
             let concenBase = group.controls[concenBaseKey].value;
             let intakeBase = group.controls[intakeBaseKey].value;
 
-            if ((concenBase === 'mass/mass' || concenBase === 'mol/mass') && intakeBase === 'volume/time') {
+            if (concenBase === 'volume/volume' && intakeBase === 'mass/time') {
                 return {invalidBases: true};
             }
         }
