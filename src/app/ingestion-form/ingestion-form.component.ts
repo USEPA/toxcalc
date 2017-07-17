@@ -95,6 +95,10 @@ export class IngestionFormComponent implements OnInit {
             doseUnits: this.doseUnitsOptions[0]
         });
 
+        this.substanceDensityNeeded = false;
+        this.solutionDensityNeeded = false;
+        this.molarMassNeeded = false;
+
         //track changes (debugging)
         this.ingestionForm.valueChanges.subscribe(data => console.log('Form changes', data)); 
     }
@@ -145,11 +149,16 @@ export class IngestionFormComponent implements OnInit {
         let concenUnitsType = this.ingestionForm.get('concenUnitsType').value;
         let intakeUnitsType = this.ingestionForm.get('intakeUnitsType').value;
         let doseUnitsType = this.ingestionForm.get('doseUnits').value.units;
+        console.log(intakeUnitsType);
         console.log(doseUnitsType);
         console.log(this.ingestionForm.get('weightUnits').value.units);
         this.molarMassNeeded = this.xOr((concenUnitsType === 'mol/volume' || concenUnitsType === 'mol/mass'), (doseUnitsType === 'mol/kg BW/day' || doseUnitsType === 'mmol/kg BW/day'));
         this.substanceDensityNeeded = (concenUnitsType === 'volume/volume' && intakeUnitsType === 'volume/time');
         this.solutionDensityNeeded = (((concenUnitsType === 'mass/mass' || concenUnitsType === 'mol/mass') && intakeUnitsType === 'volume/time') || (concenUnitsType === 'mass/volume' || concenUnitsType === 'mol/volume') && intakeUnitsType === 'mass/time'); // I'm not proud of this
+
+        console.log('Solution: ' + this.solutionDensityNeeded);
+        console.log('substance: ' + this.substanceDensityNeeded);
+        console.log('mole: ' + this.molarMassNeeded);
     }
 
     calculate(): void {
@@ -179,7 +188,7 @@ export class IngestionFormComponent implements OnInit {
             this.concenModifiers.push(this.ingestionForm.get('substanceDensity').value);
         }
         if (this.solutionDensityNeeded) {
-            this.concenModifiers.push(this.ingestionForm.get('solutionDensity').value);
+            this.concenModifiers.push((1/this.ingestionForm.get('solutionDensity').value));
         }
 
         switch (this.ingestionForm.get('intakeUnitsType').value) {
