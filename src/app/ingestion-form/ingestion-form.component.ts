@@ -170,13 +170,15 @@ export class IngestionFormComponent implements OnInit {
                 break;
         }
 
-        if (this.molarMassNeeded) {
+        console.log(this.concenModifiers);
+
+        if (this.molarMassNeeded.required) {
             this.concenModifiers.push(this.ingestionForm.get('molarMass').value);
         }
-        if (this.substanceDensityNeeded) {
+        if (this.substanceDensityNeeded.required) {
             this.concenModifiers.push(this.ingestionForm.get('substanceDensity').value);
         }
-        if (this.solutionDensityNeeded) {
+        if (this.solutionDensityNeeded.required) {
             this.concenModifiers.push((1/this.ingestionForm.get('solutionDensity').value));
         }
 
@@ -197,7 +199,7 @@ export class IngestionFormComponent implements OnInit {
         let weightMultiplier = this.calcService.calculateMultiplier(this.weightModifiers);
         let doseMultiplier = this.calcService.calculateMultiplier(this.doseModifiers);
 
-        let solution = this.calcService.newCalculate(
+        let response = this.calcService.newCalculate(
             this.ingestionForm.get('concen').value,
             concenMultiplier,
             this.ingestionForm.get('intake').value,
@@ -208,10 +210,10 @@ export class IngestionFormComponent implements OnInit {
             doseMultiplier
         );
 
-        this.concenTox.inputData = solution[0];
-        this.intakeTox.inputData = solution[1];
-        this.weightTox.inputData = solution[2];
-        this.doseTox.inputData = solution[3];
+        this.concenTox.inputData = response[0];
+        this.intakeTox.inputData = response[1];
+        this.weightTox.inputData = response[2];
+        this.doseTox.inputData = response[3];
 
         this.ingestionForm.patchValue({
             concen: this.concenTox.inputData,
