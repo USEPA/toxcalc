@@ -32,9 +32,11 @@ export class IngestionFormComponent implements OnInit {
     intakeUnitsMassTimeOptions = INTAKE_RATIOS_MASS_TIME;
     weightUnitsOptions = WEIGHT_RATIOS;
     doseUnitsOptions = DOSE_RATIOS;
-    molarMassNeeded = false;
-    substanceDensityNeeded = false;
-    solutionDensityNeeded = false;
+    //apparently, these need to be objects in order for validation to work:
+    molarMassNeeded = {required: false};
+    substanceDensityNeeded = {required: false};
+    solutionDensityNeeded = {required: false};
+
     submitted = false;
 
     pastToxicology: Toxicology[]; //TODO: find a way to implement history
@@ -59,20 +61,29 @@ export class IngestionFormComponent implements OnInit {
         this.ingestionForm = this.fb.group({
             concen: [null, this.validationService.nonNegative],
             concenUnitsType: ['mass/volume'],
-            concenUnitsMassVol: [''],//, Validators.required], 
-            concenUnitsVolVol: [''],//, Validators.required],
+            concenUnitsMassVol: [''],
+            concenUnitsVolVol: [''],
             concenUnitsMolVol: [''],
             concenUnitsMolMass: [''],
             concenUnitsMassMass: [''],
-            substanceDensity: [null, this.validationService.nonNegative],
-            solutionDensity: [null, this.validationService.nonNegative],
-            molarMass: [null, this.validationService.nonNegative], 
+            substanceDensity: [null, Validators.compose([
+                this.validationService.nonNegative, 
+                this.validationService.conditionalRequired(this.substanceDensityNeeded)
+            ])],
+            solutionDensity: [null, Validators.compose([
+                this.validationService.nonNegative,
+                this.validationService.conditionalRequired(this.solutionDensityNeeded)
+            ])],
+            molarMass: [null, Validators.compose([
+                this.validationService.nonNegative,
+                this.validationService.conditionalRequired(this.molarMassNeeded)
+            ])], 
             intake: [null, this.validationService.nonNegative],
             intakeUnitsType: ['volume/time'],
-            intakeUnitsVolTime: [''],//, Validators.required],
+            intakeUnitsVolTime: [''],
             intakeUnitsMassTime: [''],
             weight: [null, this.validationService.nonNegative],
-            weightUnits: [''],//, Validators.required],
+            weightUnits: [''],
             dose: [null, this.validationService.nonNegative],
             doseUnits: ['']
         }, {
@@ -95,9 +106,9 @@ export class IngestionFormComponent implements OnInit {
             doseUnits: this.doseUnitsOptions[0]
         });
 
-        this.substanceDensityNeeded = false;
-        this.solutionDensityNeeded = false;
-        this.molarMassNeeded = false;
+        this.substanceDensityNeeded.required = false;
+        this.solutionDensityNeeded.required = false;
+        this.molarMassNeeded.required = false;
 
         //track changes (debugging)
         this.ingestionForm.valueChanges.subscribe(data => console.log('Form changes', data)); 
@@ -123,28 +134,6 @@ export class IngestionFormComponent implements OnInit {
     }
 
     onBaseChange(event: Event): void {
-        /*switch (this.ingestionForm.get('concenUnitsType').value) {
-            case 'mass/volume':
-                this.substanceDensityNeeded = false;
-                this.solutionDensityNeeded = false;
-                this.molarMassNeeded = false;
-                break;
-            case 'volume/volume':
-                this.substanceDensityNeeded = true;
-                this.solutionDensityNeeded = false;
-                this.molarMassNeeded = false;
-                break;
-            case 'mol/volume':
-                this.substanceDensityNeeded = false;
-                this.solutionDensityNeeded = false;
-                this.molarMassNeeded = true;
-                break;
-            case 'mass/mass':
-                this.substanceDensityNeeded = false;
-                this.solutionDensityNeeded = true;
-                this.molarMassNeeded = false;
-                break;
-        } TODO: remove */
 
         let concenUnitsType = this.ingestionForm.get('concenUnitsType').value;
         let intakeUnitsType = this.ingestionForm.get('intakeUnitsType').value;
@@ -152,13 +141,13 @@ export class IngestionFormComponent implements OnInit {
         console.log(intakeUnitsType);
         console.log(doseUnitsType);
         console.log(this.ingestionForm.get('weightUnits').value.units);
-        this.molarMassNeeded = this.xOr((concenUnitsType === 'mol/volume' || concenUnitsType === 'mol/mass'), (doseUnitsType === 'mol/kg BW/day' || doseUnitsType === 'mmol/kg BW/day'));
-        this.substanceDensityNeeded = (concenUnitsType === 'volume/volume' && intakeUnitsType === 'volume/time');
-        this.solutionDensityNeeded = (((concenUnitsType === 'mass/mass' || concenUnitsType === 'mol/mass') && intakeUnitsType === 'volume/time') || (concenUnitsType === 'mass/volume' || concenUnitsType === 'mol/volume') && intakeUnitsType === 'mass/time'); // I'm not proud of this
+        this.molarMassNeeded.required = this.xOr((concenUnitsType === 'mol/volume' || concenUnitsType === 'mol/mass'), (doseUnitsType === 'mol/kg BW/day' || doseUnitsType === 'mmol/kg BW/day'));
+        this.substanceDensityNeeded.required = (concenUnitsType === 'volume/volume' && intakeUnitsType === 'volume/time');
+        this.solutionDensityNeeded.required = (((concenUnitsType === 'mass/mass' || concenUnitsType === 'mol/mass') && intakeUnitsType === 'volume/time') || (concenUnitsType === 'mass/volume' || concenUnitsType === 'mol/volume') && intakeUnitsType === 'mass/time'); // I'm not proud of this
 
-        console.log('Solution: ' + this.solutionDensityNeeded);
-        console.log('substance: ' + this.substanceDensityNeeded);
-        console.log('mole: ' + this.molarMassNeeded);
+        this.ingestionForm.controls.substanceDensity.updateValueAndValidity();
+        this.ingestionForm.controls.solutionDensity.updateValueAndValidity();
+        this.ingestionForm.controls.molarMass.updateValueAndValidity();
     }
 
     calculate(): void {

@@ -22,7 +22,6 @@ export class ValidationService {
             let dose = group.controls[doseKey].value;
 
             if (this.countTruthy(concen, intake, weight, dose) != 3) {
-                console.log('core validation error detected');
                 return {invalidValues: true};
             }
         }
@@ -34,15 +33,16 @@ export class ValidationService {
             let intakeBase = group.controls[intakeBaseKey].value;
 
             if ((concenBase === 'mass/mass' || concenBase === 'mol/mass') && intakeBase === 'volume/time') {
-                console.log('base error detected');
                 return {invalidBases: true};
             }
         }
     }
 
-    validateModifiers(control: FormControl, required: boolean): {[key: string]: any} {
-        if (!control.value && required) {
-            return {invalidModifier: true};
+    conditionalRequired(condition: any) {
+        return (control: FormControl): {[key: string]: any} => {
+            if (condition.required && !control.value) {
+                return {required: true};
+            }
         }
     }
 

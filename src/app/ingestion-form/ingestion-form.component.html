@@ -63,17 +63,17 @@
         </select>
     </div>
     <!--TODO: bind unit type to boolean/enum in ts file when selection is changed-->
-    <div *ngIf="substanceDensityNeeded">
+    <div *ngIf="substanceDensityNeeded.required">
         <label for="substanceDensity">Substance density: </label>
-        <input type="number" id="substanceDensity" formControlName="substanceDensity" [required]="substanceDensityNeeded" /> g/mL
+        <input type="number" id="substanceDensity" formControlName="substanceDensity" /> g/mL
     </div>
-    <div *ngIf="molarMassNeeded">
+    <div *ngIf="molarMassNeeded.required">
         <label for="molarMass">Molar mass of substance: </label>
-        <input type="number" id="molarMass" formControlName="molarMass" [required]="molarMassNeeded" /> g/mol
+        <input type="number" id="molarMass" formControlName="molarMass" /> g/mol
     </div>
-    <div *ngIf="solutionDensityNeeded">
+    <div *ngIf="solutionDensityNeeded.required">
         <label for="solutionDensity">Density of the entire solution: </label>
-        <input type="number" id="solutionDensity" formControlName="solutionDensity" [required]="solutionDensityNeeded" /> g/mL
+        <input type="number" id="solutionDensity" formControlName="solutionDensity" /> g/mL
     </div>
     <div>
         <label for="weight">Body Weight: </label>
