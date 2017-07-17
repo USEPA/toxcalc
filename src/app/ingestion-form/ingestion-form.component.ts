@@ -173,8 +173,10 @@ export class IngestionFormComponent implements OnInit {
         console.log(this.concenModifiers);
 
         if (this.molarMassNeeded.required) {
-            if (this.ingestionForm.get('concenUnitsType').value === 'mol/volume' 
-                || this.ingestionForm.get('concenUnitsType').value === 'mol/mass') {
+            if (
+                this.ingestionForm.get('concenUnitsType').value === 'mol/volume' 
+                || this.ingestionForm.get('concenUnitsType').value === 'mol/mass'
+            ){
                 this.concenModifiers.push(this.ingestionForm.get('molarMass').value);
             } else {
                 this.doseModifiers.push(this.ingestionForm.get('molarMass').value);
@@ -184,7 +186,14 @@ export class IngestionFormComponent implements OnInit {
             this.concenModifiers.push(this.ingestionForm.get('substanceDensity').value);
         }
         if (this.solutionDensityNeeded.required) {
-            this.concenModifiers.push((1/this.ingestionForm.get('solutionDensity').value));
+            if (
+                this.ingestionForm.get('concenUnitsType').value === 'mass/volume'
+                || this.ingestionForm.get('concenUnitsType').value === 'mol/volume'
+            ){
+                this.concenModifiers.push((1/this.ingestionForm.get('solutionDensity').value));
+            } else {
+                this.concenModifiers.push(this.ingestionForm.get('solutionDensity').value);
+            }
         }
 
         switch (this.ingestionForm.get('intakeUnitsType').value) {
