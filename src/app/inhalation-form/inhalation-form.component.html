@@ -6,7 +6,12 @@
           type="number"
           id="concen"
           formControlName="concen"
-          /> ppm
+          />
+        <select formControlName="concenUnits">
+            <option *ngFor="let ratio of concenUnitsOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
     </div>
     <div *ngIf="molarMassNeeded.required">
         <label for="molarMass">Molar Mass of Substance: </label>
@@ -22,7 +27,12 @@
           type="number"
           id="intake"
           formControlName="intake"
-          /> m<sup>3</sup>/day
+          />
+        <select formControlName="intakeUnits">
+            <option *ngFor="let ratio of intakeUnitsOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
     </div>
     <div>
         <label for="weight">Body Weight: </label>
@@ -30,7 +40,12 @@
           type="number"
           id="weight"
           formControlName="weight"
-          /> kg
+          /> 
+        <select formControlName="weightUnits">
+            <option *ngFor="let ratio of weightUnitsOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
     </div>
     <div>
         <label for="dose">Dose: </label>
@@ -38,7 +53,12 @@
           type="number"
           id="dose"
           formControlName="dose"
-          /> mg/kg BW/day
+          />
+        <select formControlName="doseUnits">
+            <option *ngFor="let ratio of doseUnitsOptions" [ngValue]="ratio">
+                {{ratio.units}}
+            </option>
+        </select>
     </div>
     <div>
         <button (click)="calculate()">Calculate!</button>

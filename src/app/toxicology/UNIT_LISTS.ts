@@ -35,6 +35,11 @@ export const CONCEN_RATIOS_MASS_MASS: ToxRatio[] = [
     {units: '\u03BCg/kg', value: 0.001}
 ];
 
+export const CONCEN_RATIOS_INHALATION: ToxRatio[] = [
+    {units: 'ppm', value: 1},
+    {units: 'ppb', value: 0.001}
+]
+
 export const INTAKE_RATIOS_VOL_TIME: ToxRatio[] = [
     {units: 'L/day', value: 1},
     {units: 'mL/day', value: 0.001}
@@ -43,6 +48,10 @@ export const INTAKE_RATIOS_VOL_TIME: ToxRatio[] = [
 export const INTAKE_RATIOS_MASS_TIME: ToxRatio[] = [
     {units: 'kg/day', value: 1},
     {units: 'g/day', value: 0.001}
+];
+
+export const INTAKE_RATIOS_INHALATION: ToxRatio[] = [
+    {units: 'm3/day', value: 1}
 ];
 
 export const WEIGHT_RATIOS: ToxRatio[] = [
@@ -56,3 +65,10 @@ export const DOSE_RATIOS: ToxRatio[] = [
     {units: 'mol/kg BW/day', value: 1000},
     {units: 'mmol/kg BW/day', value: 1}
 ];
+
+export const DOSE_RATIOS_INHALATION: ToxRatio[] = [
+    {units: 'mg/kg BW/day', value: 1},
+    {units: '\u03BCg/kg BW/day', value: 0.001}
+];
+
+export const STP_RATIO = 24.45;

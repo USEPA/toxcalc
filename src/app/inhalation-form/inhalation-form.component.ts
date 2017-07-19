@@ -9,10 +9,16 @@ import { ToxUnit } from '../toxicology/tox-unit';
 import { ToxRatio } from '../toxicology/tox-ratio';
 import { UnitTypes } from '../toxicology/unit-types.enum';
 
+import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE_RATIOS_INHALATION, STP_RATIO } from '../toxicology/UNIT_LISTS';
+
 @Component({
     selector: 'app-inhalation-form',
     templateUrl: './inhalation-form.component.html',
-    styleUrls: ['./inhalation-form.component.css']
+    styleUrls: ['./inhalation-form.component.css'],
+    providers: [
+        CalcService,
+        ValidationService
+    ]
 })
 export class InhalationFormComponent implements OnInit {
     submitted = false;
@@ -22,6 +28,11 @@ export class InhalationFormComponent implements OnInit {
     weightTox: Toxicology;
     doseTox: Toxicology;
 
+    concenUnitsOptions = CONCEN_RATIOS_INHALATION;
+    intakeUnitsOptions = INTAKE_RATIOS_INHALATION;
+    weightUnitsOptions = WEIGHT_RATIOS;
+    doseUnitsOptions = DOSE_RATIOS_INHALATION;
+
     molarMassNeeded = {required: true};
 
     concenModifiers: number[];
@@ -29,7 +40,6 @@ export class InhalationFormComponent implements OnInit {
     weightModifiers: number[];
     doseModifiers: number[];
 
-    STP_RATIO = 24.45; //move to another file
     inhalationForm: FormGroup;
 
     constructor(
@@ -41,16 +51,27 @@ export class InhalationFormComponent implements OnInit {
     createForm() {
         this.inhalationForm = this.fb.group({
             concen: [null, this.validationService.nonNegative],
+            concenUnits: [''],
             molarMass: [null, Validators.compose([
                 this.validationService.nonNegative,
                 this.validationService.conditionalRequired(this.molarMassNeeded)
             ])],
             intake: [null, this.validationService.nonNegative],
+            intakeUnits: [''],
             weight: [null, this.validationService.nonNegative],
-            dose: [null, this.validationService.nonNegative]
+            weightUnits: [''],
+            dose: [null, this.validationService.nonNegative],
+            doseUnits: ['']
         }, {
             validator: this.validationService.coreValidation('concen', 'intake', 'weight', 'dose')
         })
+
+        this.inhalationForm.patchValue({
+            concenUnits: this.concenUnitsOptions[0],
+            intakeUnits: this.intakeUnitsOptions[0],
+            weightUnits: this.weightUnitsOptions[0],
+            doseUnits: this.doseUnitsOptions[0]
+        });
 
         this.molarMassNeeded.required = true;
     }
@@ -70,15 +91,16 @@ export class InhalationFormComponent implements OnInit {
     }
 
     calculate(): void {
-        
+
+        this.concenModifiers.push(this.inhalationForm.get('concenUnits').value.value);
         if (this.molarMassNeeded.required) {
             this.concenModifiers.push(this.inhalationForm.get('molarMass').value);
-            this.concenModifiers.push(1/24.45);
+            this.concenModifiers.push(1/STP_RATIO);
         }
 
-        this.intakeModifiers.push(1);
-        this.weightModifiers.push(1);
-        this.doseModifiers.push(1);
+        this.intakeModifiers.push(this.inhalationForm.get('intakeUnits').value.value);
+        this.weightModifiers.push(this.inhalationForm.get('weightUnits').value.value);
+        this.doseModifiers.push(this.inhalationForm.get('doseUnits').value.value);
 
         let concenMultiplier = this.calcService.calculateMultiplier(this.concenModifiers);
         let intakeMultiplier = this.calcService.calculateMultiplier(this.intakeModifiers);
