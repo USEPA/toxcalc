@@ -7,11 +7,13 @@ import { AppComponent } from './app.component';
 import { IngestionFormComponent } from './ingestion-form/ingestion-form.component';
 import { CalcService } from './shared/calc.service';
 import { ValidationService } from './shared/validation.service';
+import { InhalationFormComponent } from './inhalation-form/inhalation-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    IngestionFormComponent
+    IngestionFormComponent,
+    InhalationFormComponent
   ],
   imports: [
     BrowserModule,

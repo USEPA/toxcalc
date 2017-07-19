@@ -1,1 +1,6 @@
-<app-ingestion-form></app-ingestion-form>
+Please select means of exposure:
+<button (click)="ingestionClick()">Ingestion</button>
+<button (click)="inhalationClick()">Inhalation</button>
+<hr />
+<app-ingestion-form *ngIf="ingestionFlag"></app-ingestion-form>
+<app-inhalation-form *ngIf="inhalationFlag"></app-inhalation-form>
