@@ -1,0 +1,47 @@
+<form autocomplete="off" novalidate [formGroup]="inhalationForm">
+    <b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (STP)</b>
+    <div>
+        <label for="concen">Concentration: </label>
+        <input
+          type="number"
+          id="concen"
+          formControlName="concen"
+          /> ppm
+    </div>
+    <div *ngIf="molarMassNeeded.required">
+        <label for="molarMass">Molar Mass of Substance: </label>
+        <input
+          type="number"
+          id="molarMass"
+          formControlName="molarMass"
+          /> g/mol
+    </div>
+    <div>
+        <label for="intake">Intake Rate: </label>
+        <input
+          type="number"
+          id="intake"
+          formControlName="intake"
+          /> m<sup>3</sup>/day
+    </div>
+    <div>
+        <label for="weight">Body Weight: </label>
+        <input
+          type="number"
+          id="weight"
+          formControlName="weight"
+          /> kg
+    </div>
+    <div>
+        <label for="dose">Dose: </label>
+        <input
+          type="number"
+          id="dose"
+          formControlName="dose"
+          /> mg/kg BW/day
+    </div>
+    <div>
+        <button (click)="calculate()">Calculate!</button>
+        <button (click)="clear()">Clear</button>
+    </div>
+</form>
