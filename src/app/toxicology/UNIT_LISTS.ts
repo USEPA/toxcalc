@@ -71,4 +71,4 @@ export const DOSE_RATIOS_INHALATION: ToxRatio[] = [
     {units: '\u03BCg/kg BW/day', value: 0.001}
 ];
 
-export const STP_RATIO = 24.45;
+export const SATP_RATIO = 24.45;

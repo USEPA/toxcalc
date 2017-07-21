@@ -9,7 +9,7 @@ import { ToxUnit } from '../toxicology/tox-unit';
 import { ToxRatio } from '../toxicology/tox-ratio';
 import { UnitTypes } from '../toxicology/unit-types.enum';
 
-import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE_RATIOS_INHALATION, STP_RATIO } from '../toxicology/UNIT_LISTS';
+import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE_RATIOS_INHALATION, SATP_RATIO } from '../toxicology/UNIT_LISTS';
 
 @Component({
     selector: 'app-inhalation-form',
@@ -21,7 +21,8 @@ import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE
     ]
 })
 export class InhalationFormComponent implements OnInit {
-    submitted = false;
+    inhalationSubmitted = false;
+    conversionSubmitted = false;
     //should probably rework the data model
     concenTox: Toxicology;
     intakeTox: Toxicology;
@@ -41,6 +42,7 @@ export class InhalationFormComponent implements OnInit {
     doseModifiers: number[];
 
     inhalationForm: FormGroup;
+    conversionForm: FormGroup;
 
     constructor(
         private fb: FormBuilder,
@@ -48,7 +50,20 @@ export class InhalationFormComponent implements OnInit {
         private validationService: ValidationService
     ) { }
 
-    createForm() {
+    createConversionForm() {
+
+        this.conversionForm = this.fb.group({
+            concenVolVol: [null, this.validationService.nonNegative],
+            concenMassVol: [null, this.validationService.nonNegative],
+            molarMass: [null, Validators.compose([
+                this.validationService.nonNegative,
+                Validators.required
+            ])]
+        })
+    }
+
+    createInhalationForm() {
+
         this.inhalationForm = this.fb.group({
             concen: [null, this.validationService.nonNegative],
             concenUnits: [''],
@@ -77,7 +92,8 @@ export class InhalationFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.createForm();
+        this.createConversionForm();
+        this.createInhalationForm();
 
         this.concenTox = new Toxicology(new ToxUnit(UnitTypes.CONCENTRATION, new ToxRatio('ppm', 1)), null);
         this.intakeTox = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('m3/day', 1)), null);
@@ -95,7 +111,7 @@ export class InhalationFormComponent implements OnInit {
         this.concenModifiers.push(this.inhalationForm.get('concenUnits').value.value);
         if (this.molarMassNeeded.required) {
             this.concenModifiers.push(this.inhalationForm.get('molarMass').value);
-            this.concenModifiers.push(1/STP_RATIO);
+            this.concenModifiers.push(1/SATP_RATIO);
         }
 
         this.intakeModifiers.push(this.inhalationForm.get('intakeUnits').value.value);
@@ -135,12 +151,20 @@ export class InhalationFormComponent implements OnInit {
         this.weightModifiers = [];
         this.doseModifiers = [];
 
-        this.submitted = true;
+        this.inhalationSubmitted = true;
     }
 
-    clear(): void {
-        this.createForm();
-        this.submitted = false;
+    convert() {
+    }
+
+    clearConversion(): void {
+        this.createConversionForm();
+        this.conversionSubmitted = false;
+    }
+
+    clearInhalation(): void {
+        this.createInhalationForm();
+        this.inhalationSubmitted = false;
     }
 
 }
