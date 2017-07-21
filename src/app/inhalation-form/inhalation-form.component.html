@@ -17,7 +17,7 @@
           formControlName="concenMassVol"
           />
         <select formControlName="concenUnitsMassVol">
-            <option *ngFor="let ratio of concenUnitsMassVol" [ngValue]="ratio">
+            <option *ngFor="let ratio of concenUnitsMassVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
