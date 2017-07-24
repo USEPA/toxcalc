@@ -35,6 +35,7 @@
         <button (click)="clearConversion()">Clear</button>
     </div>
 </form>
+<hr />
 <form autocomplete="off" novalidate [formGroup]="inhalationForm">
     <b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b>
     <div>
@@ -45,18 +46,10 @@
           formControlName="concen"
           />
         <select formControlName="concenUnits">
-            <option *ngFor="let ratio of concenUnitsOptions" [ngValue]="ratio">
+            <option *ngFor="let ratio of concenUnitsMassVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-    </div>
-    <div *ngIf="molarMassNeeded.required">
-        <label for="molarMass">Molar Mass of Substance: </label>
-        <input
-          type="number"
-          id="molarMass"
-          formControlName="molarMass"
-          /> g/mol
     </div>
     <div>
         <label for="intake">Intake Rate: </label>
@@ -98,7 +91,7 @@
         </select>
     </div>
     <div>
-        <button (click)="calculate()">Calculate!</button>
+        <button (click)="calculate()" [disabled]="!inhalationForm.valid">Calculate!</button>
         <button (click)="clearInhalation()">Clear</button>
     </div>
 </form>

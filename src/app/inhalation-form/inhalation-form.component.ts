@@ -37,7 +37,9 @@ export class InhalationFormComponent implements OnInit {
 
     concenUnitsMassVolOptions: ToxRatio[] = [
         {units: 'mg/m3', value: 1},
-        {units: '\u03BCg/m3', value: 0.001}
+        {units: '\u03BCg/m3', value: 0.001},
+        {units: 'mg/L', value: 1000},
+        {units: '\u03BCg/L', value: 1}
     ];
     //TODO: move above to separate file
 
@@ -46,7 +48,7 @@ export class InhalationFormComponent implements OnInit {
     weightUnitsOptions = WEIGHT_RATIOS;
     doseUnitsOptions = DOSE_RATIOS_INHALATION;
 
-    molarMassNeeded = {required: true};
+    //molarMassNeeded = {required: true};
 
     concenModifiers: number[];
     intakeModifiers: number[];
@@ -86,10 +88,10 @@ export class InhalationFormComponent implements OnInit {
         this.inhalationForm = this.fb.group({
             concen: [null, this.validationService.nonNegative],
             concenUnits: [''],
-            molarMass: [null, Validators.compose([
+            /*molarMass: [null, Validators.compose([
                 this.validationService.nonNegative,
                 this.validationService.conditionalRequired(this.molarMassNeeded)
-            ])],
+            ])],*/
             intake: [null, this.validationService.nonNegative],
             intakeUnits: [''],
             weight: [null, this.validationService.nonNegative],
@@ -101,13 +103,13 @@ export class InhalationFormComponent implements OnInit {
         })
 
         this.inhalationForm.patchValue({
-            concenUnits: this.concenUnitsOptions[0],
+            concenUnits: this.concenUnitsMassVolOptions[0],
             intakeUnits: this.intakeUnitsOptions[0],
             weightUnits: this.weightUnitsOptions[0],
             doseUnits: this.doseUnitsOptions[0]
         });
 
-        this.molarMassNeeded.required = true;
+        //this.molarMassNeeded.required = true;
     }
 
     ngOnInit() {
@@ -133,10 +135,10 @@ export class InhalationFormComponent implements OnInit {
     calculate(): void {
 
         this.concenModifiers.push(this.inhalationForm.get('concenUnits').value.value);
-        if (this.molarMassNeeded.required) {
+        /*if (this.molarMassNeeded.required) {
             this.concenModifiers.push(this.inhalationForm.get('molarMass').value);
             this.concenModifiers.push(1/SATP_RATIO);
-        }
+        }*/
 
         this.intakeModifiers.push(this.inhalationForm.get('intakeUnits').value.value);
         this.weightModifiers.push(this.inhalationForm.get('weightUnits').value.value);
@@ -177,7 +179,7 @@ export class InhalationFormComponent implements OnInit {
 
         this.inhalationSubmitted = true;
     }
-
+    //TODO: rename variables, move to calc.service
     convert() {
         let ratio1 = this.conversionForm.get('concenUnitsVolVol').value.value;
         let ratio2 = this.conversionForm.get('concenUnitsMassVol').value.value;
@@ -194,8 +196,12 @@ export class InhalationFormComponent implements OnInit {
             this.conversionForm.patchValue({
                 concenMassVol: val2
             });
+            this.inhalationForm.patchValue({
+                concen: val2,
+                concenUnits: this.conversionForm.get('concenUnitsMassVol').value
+            });
+            this.inhalationSubmitted = false;
         }
-        return;
     }
 
     clearConversion(): void {
