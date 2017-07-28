@@ -37,6 +37,8 @@ export class IngestionFormComponent implements OnInit {
     substanceDensityNeeded = {required: false};
     solutionDensityNeeded = {required: false};
 
+    allometryFlag = false;
+
     submitted = false;
 
     pastToxicology: Toxicology[]; //TODO: find a way to implement history
@@ -130,7 +132,7 @@ export class IngestionFormComponent implements OnInit {
     }
 
     xOr(first: boolean, second: boolean): boolean {
-        return ((first && !second) || (!first && second));
+        return (first !== second);
     }
 
     onBaseChange(event: Event): void {
@@ -213,7 +215,7 @@ export class IngestionFormComponent implements OnInit {
         let weightMultiplier = this.calcService.calculateMultiplier(this.weightModifiers);
         let doseMultiplier = this.calcService.calculateMultiplier(this.doseModifiers);
 
-        let response = this.calcService.newCalculate(
+        let response = this.calcService.calculate(
             this.ingestionForm.get('concen').value,
             concenMultiplier,
             this.ingestionForm.get('intake').value,
@@ -247,5 +249,9 @@ export class IngestionFormComponent implements OnInit {
     clear(): void {
         this.createForm();
         this.submitted = false;
+    }
+
+    toggleAllometry() {
+        this.allometryFlag = !this.allometryFlag;
     }
 }

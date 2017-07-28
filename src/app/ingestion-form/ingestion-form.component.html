@@ -118,3 +118,9 @@
     <li>IR represents Intake Rate</li>
     <li>BW represents Body Weight</li>
 </ul>
+<hr />
+
+<button (click)="toggleAllometry()">Show/Hide Human Equivalent Dose Calculator</button>
+<div>
+    <app-allometry-form *ngIf="allometryFlag"></app-allometry-form>
+</div>

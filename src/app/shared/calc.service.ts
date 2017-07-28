@@ -15,7 +15,7 @@ export class CalcService {
         return multiplier;
     }
 
-    newCalculate(
+    calculate(
         concen: number, 
         concenMultiplier: number, 
         intake: number, 

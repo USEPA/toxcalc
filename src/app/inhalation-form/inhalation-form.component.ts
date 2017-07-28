@@ -149,7 +149,7 @@ export class InhalationFormComponent implements OnInit {
         let weightMultiplier = this.calcService.calculateMultiplier(this.weightModifiers);
         let doseMultiplier = this.calcService.calculateMultiplier(this.doseModifiers);
 
-        let response = this.calcService.newCalculate(
+        let response = this.calcService.calculate(
             this.inhalationForm.get('concen').value,
             concenMultiplier,
             this.inhalationForm.get('intake').value,
