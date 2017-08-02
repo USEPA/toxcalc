@@ -122,5 +122,8 @@
 
 <button (click)="toggleAllometry()">Show/Hide Human Equivalent Dose Calculator</button>
 <div>
-    <app-allometry-form *ngIf="allometryFlag"></app-allometry-form>
+    <app-allometry-form 
+      *ngIf="allometryFlag" 
+      [animalDose]="ingestionForm.get('dose').value * ingestionForm.get('doseUnits').value.value" 
+      [animalWeight]="ingestionForm.get('weight').value * ingestionForm.get('weightUnits').value.value"></app-allometry-form>
 </div>

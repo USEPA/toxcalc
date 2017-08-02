@@ -13,8 +13,8 @@ declare let Math;
 })
 export class AllometryFormComponent implements OnInit {
 
-    animalDose: number;
-    animalWeight: number;
+    @Input() animalDose: number;
+    @Input() animalWeight: number;
     humanDose: number;
     humanWeight: number;
     conversionFactor;
@@ -44,6 +44,8 @@ export class AllometryFormComponent implements OnInit {
         });
 
         this.allometryForm.patchValue({
+            animalDose: this.animalDose,
+            animalWeight: this.animalWeight,
             conversionFactor: this.conversionFactorOptions[0]
         });
     }
