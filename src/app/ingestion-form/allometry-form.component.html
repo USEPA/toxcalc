@@ -1,3 +1,39 @@
-<p>
-  allometry-form works!
-</p>
+<form autocomplete="off" novalidate [formGroup]="allometryForm">
+    <div>
+        <label for="animalWeight">Body weight of animal: </label>
+        <input
+          type="number"
+          id="animalWeight"
+          formControlName="animalWeight"
+          /> kg
+    </div>
+    <div>
+        <label for="animalDose">Animal dose administered: </label>
+        <input
+          type="number"
+          id="animalDose"
+          formControlName="animalDose"
+          /> mg/kg BW/day
+    </div>
+    <div>
+        <label for="humanWeight">Body weight of human: </label>
+        <input
+          type="number"
+          id="humanWeight"
+          formControlName="humanWeight"
+          /> kg
+    </div>
+    <div>
+        <label for="conversionFactor">Use the conversion factor recommended by: </label>
+        <select id="conversionFactor" formControlName="conversionFactor">
+            <option *ngFor="let factor of conversionFactorOptions" [ngValue]="factor">
+                {{factor.display}}
+            </option>
+        </select>
+    </div>
+    <button (click)="hedConversion()">Convert</button>
+    <div *ngIf="submitted">
+        <label for="humanDose">Human equivalent Dose: </label>
+        {{humanDose}} mg/kg BW/day
+    </div>
+</form>
