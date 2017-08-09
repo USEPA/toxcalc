@@ -43,7 +43,7 @@ export class AllometryFormComponent implements OnInit {
             animalDose: [null, [Validators.required, this.validationService.nonNegative]],
             animalWeight: [null, [Validators.required, this.validationService.nonNegative]],
             conversionFactor: [''],
-            species: [''],
+            animalSpecies: [''],
             humanDose: [null, this.validationService.nonNegative],
             humanWeight: [null, [Validators.required, this.validationService.nonNegative]]
         });
@@ -52,7 +52,8 @@ export class AllometryFormComponent implements OnInit {
         this.allometryForm.patchValue({
             animalDose: this.animalDose,
             animalWeight: this.animalWeight,
-            conversionFactor: this.conversionFactorOptions[0]
+            conversionFactor: this.conversionFactorOptions[0],
+            animalSpecies: this.speciesOptions[0]
         });
     }
 
@@ -60,6 +61,7 @@ export class AllometryFormComponent implements OnInit {
         this.createForm();
     }
 
+    // TODO: move to calc service? integrate toxicology data structures?
     hedConversion() {
         this.animalDose = this.allometryForm.get('animalDose').value;
         this.animalWeight = this.allometryForm.get('animalWeight').value;
