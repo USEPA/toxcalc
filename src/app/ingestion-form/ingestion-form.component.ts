@@ -113,7 +113,7 @@ export class IngestionFormComponent implements OnInit {
         this.molarMassNeeded.required = false;
 
         //track changes (debugging)
-        this.ingestionForm.valueChanges.subscribe(data => console.log('Form changes', data)); 
+        //this.ingestionForm.valueChanges.subscribe(data => console.log('Form changes', data)); 
     }
 
     ngOnInit() {

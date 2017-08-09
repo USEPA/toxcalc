@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { CalcService } from '../shared/calc.service';
 import { ValidationService } from '../shared/validation.service';
 
+import { SPECIES_CONVERSION } from '../toxicology/HED_FACTORS';
 declare let Math;
 
 @Component({
@@ -16,6 +17,7 @@ export class AllometryFormComponent implements OnInit {
     @Input() animalDose: number;
     @Input() animalWeight: number;
     humanDose: number;
+    speciesOptions = SPECIES_CONVERSION;
     humanWeight: number;
     conversionFactor;
 
@@ -34,15 +36,19 @@ export class AllometryFormComponent implements OnInit {
         private validationService: ValidationService
     ) { }
 
+    // syntax of fb.group
+    // inputFieldName: [initialValue, [validator1, validator2...]],
     createForm() {
         this.allometryForm = this.fb.group({
             animalDose: [null, [Validators.required, this.validationService.nonNegative]],
             animalWeight: [null, [Validators.required, this.validationService.nonNegative]],
             conversionFactor: [''],
+            species: [''],
             humanDose: [null, this.validationService.nonNegative],
             humanWeight: [null, [Validators.required, this.validationService.nonNegative]]
         });
 
+        // only update some values
         this.allometryForm.patchValue({
             animalDose: this.animalDose,
             animalWeight: this.animalWeight,
@@ -68,4 +74,14 @@ export class AllometryFormComponent implements OnInit {
 
     }
 
+    speciesConversion() {
+
+    }
+
+    clear() {
+        this.animalDose = 0; // otherwise it would keep the old value
+        this.animalWeight = 0;
+        this.createForm();
+        this.submitted = false;
+    }
 }

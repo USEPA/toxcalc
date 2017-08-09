@@ -31,9 +31,19 @@
             </option>
         </select>
     </div>
-    <button (click)="hedConversion()">Convert</button>
+    <button (click)="hedConversion()" [disabled]="!allometryForm.valid">Convert</button>
+    <button (click)="clear()">Clear</button>
     <div *ngIf="submitted">
         <label for="humanDose">Human equivalent Dose: </label>
         {{humanDose}} mg/kg BW/day
+    </div>
+    <h3>--OR--</h3>
+    <div>
+        <label for="animalSpecies">Species of animal: </label>
+        <select id="animalSpecies" formControlName="animalSpecies">
+            <option *ngFor="let species of speciesOptions" [ngValue]="species">
+                {{species.species}}
+            </option>
+        </select>
     </div>
 </form>
