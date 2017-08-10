@@ -53,4 +53,11 @@ export class ValidationService {
         }
     }
 
+    nonZero(control: FormControl): {[key: string]: any} {
+        if (control.value === 0) {
+            console.log('value cannot be zero');
+            return {invalidZero: true};
+        }
+    }
+
 }

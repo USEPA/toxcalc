@@ -37,7 +37,7 @@
     <hr />
     <div>
         <label for="animalSpecies">Species of animal: </label>
-        <select id="animalSpecies" formControlName="animalSpecies">
+        <select id="animalSpecies" formControlName="animalSpecies" (change)="onSpeciesChange($event)">
             <option *ngFor="let species of speciesOptions" [ngValue]="species">
                 {{species.species}}
             </option>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { CalcService } from '../shared/calc.service';
@@ -21,6 +21,8 @@ export class AllometryFormComponent implements OnInit {
     humanWeight: number;
     conversionFactor;
 
+    weightNeeded = {required: true};
+
     submitted = false;
 
     conversionFactorOptions = [
@@ -40,12 +42,12 @@ export class AllometryFormComponent implements OnInit {
     // inputFieldName: [initialValue, [validator1, validator2...]],
     createForm() {
         this.allometryForm = this.fb.group({
-            animalDose: [null, [Validators.required, this.validationService.nonNegative]],
-            animalWeight: [null, [Validators.required, this.validationService.nonNegative]],
+            animalDose: [null, [Validators.required, this.validationService.nonNegative, this.validationService.nonZero]],
+            animalWeight: [null, [this.validationService.conditionalRequired(this.weightNeeded), this.validationService.nonNegative]],
             conversionFactor: [''],
             animalSpecies: [''],
             humanDose: [null, this.validationService.nonNegative],
-            humanWeight: [null, [Validators.required, this.validationService.nonNegative]]
+            humanWeight: [null, [this.validationService.conditionalRequired(this.weightNeeded), this.validationService.nonNegative]]
         });
 
         // only update some values
@@ -55,22 +57,35 @@ export class AllometryFormComponent implements OnInit {
             conversionFactor: this.conversionFactorOptions[0],
             animalSpecies: this.speciesOptions[0]
         });
+
+        this.weightNeeded.required = true;
     }
 
     ngOnInit() {
         this.createForm();
     }
 
+    onSpeciesChange(event: Event) {
+        this.weightNeeded.required = !this.allometryForm.get('animalSpecies').value.factor;
+        this.allometryForm.controls.animalWeight.updateValueAndValidity();
+        this.allometryForm.controls.humanWeight.updateValueAndValidity();
+        console.log(this.weightNeeded.required);
+    }
+
     // TODO: move to calc service? integrate toxicology data structures?
     hedConversion() {
         this.animalDose = this.allometryForm.get('animalDose').value;
-        this.animalWeight = this.allometryForm.get('animalWeight').value;
-        this.humanWeight = this.allometryForm.get('humanWeight').value;
-        this.conversionFactor = this.allometryForm.get('conversionFactor').value.value;
+        if (this.weightNeeded.required) {
+            this.animalWeight = this.allometryForm.get('animalWeight').value;
+            this.humanWeight = this.allometryForm.get('humanWeight').value;
+            this.conversionFactor = this.allometryForm.get('conversionFactor').value.value;
 
-        let kRatio = this.animalWeight / this.humanWeight;
+            let kRatio = this.animalWeight / this.humanWeight;
 
-        this.humanDose = this.animalDose * Math.pow(kRatio, this.conversionFactor);
+            this.humanDose = this.animalDose * Math.pow(kRatio, this.conversionFactor);
+        } else {
+            this.humanDose = this.animalDose / this.allometryForm.get('animalSpecies').value.factor;
+        }
 
         this.submitted = true;
 
