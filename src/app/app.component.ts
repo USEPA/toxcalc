@@ -13,16 +13,5 @@ import { CalcService } from './shared/calc.service';
     ]
 })
 export class AppComponent {
-    ingestionFlag = true;
-    inhalationFlag = false;
-
-    ingestionClick(): void {
-        this.inhalationFlag = false;
-        this.ingestionFlag = true;
-    }
-
-    inhalationClick(): void {
-        this.ingestionFlag = false;
-        this.inhalationFlag = true;
-    }
+    formSelector = 1;
 }

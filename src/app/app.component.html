@@ -1,10 +1,24 @@
-<div>
-    <h3>Warning: this calculator is only a prototype and may have serious flaws.</h3>
+<div class="container">
+  <h1 class="display-4">
+    Exposure Calculator
+  </h1>
+  <ngb-alert [dismissible]="false">
+    This calculator is only a prototype and may have serious flaws.
+  </ngb-alert>
+  Please select means of exposure:
+  <div class="btn-group btn-group-toggle" ngbRadioGroup name="exposureType" [(ngModel)]="formSelector">
+    <label ngbButtonLabel class="btn-primary">
+      <input ngbButton type="radio" [value]="1">Ingestion
+    </label>
+    <label ngbButtonLabel class="btn-primary">
+      <input ngbButton type="radio" [value]="2">Inhalation
+    </label>
+  </div>
+  <hr>
+  <div [ngbCollapse]="formSelector==1" id="ingestionCollapse">
+    <app-ingestion-form></app-ingestion-form>
+  </div>
+  <div [ngbCollapse]="formSelector==2" id="inhalationCollapse">
+    <app-inhalation-form></app-inhalation-form>
+  </div>
 </div>
-Please select means of exposure:
-<button (click)="ingestionClick()">Ingestion</button>
-<button (click)="inhalationClick()">Inhalation</button>
-<hr />
-<app-ingestion-form *ngIf="ingestionFlag"></app-ingestion-form>
-<app-inhalation-form *ngIf="inhalationFlag"></app-inhalation-form>
-

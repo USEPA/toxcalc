@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
@@ -9,6 +10,7 @@ import { CalcService } from './shared/calc.service';
 import { ValidationService } from './shared/validation.service';
 import { InhalationFormComponent } from './inhalation-form/inhalation-form.component';
 import { AllometryFormComponent } from './ingestion-form/allometry-form.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,8 +21,10 @@ import { AllometryFormComponent } from './ingestion-form/allometry-form.componen
   ],
   imports: [
     BrowserModule,
-    ReactiveFormsModule,
-    HttpModule
+    FormsModule,
+    HttpModule,
+    NgbModule,
+    ReactiveFormsModule
   ],
     providers: [
         CalcService,
