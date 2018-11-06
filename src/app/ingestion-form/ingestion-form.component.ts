@@ -254,4 +254,8 @@ export class IngestionFormComponent implements OnInit {
     toggleAllometry() {
         this.allometryFlag = !this.allometryFlag;
     }
+
+    isExpanded() {
+        return this.allometryFlag;
+    }
 }

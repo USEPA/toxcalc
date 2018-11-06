@@ -119,11 +119,12 @@
     <li>BW represents Body Weight</li>
 </ul>
 <hr />
-
-<button (click)="toggleAllometry()">Show/Hide Human Equivalent Dose Calculator</button>
-<div>
-    <app-allometry-form 
-      *ngIf="allometryFlag" 
-      [animalDose]="ingestionForm.get('dose').value * ingestionForm.get('doseUnits').value.value" 
+<p>
+  <button type="button" class="btn btn-outline-primary" (click)="toggleAllometry()" [attr.aria-expanded]="isExpanded()" aria-controls="allometryCollapse" >Show/Hide Human Equivalent Dose Calculator</button>
+</p>
+<div id="allometryCollapse" [ngbCollapse]="!isExpanded()">
+    <app-allometry-form
+      *ngIf="allometryFlag"
+      [animalDose]="ingestionForm.get('dose').value * ingestionForm.get('doseUnits').value.value"
       [animalWeight]="ingestionForm.get('weight').value * ingestionForm.get('weightUnits').value.value"></app-allometry-form>
 </div>
