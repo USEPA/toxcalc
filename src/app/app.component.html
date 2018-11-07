@@ -15,10 +15,10 @@
     </label>
   </div>
   <hr>
-  <div [ngbCollapse]="formSelector==1" id="ingestionCollapse">
+  <div [ngbCollapse]="formSelector!=1" id="ingestionCollapse">
     <app-ingestion-form></app-ingestion-form>
   </div>
-  <div [ngbCollapse]="formSelector==2" id="inhalationCollapse">
+  <div [ngbCollapse]="formSelector!=2" id="inhalationCollapse">
     <app-inhalation-form></app-inhalation-form>
   </div>
 </div>
