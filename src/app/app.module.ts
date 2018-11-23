@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { AppRoutingModule } from './app-routing.module';
+
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from './app.component';
 import { IngestionFormComponent } from './ingestion-form/ingestion-form.component';
@@ -12,9 +15,8 @@ import { InhalationFormComponent } from './inhalation-form/inhalation-form.compo
 import { AllometryFormComponent } from './ingestion-form/allometry-form.component';
 import { FormsModule } from '@angular/forms';
 import { SdProductListComponent, SdProductListItem, SdProductListItemDescription, SdProductListItemTitle } from './sd-product-list/sd-product-list.component';
-
-import { AppRoutingModule } from './app-routing.module';
 import { LandingComponent } from './landing/landing.component';
+import { SdReturnToCalculatorsComponent } from './sd-return-to-calculators/sd-return-to-calculators.component';
 
 @NgModule({
   declarations: [
@@ -27,10 +29,12 @@ import { LandingComponent } from './landing/landing.component';
     SdProductListItemDescription,
     SdProductListItemTitle,
     LandingComponent,
+    SdReturnToCalculatorsComponent,
   ],
   imports: [
     AppRoutingModule,
     BrowserModule,
+    FontAwesomeModule,
     FormsModule,
     HttpModule,
     NgbModule,
