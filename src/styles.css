@@ -1,1 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+
+/* Always show vertical scroll bar, otherwise the page shifts horizontally when
+   it appears or disappears. */
+html { overflow-y: scroll; }

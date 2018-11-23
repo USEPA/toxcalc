@@ -11,6 +11,10 @@ import { ValidationService } from './shared/validation.service';
 import { InhalationFormComponent } from './inhalation-form/inhalation-form.component';
 import { AllometryFormComponent } from './ingestion-form/allometry-form.component';
 import { FormsModule } from '@angular/forms';
+import { SdProductListComponent, SdProductListItem, SdProductListItemDescription, SdProductListItemTitle } from './sd-product-list/sd-product-list.component';
+
+import { AppRoutingModule } from './app-routing.module';
+import { LandingComponent } from './landing/landing.component';
 
 @NgModule({
   declarations: [
@@ -18,8 +22,14 @@ import { FormsModule } from '@angular/forms';
     IngestionFormComponent,
     InhalationFormComponent,
     AllometryFormComponent,
+    SdProductListComponent,
+    SdProductListItem,
+    SdProductListItemDescription,
+    SdProductListItemTitle,
+    LandingComponent,
   ],
   imports: [
+    AppRoutingModule,
     BrowserModule,
     FormsModule,
     HttpModule,
