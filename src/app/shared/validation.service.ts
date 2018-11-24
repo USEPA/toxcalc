@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 
 @Injectable()
 export class ValidationService {
@@ -15,7 +15,8 @@ export class ValidationService {
     }
 
     coreValidation(concenKey: string, intakeKey: string, weightKey: string, doseKey: string) {
-        return (group: FormGroup): {[key: string]: any} => {
+        return (control: AbstractControl): ValidationErrors => {
+            let group = <FormGroup>control;
             let concen = group.controls[concenKey].value;
             let intake = group.controls[intakeKey].value;
             let weight = group.controls[weightKey].value;
@@ -28,7 +29,8 @@ export class ValidationService {
     }
 
     validateBases(concenBaseKey: string, intakeBaseKey: string) {
-        return (group: FormGroup): {[key: string]: any} => {
+        return (control: AbstractControl): ValidationErrors => {
+            let group = <FormGroup>control;
             let concenBase = group.controls[concenBaseKey].value;
             let intakeBase = group.controls[intakeBaseKey].value;
 
@@ -39,21 +41,22 @@ export class ValidationService {
     }
 
     conditionalRequired(condition: any) {
-        return (control: FormControl): {[key: string]: any} => {
+        return (abstract_control: AbstractControl): ValidationErrors => {
+            let control = <FormControl>abstract_control;
             if (condition.required && !control.value) {
                 return {required: true};
             }
         }
     }
 
-    nonNegative(control: FormControl): {[key: string]: any} {
+    nonNegative(control: AbstractControl): ValidationErrors {
         if (control.value && control.value < 0) {
             console.log('negative value detected');
             return {invalidNegative: true};
         }
     }
 
-    nonZero(control: FormControl): {[key: string]: any} {
+    nonZero(control: AbstractControl): ValidationErrors {
         if (control.value === 0) {
             console.log('value cannot be zero');
             return {invalidZero: true};
