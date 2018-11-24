@@ -5,7 +5,6 @@ import { CalcService } from '../shared/calc.service';
 import { ValidationService } from '../shared/validation.service';
 
 import { SPECIES_CONVERSION } from '../toxicology/HED_FACTORS';
-declare let Math;
 
 @Component({
     selector: 'app-allometry-form',
@@ -19,7 +18,7 @@ export class AllometryFormComponent implements OnInit {
     humanDose: number;
     speciesOptions = SPECIES_CONVERSION;
     humanWeight: number;
-    conversionFactor;
+    conversionFactor: number;
 
     weightNeeded = {required: true};
 

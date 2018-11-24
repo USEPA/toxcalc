@@ -12,7 +12,4 @@ export class Toxicology {
     inputData: number;
 
     constructor(toxUnit: ToxUnit, inputData: number) { }
-
-    //TODO: remove
-    foundValue = {'variable': '', 'value': null};
 }
