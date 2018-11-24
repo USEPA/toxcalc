@@ -119,10 +119,10 @@ export class IngestionFormComponent implements OnInit {
     ngOnInit() {
         this.pastToxicology = [];
         this.createForm();
-        this.concenTox = new Toxicology(new ToxUnit(UnitTypes.CONCENTRATION, new ToxRatio('mg/L', 1)), null);
-        this.intakeTox = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('L/day', 1)), null);
-        this.weightTox = new Toxicology(new ToxUnit(UnitTypes.BODY_WEIGHT, new ToxRatio('kg', 1)), null);
-        this.doseTox = new Toxicology(new ToxUnit(UnitTypes.DOSE, new ToxRatio('mg/kg BW/day', 1)), null);
+        this.concenTox = new Toxicology(new ToxUnit(UnitTypes.CONCENTRATION, new ToxRatio('mg/L', 1)));
+        this.intakeTox = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('L/day', 1)));
+        this.weightTox = new Toxicology(new ToxUnit(UnitTypes.BODY_WEIGHT, new ToxRatio('kg', 1)));
+        this.doseTox = new Toxicology(new ToxUnit(UnitTypes.DOSE, new ToxRatio('mg/kg BW/day', 1)));
         
         
         this.concenModifiers = [];
@@ -137,12 +137,12 @@ export class IngestionFormComponent implements OnInit {
 
     onBaseChange(event: Event): void {
 
-        let concenUnitsType = this.ingestionForm.get('concenUnitsType').value;
-        let intakeUnitsType = this.ingestionForm.get('intakeUnitsType').value;
-        let doseUnitsType = this.ingestionForm.get('doseUnits').value.units;
+        let concenUnitsType = this.ingestionForm.get('concenUnitsType')!.value;
+        let intakeUnitsType = this.ingestionForm.get('intakeUnitsType')!.value;
+        let doseUnitsType = this.ingestionForm.get('doseUnits')!.value.units;
         console.log(intakeUnitsType);
         console.log(doseUnitsType);
-        console.log(this.ingestionForm.get('weightUnits').value.units);
+        console.log(this.ingestionForm.get('weightUnits')!.value.units);
         this.molarMassNeeded.required = this.xOr((concenUnitsType === 'mol/volume' || concenUnitsType === 'mol/mass'), (doseUnitsType === 'mol/kg BW/day' || doseUnitsType === 'mmol/kg BW/day'));
         this.substanceDensityNeeded.required = (concenUnitsType === 'volume/volume' && intakeUnitsType === 'volume/time');
         this.solutionDensityNeeded.required = (((concenUnitsType === 'mass/mass' || concenUnitsType === 'mol/mass') && intakeUnitsType === 'volume/time') || ((concenUnitsType === 'mass/volume' || concenUnitsType === 'mol/volume') && intakeUnitsType === 'mass/time')) // I'm not proud of this
@@ -154,21 +154,21 @@ export class IngestionFormComponent implements OnInit {
 
     calculate(): void {
         
-        switch (this.ingestionForm.get('concenUnitsType').value) {
+        switch (this.ingestionForm.get('concenUnitsType')!.value) {
             case 'mass/volume':
-                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMassVol').value.value);
+                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMassVol')!.value.value);
                 break;
             case 'volume/volume':
-                this.concenModifiers.push(this.ingestionForm.get('concenUnitsVolVol').value.value);
+                this.concenModifiers.push(this.ingestionForm.get('concenUnitsVolVol')!.value.value);
                 break;
             case 'mol/volume':
-                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMolVol').value.value);
+                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMolVol')!.value.value);
                 break;
             case 'mol/mass':
-                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMolMass').value.value);
+                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMolMass')!.value.value);
                 break;
             case 'mass/mass':
-                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMassMass').value.value);
+                this.concenModifiers.push(this.ingestionForm.get('concenUnitsMassMass')!.value.value);
                 break;
         }
 
@@ -176,39 +176,39 @@ export class IngestionFormComponent implements OnInit {
 
         if (this.molarMassNeeded.required) {
             if (
-                this.ingestionForm.get('concenUnitsType').value === 'mol/volume' 
-                || this.ingestionForm.get('concenUnitsType').value === 'mol/mass'
+                this.ingestionForm.get('concenUnitsType')!.value === 'mol/volume'
+                || this.ingestionForm.get('concenUnitsType')!.value === 'mol/mass'
             ){
-                this.concenModifiers.push(this.ingestionForm.get('molarMass').value);
+                this.concenModifiers.push(this.ingestionForm.get('molarMass')!.value);
             } else {
-                this.doseModifiers.push(this.ingestionForm.get('molarMass').value);
+                this.doseModifiers.push(this.ingestionForm.get('molarMass')!.value);
             }
         }
         if (this.substanceDensityNeeded.required) {
-            this.concenModifiers.push(this.ingestionForm.get('substanceDensity').value);
+            this.concenModifiers.push(this.ingestionForm.get('substanceDensity')!.value);
         }
         if (this.solutionDensityNeeded.required) {
             if (
-                this.ingestionForm.get('concenUnitsType').value === 'mass/volume'
-                || this.ingestionForm.get('concenUnitsType').value === 'mol/volume'
+                this.ingestionForm.get('concenUnitsType')!.value === 'mass/volume'
+                || this.ingestionForm.get('concenUnitsType')!.value === 'mol/volume'
             ){
-                this.concenModifiers.push((1/this.ingestionForm.get('solutionDensity').value));
+                this.concenModifiers.push((1/this.ingestionForm.get('solutionDensity')!.value));
             } else {
-                this.concenModifiers.push(this.ingestionForm.get('solutionDensity').value);
+                this.concenModifiers.push(this.ingestionForm.get('solutionDensity')!.value);
             }
         }
 
-        switch (this.ingestionForm.get('intakeUnitsType').value) {
+        switch (this.ingestionForm.get('intakeUnitsType')!.value) {
             case 'volume/time':
-                this.intakeModifiers.push(this.ingestionForm.get('intakeUnitsVolTime').value.value);
+                this.intakeModifiers.push(this.ingestionForm.get('intakeUnitsVolTime')!.value.value);
                 break;
             case 'mass/time':
-                this.intakeModifiers.push(this.ingestionForm.get('intakeUnitsMassTime').value.value);
+                this.intakeModifiers.push(this.ingestionForm.get('intakeUnitsMassTime')!.value.value);
                 break;
         }
 
-        this.weightModifiers.push(this.ingestionForm.get('weightUnits').value.value);
-        this.doseModifiers.push(this.ingestionForm.get('doseUnits').value.value);
+        this.weightModifiers.push(this.ingestionForm.get('weightUnits')!.value.value);
+        this.doseModifiers.push(this.ingestionForm.get('doseUnits')!.value.value);
 
         let concenMultiplier = this.calcService.calculateMultiplier(this.concenModifiers);
         let intakeMultiplier = this.calcService.calculateMultiplier(this.intakeModifiers);
@@ -216,13 +216,13 @@ export class IngestionFormComponent implements OnInit {
         let doseMultiplier = this.calcService.calculateMultiplier(this.doseModifiers);
 
         let response = this.calcService.calculate(
-            this.ingestionForm.get('concen').value,
+            this.ingestionForm.get('concen')!.value,
             concenMultiplier,
-            this.ingestionForm.get('intake').value,
+            this.ingestionForm.get('intake')!.value,
             intakeMultiplier,
-            this.ingestionForm.get('weight').value,
+            this.ingestionForm.get('weight')!.value,
             weightMultiplier,
-            this.ingestionForm.get('dose').value,
+            this.ingestionForm.get('dose')!.value,
             doseMultiplier
         );
 

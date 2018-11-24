@@ -25,6 +25,7 @@ export class ValidationService {
             if (this.countTruthy(concen, intake, weight, dose) != 3) {
                 return {invalidValues: true};
             }
+            return {};
         }
     }
 
@@ -37,6 +38,7 @@ export class ValidationService {
             if (concenBase === 'volume/volume' && intakeBase === 'mass/time') {
                 return {invalidBases: true};
             }
+            return {};
         }
     }
 
@@ -46,6 +48,7 @@ export class ValidationService {
             if (condition.required && !control.value) {
                 return {required: true};
             }
+            return {};
         }
     }
 
@@ -54,6 +57,7 @@ export class ValidationService {
             console.log('negative value detected');
             return {invalidNegative: true};
         }
+        return {};
     }
 
     nonZero(control: AbstractControl): ValidationErrors {
@@ -61,6 +65,7 @@ export class ValidationService {
             console.log('value cannot be zero');
             return {invalidZero: true};
         }
+        return {};
     }
 
 }

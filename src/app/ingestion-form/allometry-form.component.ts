@@ -65,7 +65,7 @@ export class AllometryFormComponent implements OnInit {
     }
 
     onSpeciesChange(event: Event) {
-        this.weightNeeded.required = !this.allometryForm.get('animalSpecies').value.factor;
+        this.weightNeeded.required = !this.allometryForm.get('animalSpecies')!.value.factor;
         this.allometryForm.controls.animalWeight.updateValueAndValidity();
         this.allometryForm.controls.humanWeight.updateValueAndValidity();
         console.log(this.weightNeeded.required);
@@ -73,17 +73,17 @@ export class AllometryFormComponent implements OnInit {
 
     // TODO: move to calc service? integrate toxicology data structures?
     hedConversion() {
-        this.animalDose = this.allometryForm.get('animalDose').value;
+        this.animalDose = this.allometryForm.get('animalDose')!.value;
         if (this.weightNeeded.required) {
-            this.animalWeight = this.allometryForm.get('animalWeight').value;
-            this.humanWeight = this.allometryForm.get('humanWeight').value;
-            this.conversionFactor = this.allometryForm.get('conversionFactor').value.value;
+            this.animalWeight = this.allometryForm.get('animalWeight')!.value;
+            this.humanWeight = this.allometryForm.get('humanWeight')!.value;
+            this.conversionFactor = this.allometryForm.get('conversionFactor')!.value.value;
 
             let kRatio = this.animalWeight / this.humanWeight;
 
             this.humanDose = this.animalDose * Math.pow(kRatio, this.conversionFactor);
         } else {
-            this.humanDose = this.animalDose / this.allometryForm.get('animalSpecies').value.factor;
+            this.humanDose = this.animalDose / this.allometryForm.get('animalSpecies')!.value.factor;
         }
 
         this.submitted = true;

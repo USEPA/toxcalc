@@ -121,10 +121,10 @@ export class InhalationFormComponent implements OnInit {
         this.createInhalationForm();
         console.log('inhalation form created');
 
-        this.concenTox = new Toxicology(new ToxUnit(UnitTypes.CONCENTRATION, new ToxRatio('ppm', 1)), null);
-        this.intakeTox = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('m3/day', 1)), null);
-        this.weightTox = new Toxicology(new ToxUnit(UnitTypes.BODY_WEIGHT, new ToxRatio('kg', 1)), null);
-        this.doseTox = new Toxicology(new ToxUnit(UnitTypes.DOSE, new ToxRatio('mg/kg BW/day', 1)), null);
+        this.concenTox = new Toxicology(new ToxUnit(UnitTypes.CONCENTRATION, new ToxRatio('ppm', 1)));
+        this.intakeTox = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('m3/day', 1)));
+        this.weightTox = new Toxicology(new ToxUnit(UnitTypes.BODY_WEIGHT, new ToxRatio('kg', 1)));
+        this.doseTox = new Toxicology(new ToxUnit(UnitTypes.DOSE, new ToxRatio('mg/kg BW/day', 1)));
 
         this.concenModifiers = [];
         this.intakeModifiers = [];
@@ -134,15 +134,15 @@ export class InhalationFormComponent implements OnInit {
 
     calculate(): void {
 
-        this.concenModifiers.push(this.inhalationForm.get('concenUnits').value.value);
+        this.concenModifiers.push(this.inhalationForm.get('concenUnits')!.value.value);
         /*if (this.molarMassNeeded.required) {
-            this.concenModifiers.push(this.inhalationForm.get('molarMass').value);
+            this.concenModifiers.push(this.inhalationForm.get('molarMass')!.value);
             this.concenModifiers.push(1/SATP_RATIO);
         }*/
 
-        this.intakeModifiers.push(this.inhalationForm.get('intakeUnits').value.value);
-        this.weightModifiers.push(this.inhalationForm.get('weightUnits').value.value);
-        this.doseModifiers.push(this.inhalationForm.get('doseUnits').value.value);
+        this.intakeModifiers.push(this.inhalationForm.get('intakeUnits')!.value.value);
+        this.weightModifiers.push(this.inhalationForm.get('weightUnits')!.value.value);
+        this.doseModifiers.push(this.inhalationForm.get('doseUnits')!.value.value);
 
         let concenMultiplier = this.calcService.calculateMultiplier(this.concenModifiers);
         let intakeMultiplier = this.calcService.calculateMultiplier(this.intakeModifiers);
@@ -150,13 +150,13 @@ export class InhalationFormComponent implements OnInit {
         let doseMultiplier = this.calcService.calculateMultiplier(this.doseModifiers);
 
         let response = this.calcService.calculate(
-            this.inhalationForm.get('concen').value,
+            this.inhalationForm.get('concen')!.value,
             concenMultiplier,
-            this.inhalationForm.get('intake').value,
+            this.inhalationForm.get('intake')!.value,
             intakeMultiplier,
-            this.inhalationForm.get('weight').value,
+            this.inhalationForm.get('weight')!.value,
             weightMultiplier,
-            this.inhalationForm.get('dose').value,
+            this.inhalationForm.get('dose')!.value,
             doseMultiplier
         );
 
@@ -181,11 +181,11 @@ export class InhalationFormComponent implements OnInit {
     }
     //TODO: rename variables, move to calc.service
     convert() {
-        let ratio1 = this.conversionForm.get('concenUnitsVolVol').value.value;
-        let ratio2 = this.conversionForm.get('concenUnitsMassVol').value.value;
-        let val1 = this.conversionForm.get('concenVolVol').value;
-        let val2 = this.conversionForm.get('concenMassVol').value;
-        let molMass = this.conversionForm.get('molarMass').value;
+        let ratio1 = this.conversionForm.get('concenUnitsVolVol')!.value.value;
+        let ratio2 = this.conversionForm.get('concenUnitsMassVol')!.value.value;
+        let val1 = this.conversionForm.get('concenVolVol')!.value;
+        let val2 = this.conversionForm.get('concenMassVol')!.value;
+        let molMass = this.conversionForm.get('molarMass')!.value;
         if (!val1) {
             val1 = val2 * ratio2 * SATP_RATIO /  (molMass * ratio1);
             this.conversionForm.patchValue({
@@ -198,7 +198,7 @@ export class InhalationFormComponent implements OnInit {
             });
             this.inhalationForm.patchValue({
                 concen: val2,
-                concenUnits: this.conversionForm.get('concenUnitsMassVol').value
+                concenUnits: this.conversionForm.get('concenUnitsMassVol')!.value
             });
             this.inhalationSubmitted = false;
         }

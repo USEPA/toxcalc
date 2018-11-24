@@ -11,5 +11,5 @@ export class Toxicology {
     toxUnit: ToxUnit;
     inputData: number;
 
-    constructor(toxUnit: ToxUnit, inputData: number) { }
+    constructor(toxUnit: ToxUnit) { }
 }
