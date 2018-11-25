@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { SdProductListComponent, SdProductListItem, SdProductListItemDescription, SdProductListItemTitle } from './sd-product-list/sd-product-list.component';
 import { LandingComponent } from './landing/landing.component';
 import { SdReturnToCalculatorsComponent } from './sd-return-to-calculators/sd-return-to-calculators.component';
+import { SdSelectComponent, SdSelectItem, SdSelectGroup } from './sd-select/sd-select.component';
 
 @NgModule({
   declarations: [
@@ -24,12 +25,15 @@ import { SdReturnToCalculatorsComponent } from './sd-return-to-calculators/sd-re
     IngestionFormComponent,
     InhalationFormComponent,
     AllometryFormComponent,
+    LandingComponent,
     SdProductListComponent,
     SdProductListItem,
     SdProductListItemDescription,
     SdProductListItemTitle,
-    LandingComponent,
     SdReturnToCalculatorsComponent,
+    SdSelectComponent,
+    SdSelectItem,
+    SdSelectGroup
   ],
   imports: [
     AppRoutingModule,
