@@ -63,6 +63,13 @@ export class Dimension {
                          this.time - other.time);
   }
 
+  exp(other: number): Dimension {
+    return new Dimension(this.mass * other,
+                         this.length * other,
+                         this.molar_mass * other,
+                         this.time * other);
+  }
+
   recip(): Dimension {
     return new Dimension(-this.mass, -this.length, -this.molar_mass, -this.time);
   }
@@ -79,6 +86,13 @@ export class Dimension {
     this.length_ -= other.length;
     this.molar_mass_ -= other.molar_mass;
     this.time_ -= other.time;
+  }
+
+  expEq(other: number): void {
+    this.mass_ *= other;
+    this.length_ *= other;
+    this.molar_mass_ *= other;
+    this.time_ *= other;
   }
 
   recipEq(): void {
