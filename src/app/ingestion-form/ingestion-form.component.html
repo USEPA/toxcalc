@@ -12,33 +12,33 @@
                 {{option}}
             </option>
         </select>
-        <select formControlName="concenUnitsMassVol" *ngIf="ingestionForm.get('concenUnitsType').value === 'mass/volume'">
+        <select formControlName="concenUnitsMassVol" *ngIf="ingestionForm.get('concenUnitsType')!.value === 'mass/volume'">
             <option *ngFor="let ratio of concenUnitsMassVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-        <select formControlName="concenUnitsVolVol" *ngIf="ingestionForm.get('concenUnitsType').value === 'volume/volume'">
+        <select formControlName="concenUnitsVolVol" *ngIf="ingestionForm.get('concenUnitsType')!.value === 'volume/volume'">
             <option *ngFor="let ratio of concenUnitsVolVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-        <select formControlName="concenUnitsMolVol" *ngIf="ingestionForm.get('concenUnitsType').value === 'mol/volume'">
+        <select formControlName="concenUnitsMolVol" *ngIf="ingestionForm.get('concenUnitsType')!.value === 'mol/volume'">
             <option *ngFor="let ratio of concenUnitsMolVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-        <select formControlName="concenUnitsMolMass" *ngIf="ingestionForm.get('concenUnitsType').value === 'mol/mass'">
+        <select formControlName="concenUnitsMolMass" *ngIf="ingestionForm.get('concenUnitsType')!.value === 'mol/mass'">
             <option *ngFor="let ratio of concenUnitsMolMassOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-        <select formControlName="concenUnitsMassMass" *ngIf="ingestionForm.get('concenUnitsType').value === 'mass/mass'">
+        <select formControlName="concenUnitsMassMass" *ngIf="ingestionForm.get('concenUnitsType')!.value === 'mass/mass'">
             <option *ngFor="let ratio of concenUnitsMassMassOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
     </div>
-    <div *ngIf="ingestionForm.get('concen').hasError('invalidNegative')">Negative numbers not permitted!</div>
+    <div *ngIf="ingestionForm.get('concen')!.hasError('invalidNegative')">Negative numbers not permitted!</div>
     <div>
         <label for="intake">Intake: </label>
         <input
@@ -51,12 +51,12 @@
                 {{option}}
             </option>
         </select>
-        <select *ngIf="this.ingestionForm.get('intakeUnitsType').value === 'volume/time'" formControlName="intakeUnitsVolTime">
+        <select *ngIf="this.ingestionForm.get('intakeUnitsType')!.value === 'volume/time'" formControlName="intakeUnitsVolTime">
             <option *ngFor="let ratio of intakeUnitsVolTimeOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-        <select *ngIf="this.ingestionForm.get('intakeUnitsType').value === 'mass/time'" formControlName="intakeUnitsMassTime">
+        <select *ngIf="this.ingestionForm.get('intakeUnitsType')!.value === 'mass/time'" formControlName="intakeUnitsMassTime">
             <option *ngFor="let ratio of intakeUnitsMassTimeOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
@@ -125,6 +125,6 @@
 <div id="allometryCollapse" [ngbCollapse]="!isExpanded()">
     <app-allometry-form
       *ngIf="allometryFlag"
-      [animalDose]="ingestionForm.get('dose').value * ingestionForm.get('doseUnits').value.value"
-      [animalWeight]="ingestionForm.get('weight').value * ingestionForm.get('weightUnits').value.value"></app-allometry-form>
+      [animalDose]="ingestionForm.get('dose')!.value * ingestionForm.get('doseUnits')!.value.value"
+      [animalWeight]="ingestionForm.get('weight')!.value * ingestionForm.get('weightUnits').value.value"></app-allometry-form>
 </div>
