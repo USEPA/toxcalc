@@ -25,7 +25,7 @@ export class SdCalcRowHelp {
   styleUrls: ['./sd-calc-row.component.css']
 })
 export class SdCalcRowComponent {
-  showHelp: boolean;
+  showHelp: boolean = false;
   errorText: string;
 
   @ContentChild(SdCalcRowLabel) label: SdCalcRowLabel;

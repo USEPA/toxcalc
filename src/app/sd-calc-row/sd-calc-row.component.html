@@ -4,7 +4,7 @@
     <div class="form-inline">
       <div class="input-group">
         <ng-template [ngTemplateOutlet]="input.templateRef"></ng-template>
-        <div class="invalid-tooltip" id="error" style="display: block" *ngIf="errorText">
+        <div class="invalid-tooltip d-block" id="error" *ngIf="errorText">
           {{errorText}}
         </div>
       </div>
