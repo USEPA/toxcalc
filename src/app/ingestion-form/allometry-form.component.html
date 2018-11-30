@@ -83,13 +83,20 @@
       </ng-template>
     </sd-calc-row>
     <hr />
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="humanDose">
+        Human equivalent Dose
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input class="form-control" readonly [value]="submitted ? humanDose : ''"/>
+        <div class="input-group-append">
+          <span class="input-group-text">mg/kg BW/day</span>
+        </div>
+      </ng-template>
+    </sd-calc-row>
     <div class="form-group form-row">
       <button class="btn btn-primary mr-3" (click)="hedConversion()" [disabled]="!allometryForm.valid">Convert</button>
       <button class="btn btn-secondary" (click)="clear()">Clear</button>
-    </div>
-    <div *ngIf="submitted">
-        <label for="humanDose">Human equivalent Dose: </label>
-        {{humanDose}} mg/kg BW/day
     </div>
 </form>
 <p>The above calculations are based on Table 1 (p.10) of the following document: </p>
