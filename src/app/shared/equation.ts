@@ -8,82 +8,64 @@ import { Dimension } from './dimension';
 // my_var = expr... form. If all your variables are set, solved_eq.RHS.getValue()
 // should result in a concrete value.
 
-export class Unit {
-  private scale: number;
-  private dimension: Dimension;
-
-  constructor(s: number, d: Dimension) { [this.scale, this.dimension] = [s, d]; }
-
-  setScale(n: number): void { this.scale = n; }
-  getScale(): number { return this.scale; }
-  setDimension(d: Dimension): void { this.dimension = d; }
-  getDimension(): Dimension { return this.dimension; }
-}
-
 type CalculateErrors = 'dimension conformity error' | 'zero to the power of zero' | 'complex exponential';
-function isCalculateError(x: ScalarAndUnit | Term | null | CalculateErrors): x is CalculateErrors {
+export function isCalculateError(x: ScalarAndDimension | Term | null | CalculateErrors): x is CalculateErrors {
   return x == 'dimension conformity error' || x == 'zero to the power of zero' || x == 'complex exponential';
 }
 
-export class ScalarAndUnit {
-  n: number;
-  u: Unit | null;
+export class ScalarAndDimension {
+  protected _n: number;
+  protected _d: Dimension;
 
-  constructor(n: number, u: Unit | null) { [this.n, this.u] = [n, u]; }
+  get n(): number { return this._n; }
+  get d(): Dimension { return this._d; }
 
-  clone(): ScalarAndUnit {
-    return new ScalarAndUnit(this.n, this.u);
+  constructor(n: number, d: Dimension | null) {
+    this._n = n;
+    this._d = d == null ? Dimension.initUnit() : d;
   }
 
-  hasUnit(): boolean {
-    if (this.u == null)
-      return false;
-     if (this.u.getScale() != 1)
-       return false;
-     if (!this.u.getDimension().unit())
-       return false;
-     return true;
+  clone(): ScalarAndDimensionMutable {
+    return new ScalarAndDimensionMutable(this.n, this.d);
+  }
+};
+
+export class ScalarAndDimensionMutable extends ScalarAndDimension {
+  // The getters should have been inherited:
+  //   https://github.com/Microsoft/TypeScript/issues/25927
+  get n(): number { return this._n; }
+  get d(): Dimension { return this._d; }
+
+  set n(n: number) { this._n = n; }
+  set d(d: Dimension) { this._d = d; }
+
+  constructor(n: number, d: Dimension | null) { super(n, d); }
+
+  addEq(other: ScalarAndDimension): void | CalculateErrors {
+    if (!this.d.equal(other.d))
+      return 'dimension conformity error';
+    this.n += other.n;
   }
 
-  addEq(other: ScalarAndUnit): void | CalculateErrors {
-    let unitScale: number = 1;
-    if (this.u != other.u) {
-      if (!this.u || !other.u || this.u.getDimension() != other.u.getDimension())
-        return 'dimension conformity error';
-      unitScale = other.u.getScale() / this.u.getScale();
-    }
-    this.n += other.n * unitScale;
-  }
-
-  mulEq(other: ScalarAndUnit): void {
-    if (!this.u && other.u)
-      this.u = other.u
-    else if (this.u && other.u) {
-      this.u.setScale(this.u.getScale() * other.u.getScale());
-      this.u.setDimension(this.u.getDimension().mul(other.u.getDimension()));
-    }
+  mulEq(other: ScalarAndDimension): void {
+    this.d = this.d.mul(other.d);
     this.n *= other.n;
   }
 
-  expEq(exponent: ScalarAndUnit): void | CalculateErrors {
+  expEq(exponent: ScalarAndDimension): void | CalculateErrors {
     // 'this' is the base of the exponentiation.
-    if (exponent.u && !exponent.u.getDimension().unit())
+    if (!exponent.d.unit())
       return 'dimension conformity error';
-    let scaled_exponent = exponent.n;
-    if (exponent.u)
-      scaled_exponent *= exponent.u.getScale();
-    if (this.n == 0 && scaled_exponent == 0)
+    if (this.n == 0 && exponent.n == 0)
       return 'zero to the power of zero';
-    if (this.n < 0 && !Number.isInteger(scaled_exponent))
+    if (this.n < 0 && !Number.isInteger(exponent.n))
       return 'complex exponential';
-    this.n **= scaled_exponent;
-    if (this.u)
-      this.u.setDimension(this.u.getDimension().exp(scaled_exponent));
-    return;
+    this.n **= exponent.n;
+    this.d = this.d.exp(exponent.n);
   }
 
   /* TODO
-  logEq(antilogarithm: scalarAndUnit): void | CalculateErrors {
+  logEq(antilogarithm: ScalarAndDimension): void | CalculateErrors {
     // 'this' is the base of the logarithm.
   }
   */
@@ -99,19 +81,19 @@ enum TypeDiscriminator {
 }
 
 export interface Term {
+  kind: TypeDiscriminator;
+
   contains(v: Variable): boolean;
 
-  getValue(): ScalarAndUnit | CalculateErrors | null;
-
-  kind: TypeDiscriminator;
+  getValue(): ScalarAndDimension | CalculateErrors | null;
 }
 
 class Constant implements Term {
   kind = TypeDiscriminator.Constant;
 
-  constructor(private readonly value: ScalarAndUnit) {}
+  constructor(private readonly value: ScalarAndDimension) {}
 
-  getValue(): ScalarAndUnit { return this.value; }
+  getValue(): ScalarAndDimension { return this.value; }
 
   contains(v: Variable): boolean { return false; }
 }
@@ -119,10 +101,12 @@ class Constant implements Term {
 export class Variable implements Term {
   kind = TypeDiscriminator.Variable;
 
-  value: ScalarAndUnit | null = null;
+  constructor(readonly name: string) {}
 
-  getValue(): ScalarAndUnit | null { return this.value; }
-  setValue(value: ScalarAndUnit | null): void { this.value = value; }
+  value: ScalarAndDimension | null = null;
+
+  getValue(): ScalarAndDimension | null { return this.value }
+  setValue(value: ScalarAndDimension | null): void { this.value = value; }
 
   contains(v: Variable): boolean { return this === v; }
 }
@@ -134,12 +118,8 @@ interface CollectFilterFunc {
 class Add implements Term {
   kind = TypeDiscriminator.Add;
 
-  // All units must be the same.
-  private summands: Term[];
-
-  constructor(terms: Term[]) { this.summands = terms; }
-
-  getSummands(): Term[] { return this.summands; }
+  // All units in summands must be the same.
+  constructor(readonly summands: Term[]) {}
 
   contains(v: Variable): boolean {
     return this.summands.some(function(t: Term) { return t.contains(v); });
@@ -158,63 +138,61 @@ class Add implements Term {
     return {'collected': collected, 'anticollected': anticollected};
   }
 
-  getValue(): ScalarAndUnit | CalculateErrors | null {
+  getValue(): ScalarAndDimension | CalculateErrors | null {
     if (this.summands.length == 0)
       return null;
     let result = this.summands[0].getValue();
     if (result == null || isCalculateError(result))
       return result;
+    let mut_result = result.clone();
     for (let i = 1; i != this.summands.length; ++i) {
       let value = this.summands[i].getValue();
       if (value == null || isCalculateError(value))
         return value;
-      let error = result.addEq(value);
+      let error = mut_result.addEq(value);
       if (error)
         return error;
     }
-    return result;
+    return mut_result;
   }
 }
 
 class Multiply implements Term {
   kind = TypeDiscriminator.Multiply;
 
-  private factors: Term[];
-
-  constructor(terms: Term[]) { this.factors = terms; }
-
-  getFactors(): Term[] { return this.factors; }
+  constructor(readonly multipliers: Term[]) {}
 
   contains(v: Variable): boolean {
-    return this.factors.some(function(t: Term) { return t.contains(v); });
+    return this.multipliers.some(function(t: Term) { return t.contains(v); });
   }
 
   collect(filter: CollectFilterFunc): {'collected': Term[], 'anticollected': Term[]} {
     let collected: Term[] = [];
     let anticollected: Term[] = [];
-    for (let i = 0; i != this.factors.length; ++i) {
-      if (filter(this.factors[i])) {
-        collected.push(this.factors[i]);
+    for (let i = 0; i != this.multipliers.length; ++i) {
+      if (filter(this.multipliers[i])) {
+        collected.push(this.multipliers[i]);
       } else {
-        anticollected.push(this.factors[i]);
+        anticollected.push(this.multipliers[i]);
       }
     }
     return {'collected': collected, 'anticollected': anticollected};
   }
 
-  getValue(): ScalarAndUnit | CalculateErrors | null {
-    if (this.factors.length == 0)
+  getValue(): ScalarAndDimension | CalculateErrors | null {
+    if (this.multipliers.length == 0)
       return null;
-    let result = this.factors[0].getValue();
+    let result = this.multipliers[0].getValue();
     if (result == null || isCalculateError(result))
       return result;
-    for (let i = 1; i != this.factors.length; ++i) {
-      let value = this.factors[i].getValue();
+    let mut_result = result.clone();
+    for (let i = 1; i != this.multipliers.length; ++i) {
+      let value = this.multipliers[i].getValue();
       if (value == null || isCalculateError(value))
         return value;
-      result.mulEq(value);
+      mut_result.mulEq(value);
     }
-    return result;
+    return mut_result;
   }
 }
 
@@ -233,17 +211,18 @@ class Exponentiate implements Term {
     return this.base.contains(v) || this.exponent.contains(v);
   }
 
-  getValue(): ScalarAndUnit | CalculateErrors | null {
+  getValue(): ScalarAndDimension | CalculateErrors | null {
     let base = this.base.getValue();
     if (base == null || isCalculateError(base))
       return base;
     let exponent = this.exponent.getValue();
     if (exponent == null || isCalculateError(exponent))
       return exponent;
-    let error = base.expEq(exponent);
+    let mut_base = base.clone();
+    let error = mut_base.expEq(exponent);
     if (error)
       return error;
-    return base;
+    return mut_base;
   }
 }
 
@@ -259,7 +238,7 @@ class Logarithmize implements Term {
     return this.base.contains(v) || this.antilogarithm.contains(v);
   }
 
-  getValue(): ScalarAndUnit | null {
+  getValue(): ScalarAndDimension | null {
     return null;
   /* TODO
     let base = this.base.getValue();
@@ -271,7 +250,10 @@ class Logarithmize implements Term {
   }
 }
 
-type SolveErrors = 'overdefined' | 'underdefined' | 'too complex' | CalculateErrors;
+type SolveErrors = 'overdefined' | 'underdefined' | 'too complex';
+function isSolveError(x: ScalarAndDimension | Term | null | SolveErrors): x is SolveErrors {
+  return x == 'overdefined' || x == 'underdefined' || x == 'too complex';
+}
 
 // An equation with a single equality relationship between two terms.
 export class Equation {
@@ -336,14 +318,14 @@ export class Equation {
   // if the did nothing but call the relevant constructor, which is also why
   // they aren't allowed to return CalculateErrors.
 
-  static constant(sau: ScalarAndUnit) { return new Constant(sau); }
+  static constant(sau: ScalarAndDimension) { return new Constant(sau); }
 
-  static constantFromNumber(n: number) {
-    return Equation.constantFromNumberUnit(n, null);
+  static constantFromNumberDimension(n: number, d: Dimension | null) {
+    return Equation.constant(new ScalarAndDimension(n, d));
   }
 
-  static constantFromNumberUnit(n: number, u: Unit | null) {
-    return Equation.constant(new ScalarAndUnit(n, u));
+  static constantFromNumber(n: number) {
+    return Equation.constantFromNumberDimension(n, null);
   }
 
   static add(...terms: Term[]): Term { return Equation.addFromArray(terms); }
@@ -353,7 +335,7 @@ export class Equation {
     let newTerms: Term[] = [];
     for (let i = 0; i != terms.length; ++i) {
       if (terms[i].kind == TypeDiscriminator.Add) {
-        newTerms = newTerms.concat((<Add>terms[i]).getSummands());
+        newTerms = newTerms.concat((<Add>terms[i]).summands);
       } else {
         newTerms.push(terms[i]);
       }
@@ -361,14 +343,14 @@ export class Equation {
     terms = newTerms;
 
     // Collapse multiple constants into one.
-    let constants: ScalarAndUnit | null = null;
+    let constants: ScalarAndDimensionMutable | null = null;
     newTerms = [];
     for (let i = 0; i != terms.length; ++i) {
       if (terms[i].kind == TypeDiscriminator.Constant) {
         let term: Constant = <Constant>terms[i];
         if (constants == null)
-          constants = term.getValue();
-        else if (constants.u == term.getValue().u)
+          constants = term.getValue().clone();
+        else if (constants.d == term.getValue().d)
           constants.addEq(term.getValue());
         else
           // In the case the units don't match, defer error until getValue().
@@ -378,10 +360,11 @@ export class Equation {
       }
     }
     terms = newTerms;
+    if (constants && terms.length == 0)
+      return Equation.constant(constants);
     if (constants && constants.n != 0)
       terms.push(Equation.constant(constants));
 
-    // TODO: got an add term? Make a single combined add.
     // TODO: got the same term twice or more? Convert that into a multiply.
     if (terms.length == 1)
       return terms[0];
@@ -399,7 +382,7 @@ export class Equation {
     let newTerms: Term[] = [];
     for (let i = 0; i != terms.length; ++i) {
       if (terms[i].kind == TypeDiscriminator.Multiply) {
-        newTerms = newTerms.concat((<Multiply>terms[i]).getFactors());
+        newTerms = newTerms.concat((<Multiply>terms[i]).multipliers);
       } else {
         newTerms.push(terms[i]);
       }
@@ -407,13 +390,13 @@ export class Equation {
     terms = newTerms;
 
     // Collapse multiple constants into one.
-    let constants: ScalarAndUnit | null = null;
+    let constants: ScalarAndDimensionMutable | null = null;
     newTerms = [];
     for (let i = 0; i != terms.length; ++i) {
       if (terms[i].kind == TypeDiscriminator.Constant) {
         let term: Constant = <Constant>terms[i];
         if (constants == null)
-          constants = term.getValue();
+          constants = term.getValue().clone();
         else
           constants.mulEq(term.getValue());
       } else {
@@ -425,7 +408,6 @@ export class Equation {
     if (constants)
       terms.push(Equation.constant(constants));
 
-    // TODO: got a multiply term? Create a single combined multiply.
     // TODO: got the same term twice or more? Convert to an exponentiation.
     // TODO: got exponentiate terms with the same base? Fold them.
     if (terms.length == 1)
@@ -434,12 +416,14 @@ export class Equation {
   }
 
   static div(dividend: Term, divisor: Term): Term {
-    return Equation.mul(dividend, Equation.exp(divisor, Equation.constantFromNumber(-1)));
+    return Equation.mul(dividend,
+                        Equation.exp(divisor, Equation.constantFromNumber(-1)));
   }
 
   static exp(base: Term, exponent: Term): Term {
     // If both terms are constant, return a constant.
-    if (base.kind == TypeDiscriminator.Constant && exponent.kind == TypeDiscriminator.Constant) {
+    if (base.kind == TypeDiscriminator.Constant &&
+        exponent.kind == TypeDiscriminator.Constant) {
       let base_c = <Constant>base;
       let exponent_c = <Constant>exponent;
       let result = base_c.getValue().clone();
@@ -460,7 +444,6 @@ export class Equation {
       let base_exp = <Exponentiate>base;
       return Equation.exp(base_exp.getBase(), Equation.mul(base_exp.getExponent(), exponent));
     }
-
     return new Exponentiate(base, exponent);
   }
   // TODO: log.

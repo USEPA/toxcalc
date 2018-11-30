@@ -1,39 +1,20 @@
 export class Dimension {
-  private mass_: number;
-  private length_: number;
-  private molar_mass_: number;
-  private time_: number;
+  private constructor(readonly mass: number,
+                      readonly length: number,
+                      readonly molar_mass: number,
+                      readonly time: number) {}
 
-  private constructor(mass: number,
-                      length: number,
-                      molar_mass: number,
-                      time: number) {
-    this.mass_ = mass;
-    this.length_ = length;
-    this.molar_mass_ = molar_mass;
-    this.time_ = time;
-  }
+  private static readonly UNIT = new Dimension(0, 0, 0, 0);
+  private static readonly MASS = new Dimension(1, 0, 0, 0);
+  private static readonly LENGTH = new Dimension(0, 1, 0, 0);
+  private static readonly MOLAR_MASS = new Dimension(0, 0, 1, 0);
+  private static readonly TIME = new Dimension(0, 0, 0, 1);
 
-  static initUnit(): Dimension {
-    return new Dimension(0, 0, 0, 0);
-  }
-  static initMass(): Dimension {
-    return new Dimension(1, 0, 0, 0);
-  }
-  static initLength(): Dimension {
-    return new Dimension(0, 1, 0, 0);
-  }
-  static initMolarMass(): Dimension {
-    return new Dimension(0, 0, 1, 0);
-  }
-  static initTime(): Dimension {
-    return new Dimension(0, 0, 0, 1);
-  }
-
-  get mass(): number { return this.mass_; }
-  get length(): number { return this.length_; }
-  get molar_mass(): number { return this.molar_mass_; }
-  get time(): number { return this.time_; }
+  static initUnit(): Dimension { return this.UNIT; }
+  static initMass(): Dimension { return this.MASS; }
+  static initLength(): Dimension { return this.LENGTH; }
+  static initMolarMass(): Dimension { return this.MOLAR_MASS; }
+  static initTime(): Dimension { return this.TIME; }
 
   unit(): boolean {
     return this.mass == 0 &&
@@ -43,10 +24,11 @@ export class Dimension {
   }
 
   equal(other: Dimension): boolean {
-    return this.mass == other.mass &&
-           this.length == other.length &&
-           this.molar_mass == other.molar_mass &&
-           this.time == other.time;
+    return this === other ||
+           (this.mass == other.mass &&
+            this.length == other.length &&
+            this.molar_mass == other.molar_mass &&
+            this.time == other.time);
   }
 
   mul(other: Dimension): Dimension {
@@ -71,34 +53,9 @@ export class Dimension {
   }
 
   recip(): Dimension {
-    return new Dimension(-this.mass, -this.length, -this.molar_mass, -this.time);
-  }
-
-  mulEq(other: Dimension): void {
-    this.mass_ += other.mass;
-    this.length_ += other.length;
-    this.molar_mass_ += other.molar_mass;
-    this.time_ += other.time;
-  }
-
-  divEq(other: Dimension): void {
-    this.mass_ -= other.mass;
-    this.length_ -= other.length;
-    this.molar_mass_ -= other.molar_mass;
-    this.time_ -= other.time;
-  }
-
-  expEq(other: number): void {
-    this.mass_ *= other;
-    this.length_ *= other;
-    this.molar_mass_ *= other;
-    this.time_ *= other;
-  }
-
-  recipEq(): void {
-    this.mass_ = -this.mass;
-    this.length_ = -this.length;
-    this.molar_mass_ = -this.molar_mass;
-    this.time_ = -this.time;
+    return new Dimension(-this.mass,
+                         -this.length,
+                         -this.molar_mass,
+                         -this.time);
   }
 }
