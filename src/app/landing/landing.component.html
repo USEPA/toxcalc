@@ -1,15 +1,15 @@
 <div class="container-fluid bg-light border-top border-bottom">
   <sd-product-list>
-    <sd-product-list-item routerLink="dose">
-      <ng-template sdProductListTitle>Dose Calculator</ng-template>
+    <sd-product-list-item routerLink="TotalDoseCalc">
+      <ng-template sdProductListTitle>Total Dose Conversion Calculator</ng-template>
       <ng-template sdProductListDescription>Multidirectional calculator that solves for concentration, intake rate or dose when given any of the other two variables. Calculator can handle liquids in liquids (e.g. ethanol in water), solids in liquids (e.g. sugar in water) or solids in solids (e.g. sugar in flour). Calculator adjusts for differences in substance or solution density.</ng-template>
     </sd-product-list-item>
-    <sd-product-list-item routerLink="inhalation">
-      <ng-template sdProductListTitle>Inhalation Dose Calculator</ng-template>
+    <sd-product-list-item routerLink="InhaleCalc">
+      <ng-template sdProductListTitle>Inhalation Dose Conversion Calculator</ng-template>
       <ng-template sdProductListDescription>Multidirectional calculator that converts ppm or % in air to mg/m³ and mg/m³ to dose in mg/kg body weight.</ng-template>
     </sd-product-list-item>
-    <sd-product-list-item routerLink="humanEquivalentDose">
-      <ng-template sdProductListTitle>Human Equivalent Dose Calculator</ng-template>
+    <sd-product-list-item routerLink="HumanCalc">
+      <ng-template sdProductListTitle>Human Equivalent Dose Conversion Calculator</ng-template>
       <ng-template sdProductListDescription>Converts a dose in animals to a dose in humans using the <a rel="noopener" target="_blank" href="https://www.fda.gov/downloads/drugs/guidances/ucm078932.pdf">FDA Guidance for Industry</a> or <a rel="noopener" target="_blank" href="https://nepis.epa.gov/Exe/ZyPDF.cgi/30006FIQ.PDF?Dockey=30006FIQ.PDF">EPA Guidance for Industry</a>.</ng-template>
     </sd-product-list-item>
   </sd-product-list>

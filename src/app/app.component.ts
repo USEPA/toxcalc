@@ -13,5 +13,4 @@ import { CalcService } from './shared/calc.service';
     ]
 })
 export class AppComponent {
-    formSelector = 1;
 }
