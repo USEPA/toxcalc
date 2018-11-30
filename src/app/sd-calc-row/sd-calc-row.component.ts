@@ -30,7 +30,7 @@ export class SdCalcRowComponent {
 
   @ContentChild(SdCalcRowLabel) label: SdCalcRowLabel;
   @ContentChild(SdCalcRowInput) input: SdCalcRowInput;
-  @ContentChild(SdCalcRowHelp) help: SdCalcRowHelp;
+  @ContentChild(SdCalcRowHelp) help?: SdCalcRowHelp;
 
   constructor() {
     library.add(faQuestionCircle);
