@@ -1,53 +1,92 @@
-<form autocomplete="off" novalidate [formGroup]="allometryForm">
-    <div>
-        <label for="animalDose">Animal dose administered: </label>
+<sd-return-to-calculators></sd-return-to-calculators>
+<div class="container py-3">
+  <p class="lead font-weight-bold">
+    Human Equivalent Dose Conversion Calculator
+  </p>
+  <form class="mb-3" autocomplete="off" novalidate [formGroup]="allometryForm">
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel sdCalcRowLabel="animalDose">
+        Animal dose administered
+      </ng-template>
+      <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="animalDose"
           formControlName="animalDose"
-          /> mg/kg BW/day
-    </div>
+          />
+        <div class="input-group-append">
+          <span class="input-group-text">mg/kg BW/day</span>
+        </div>
+      </ng-template>
+    </sd-calc-row>
     <hr />
-    <div>
-        <label for="animalWeight">Body weight of animal: </label>
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel sdCalcRowLabel="animalWeight">
+        Body weight of animal
+      </ng-template>
+      <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="animalWeight"
           formControlName="animalWeight"
           [attr.disabled]="!weightNeeded.required ? true : null"
-          /> kg
-    </div>
-    <div>
-        <label for="humanWeight">Body weight of human: </label>
+          />
+        <div class="input-group-append">
+          <span class="input-group-text">kg</span>
+        </div>
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="humanWeight">
+        Body weight of human
+      </ng-template>
+      <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="humanWeight"
           formControlName="humanWeight"
           [attr.disabled]="!weightNeeded.required ? true : null"
-          /> kg
-    </div>
-    <div>
-        <label for="conversionFactor">Use the conversion factor recommended by: </label>
-        <select id="conversionFactor" formControlName="conversionFactor" [attr.disabled]="!weightNeeded.required ? true : null">
+          />
+        <div class="input-group-append">
+          <span class="input-group-text">kg</span>
+        </div>
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="conversionFactor">
+        Use the conversion factor recommended by
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <select class="form-control" id="conversionFactor" formControlName="conversionFactor" [attr.disabled]="!weightNeeded.required ? true : null">
             <option *ngFor="let factor of conversionFactorOptions" [ngValue]="factor">
                 {{factor.display}}
             </option>
         </select>
-    </div>
+      </ng-template>
+    </sd-calc-row>
     <hr />
     <h4>--OR--</h4>
     <hr />
-    <div>
-        <label for="animalSpecies">Species of animal: </label>
-        <select id="animalSpecies" formControlName="animalSpecies" (change)="onSpeciesChange($event)">
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalSpecies">
+        Species of animal
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <select class="form-control" id="animalSpecies" formControlName="animalSpecies" (change)="onSpeciesChange($event)">
             <option *ngFor="let species of speciesOptions" [ngValue]="species">
                 {{species.species}}
             </option>
         </select>
-    </div>
+      </ng-template>
+    </sd-calc-row>
     <hr />
-    <button (click)="hedConversion()" [disabled]="!allometryForm.valid">Convert</button>
-    <button (click)="clear()">Clear</button>
+    <div class="form-group form-row">
+      <button class="btn btn-primary mr-3" (click)="hedConversion()" [disabled]="!allometryForm.valid">Convert</button>
+      <button class="btn btn-secondary" (click)="clear()">Clear</button>
+    </div>
     <div *ngIf="submitted">
         <label for="humanDose">Human equivalent Dose: </label>
         {{humanDose}} mg/kg BW/day
@@ -55,3 +94,4 @@
 </form>
 <p>The above calculations are based on Table 1 (p.10) of the following document: </p>
 <a rel="noopener" target="_blank" href="https://www.fda.gov/downloads/drugs/guidances/ucm078932.pdf">FDA Guidance for Industry</a>
+</div>
