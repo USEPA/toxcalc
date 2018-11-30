@@ -1,98 +1,149 @@
-<form autocomplete="off" novalidate [formGroup]="conversionForm">
-    <b>Convert between concentration unit types:</b>
-    <div>
+<sd-return-to-calculators></sd-return-to-calculators>
+<div class="container py-3">
+  <p class="lead font-weight-bold mb-4">Inhalation Dose Conversion Calculator</p>
+  <p><b>Convert between concentration unit types:</b></p>
+  <form autocomplete="off" novalidate [formGroup]="conversionForm">
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel></ng-template>
+      <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="concenVolVol"
           formControlName="concenVolVol"
           />
-        <select formControlName="concenUnitsVolVol">
+        <select class="form-control" formControlName="concenUnitsVolVol">
             <option *ngFor="let ratio of concenUnitsVolVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel></ng-template>
+      <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="concenMassVol"
           formControlName="concenMassVol"
           />
-        <select formControlName="concenUnitsMassVol">
+        <select class="form-control" formControlName="concenUnitsMassVol">
             <option *ngFor="let ratio of concenUnitsMassVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-    </div>
-    <div>
-        <label for="molarMass">Molar Mass: </label>
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
+        Molar Mass
+      </ng-template>
+      <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="molarMass"
           formControlName="molarMass"
-          /> g/mol
-    </div>
-    <div>
-        <button (click)="convert()">Convert!</button>
-        <button (click)="clearConversion()">Clear</button>
+          />
+        <div class="input-group-append">
+          <span class="input-group-text">g/mol</span>
+        </div>
+      </ng-template>
+    </sd-calc-row>
+    <div class="form-group form-row">
+      <button class="btn btn-primary mr-3" (click)="convert()">Convert!</button>
+      <button class="btn btn-secondary" (click)="clearConversion()">Clear</button>
     </div>
 </form>
 <hr />
+<p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
 <form autocomplete="off" novalidate [formGroup]="inhalationForm">
-    <b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b>
-    <div>
-        <label for="concen">Concentration: </label>
+  <sd-calc-row>
+    <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
+      Concentration
+    </ng-template>
+    <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="concen"
           formControlName="concen"
           />
-        <select formControlName="concenUnits">
+        <select class="form-control" formControlName="concenUnits">
             <option *ngFor="let ratio of concenUnitsMassVolOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-    </div>
-    <div>
-        <label for="intake">Intake Rate: </label>
+    </ng-template>
+  </sd-calc-row>
+  <sd-calc-row>
+    <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
+      Intake Rate
+    </ng-template>
+    <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="intake"
           formControlName="intake"
           />
-        <select formControlName="intakeUnits">
+        <select class="form-control" formControlName="intakeUnits">
             <option *ngFor="let ratio of intakeUnitsOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-    </div>
-    <div>
-        <label for="weight">Body Weight: </label>
+    </ng-template>
+  </sd-calc-row>
+  <sd-calc-row>
+    <ng-template sdCalcRowLabel sdCalcRowLabelFor="weight">
+      Body Weight
+    </ng-template>
+    <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="weight"
           formControlName="weight"
-          /> 
-        <select formControlName="weightUnits">
+          />
+        <select class="form-control" formControlName="weightUnits">
             <option *ngFor="let ratio of weightUnitsOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-    </div>
-    <div>
-        <label for="dose">Dose: </label>
+<!--
+        <sd-select>
+          <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio.units"></option>
+        </sd-select>
+-->
+    </ng-template>
+  </sd-calc-row>
+  <sd-calc-row>
+    <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
+      Dose
+    </ng-template>
+    <ng-template sdCalcRowInput>
         <input
+          class="form-control"
           type="number"
           id="dose"
           formControlName="dose"
           />
-        <select formControlName="doseUnits">
+        <select class="form-control" formControlName="doseUnits">
             <option *ngFor="let ratio of doseUnitsOptions" [ngValue]="ratio">
                 {{ratio.units}}
             </option>
         </select>
-    </div>
-    <div>
-        <button (click)="calculate()" [disabled]="!inhalationForm.valid">Calculate!</button>
-        <button (click)="clearInhalation()">Clear</button>
+<!--
+        <sd-select>
+          <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio.units"></option>
+        </sd-select>
+-->
+    </ng-template>
+  </sd-calc-row>
+    <div class="form-group form-row">
+      <button class="btn btn-primary mr-3" (click)="calculate()" [disabled]="!inhalationForm.valid">Calculate!</button>
+      <button class="btn btn-secondary" (click)="clearInhalation()">Clear</button>
     </div>
 </form>
 <hr />
