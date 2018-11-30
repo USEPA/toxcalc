@@ -1,0 +1,162 @@
+<sd-return-to-calculators></sd-return-to-calculators>
+<div class="container py-3">
+  <p class="lead font-weight-bold">Total Dose Conversion Calculator</p>
+  <p class="mb-4">This calculator is designed to only be used for homogenous (i.e. uniform) mixtures. It should not be used for radionuclides.</p>
+  <form novalidate (change)="formChange()">
+    <sd-calc-row #concen>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
+        Concentration
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input class="form-control text-right" name="concen" id="concen" type="text" oninput="this.value = this.value.replace(/[^\d.]/g, '')" (focus)="inputFocus($event.target)" (blur)="inputBlur()" #concenInput>
+        <sd-select name="concen-units" #concenUnits (change)="changeUnits(); formChange();">
+          <optgroup label="mass/volume">
+            <option value="mg/L"></option>
+            <option value="g/L"></option>
+            <option value="µg/L"></option>
+            <option value="ppm (w/v)"></option>
+            <option value="ppb (w/v)"></option>
+            <option value="% (w/v)"></option>
+          </optgroup>
+          <optgroup label="volume/volume">
+            <option value="mL/L"></option>
+            <option value="µL/L"></option>
+            <option value="µL/mL"></option>
+            <option value="ppm (v/v)"></option>
+            <option value="ppb (v/v)"></option>
+            <option value="% (v/v)"></option>
+          </optgroup>
+          <optgroup label="mol/volume">
+            <option value="mol/L"></option>
+            <option value="mmol/L"></option>
+            <option value="µmol/L"></option>
+          </optgroup>
+          <optgroup label="mol/mass">
+            <option value="mol/kg"></option>
+            <option value="mmol/kg"></option>
+            <option value="µmol/kg"></option>
+          </optgroup>
+          <optgroup label="mass/mass">
+            <option value="mg/kg"></option>
+            <option value="µg/kg"></option>
+          </optgroup>
+        </sd-select>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        <strong>The amount of one substance present in another substance.</strong> In other words, it is the amount of a substance present in a mixture that contains at least two substances. Commonly, these mixtures are solutions. Concentration can be used to express the amount of any substance in any media. Examples of media that are relevant to human or environmental health include food, soil, water, air, bodily fluids, tissues, pharmaceuticals and consumer products.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row #intake>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
+        Intake
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input class="form-control text-right" name="intake" id="intake" oninput="this.value = this.value.replace(/[^\d.]/g, '')" (focus)="inputFocus($event.target)" (blur)="inputBlur()" #intakeInput>
+        <sd-select name="intake-units" #intakeUnits (change)="changeUnits(); formChange()">
+          <optgroup label="volume/time">
+            <option value="L/day"></option>
+            <option value="mL/day"></option>
+          </optgroup>
+          <optgroup label="mass/time">
+            <option value="kg/day"></option>
+            <option value="g/day"></option>
+          </optgroup>
+        </sd-select>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        The amount of the total mixture being consumed in a day.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row [ngbCollapse]="!substanceDensityShow" #substanceDensity>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="substanceDensity">
+        Substance density
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input class="form-control text-right" name="substanceDensity" id="substanceDensity" oninput="this.value = this.value.replace(/[^\d.]/g, '')" (focus)="inputFocus($event.target)" (blur)="inputBlur()" #substanceDensityInput>
+        <div class="input-group-append">
+          <span class="input-group-text">g/mL</span>
+        </div>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        Mass to volume ratio of the substance of interest.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row [ngbCollapse]="!molarMassShow" #molarMass>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
+        Molar mass of substance
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input class="form-control text-right" name="molarMass" id="molarMass" oninput="this.value = this.value.replace(/[^\d.]/g, '')" (focus)="inputFocus($event.target)" (blur)="inputBlur()" #molarMassInput>
+        <div class="input-group-append">
+          <span class="input-group-text">g/mol</span>
+        </div>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        The mass of a given substance divided by the amount of substance.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row [ngbCollapse]="!solutionDensityShow" #solutionDensity>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="solutionDensity">
+        Density of the entire solution
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input class="form-control text-right" name="solutionDensity" id="solutionDensity" oninput="this.value = this.value.replace(/[^\d.]/g, '')" (focus)="inputFocus($event.target)" (blur)="inputBlur()" #solutionDensityInput>
+        <div class="input-group-append">
+          <span class="input-group-text">g/mL</span>
+        </div>
+     </ng-template>
+      <ng-template sdCalcRowHelp>
+        Mass to volume ratio of the mixture that the substance is in.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row #bodyWeight>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
+        Body weight
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input class="form-control text-right" name="bodyWeight" id="bodyWeight" oninput="this.value = this.value.replace(/[^\d.]/g, '')" (focus)="inputFocus($event.target)" (blur)="inputBlur()" #bodyWeightInput>
+        <sd-select name="bodyWeight-units" #bodyWeightUnits (change)="changeUnits(); formChange()">
+          <option value="kg"></option>
+          <option value="g"></option>
+        </sd-select>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        The weight of the animal or human for which the calculation is being performed.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row #dose>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
+        Dose
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input class="form-control text-right" name="dose" id="dose" oninput="this.value = this.value.replace(/[^\d.]/g, '')" (focus)="inputFocus($event.target)" (blur)="inputBlur()" #doseInput>
+        <sd-select name="dose-units" #doseUnits (change)="changeUnits(); formChange()">
+          <option value="mg/kg BW/day"></option>
+          <option value="µg/kg BW/day"></option>
+          <option value="mol/kg BW/day"></option>
+          <option value="mmol/kg BW/day"></option>
+        </sd-select>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        Amount of a substance administered or received by an organism at one time.
+      </ng-template>
+    </sd-calc-row>
+
+    <div class="form-row">
+      <ngb-alert *ngIf="underConstructionShow" [dismissible]="false" type="warning" class="w-100"><strong class="mr-2">Sorry!</strong>Calculation with these units is not supported.</ngb-alert>
+    </div>
+
+    <div class="form-row">
+      <ngb-alert *ngIf="internalError" [dismissible]="false" type="danger" class="w-100">
+        <p class="lead">Internal calculator error!</p>
+        <!-- Yes, this is an abuse of 'kbd', but the visual style is right. -->
+        <p class="px-3"><kbd>{{internalError}}</kbd></p>
+        <p class="mb-0">Click <strong>Clear</strong> to clear this error and reset the form.</p></ngb-alert>
+    </div>
+
+    <div class="form-row">
+      <button type="button" class="btn btn-primary mr-3" (click)="updateErrors(true)" [disabled]="underConstructionShow || internalError">Calculate!</button>
+      <button type="reset" class="btn btn-secondary" (click)="clear()">Clear</button>
+    </div>
+  </form>
+</div>
