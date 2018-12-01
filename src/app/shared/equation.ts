@@ -101,8 +101,6 @@ class Constant implements Term {
 export class Variable implements Term {
   kind = TypeDiscriminator.Variable;
 
-  constructor(readonly name: string) {}
-
   value: ScalarAndDimension | null = null;
 
   getValue(): ScalarAndDimension | null { return this.value }

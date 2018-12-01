@@ -23,13 +23,13 @@ export class TotaldosecalcComponent {
   molarMassRecip: boolean = false;
 
   // Variables for equation calculation.
-  concenVar: Variable = new Variable('concen');
-  intakeVar: Variable = new Variable('intake');
-  substanceDensityVar: Variable = new Variable('substanceDensity');
-  molarMassVar: Variable = new Variable('molarMass');
-  solutionDensityVar: Variable = new Variable('solutionDensity');
-  bodyWeightVar: Variable = new Variable('bodyWeight');
-  doseVar: Variable = new Variable('dose');
+  concenVar: Variable = new Variable;
+  intakeVar: Variable = new Variable;
+  substanceDensityVar: Variable = new Variable;
+  molarMassVar: Variable = new Variable;
+  solutionDensityVar: Variable = new Variable;
+  bodyWeightVar: Variable = new Variable;
+  doseVar: Variable = new Variable;
 
   // Each variable in terms of the other variables.
   concenTerm: Term;
