@@ -1,10 +1,21 @@
-import { Component, ElementRef, ViewChild, isDevMode } from '@angular/core';
+import { Component, Directive, ElementRef, HostListener, ViewChild, isDevMode } from '@angular/core';
 
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
 import { Dimension } from '../shared/dimension';
 import { Term, Equation, Variable, ScalarAndDimension, isCalculateError } from '../shared/equation';
+
+@Directive({
+  selector: '[sdInputPosNum]',
+  host: {'class': 'text-right', type: 'text'}
+})
+export class SdInputPositiveNumber {
+  constructor(public e: ElementRef<HTMLInputElement>) {}
+  @HostListener('input') onInput() {
+    this.e.nativeElement.value = this.e.nativeElement.value.replace(/[^\d.]/g, '');
+  }
+}
 
 @Component({
   selector: 'app-totaldosecalc',
@@ -270,7 +281,7 @@ export class TotaldosecalcComponent {
     'µg/kg': new ScalarAndDimension(0.000000001, Dimension.initUnit()),
   };
   getConcenUnit(): ScalarAndDimension {
-    return this.CONCEN_UNITS[this.concenUnits.selectedItem.value];
+    return this.CONCEN_UNITS[this.concenUnits.selectedName];
   }
 
   readonly INTAKE_UNITS: {[index: string]: ScalarAndDimension} = {
@@ -280,7 +291,7 @@ export class TotaldosecalcComponent {
     'g/day': new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initTime())),
   }
   getIntakeUnit(): ScalarAndDimension {
-    return this.INTAKE_UNITS[this.intakeUnits.selectedItem.value];
+    return this.INTAKE_UNITS[this.intakeUnits.selectedName];
   }
 
   readonly G_ML = new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME));
@@ -303,7 +314,7 @@ export class TotaldosecalcComponent {
   readonly KG_UNIT = new ScalarAndDimension(1000, Dimension.initMass());
   readonly G_UNIT = new ScalarAndDimension(1, Dimension.initMass());
   getBodyWeightUnit(): ScalarAndDimension {
-    return this.bodyWeightUnits.selectedItem.value == 'g' ? this.G_UNIT : this.KG_UNIT;
+    return this.bodyWeightUnits.selectedName == 'g' ? this.G_UNIT : this.KG_UNIT;
   }
 
   readonly DOSE_UNITS: {[index: string]: ScalarAndDimension} = {
@@ -313,7 +324,7 @@ export class TotaldosecalcComponent {
     'mmol/kg BW/day': new ScalarAndDimension(0.000001, Dimension.initMolarMass().div(Dimension.initMass()).div(Dimension.initTime())),
   }
   getDoseUnit(): ScalarAndDimension {
-    return this.DOSE_UNITS[this.doseUnits.selectedItem.value];
+    return this.DOSE_UNITS[this.doseUnits.selectedName];
   }
 
   changeUnits(): void {
