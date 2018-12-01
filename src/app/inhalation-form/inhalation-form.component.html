@@ -12,11 +12,9 @@
           id="concenVolVol"
           formControlName="concenVolVol"
           />
-        <select class="form-control" formControlName="concenUnitsVolVol">
-            <option *ngFor="let ratio of concenUnitsVolVolOptions" [ngValue]="ratio">
-                {{ratio.units}}
-            </option>
-        </select>
+        <sd-select formControlName="concenUnitsVolVol">
+          <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
+        </sd-select>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row>
@@ -28,11 +26,9 @@
           id="concenMassVol"
           formControlName="concenMassVol"
           />
-        <select class="form-control" formControlName="concenUnitsMassVol">
-            <option *ngFor="let ratio of concenUnitsMassVolOptions" [ngValue]="ratio">
-                {{ratio.units}}
-            </option>
-        </select>
+        <sd-select formControlName="concenUnitsMassVol">
+          <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
+        </sd-select>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row>
@@ -70,11 +66,9 @@
           id="concen"
           formControlName="concen"
           />
-        <select class="form-control" formControlName="concenUnits">
-            <option *ngFor="let ratio of concenUnitsMassVolOptions" [ngValue]="ratio">
-                {{ratio.units}}
-            </option>
-        </select>
+        <sd-select formControlName="concenUnits">
+          <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
+        </sd-select>
     </ng-template>
   </sd-calc-row>
   <sd-calc-row>
@@ -88,11 +82,9 @@
           id="intake"
           formControlName="intake"
           />
-        <select class="form-control" formControlName="intakeUnits">
-            <option *ngFor="let ratio of intakeUnitsOptions" [ngValue]="ratio">
-                {{ratio.units}}
-            </option>
-        </select>
+        <sd-select formControlName="intakeUnits">
+          <option *ngFor="let ratio of intakeUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
+        </sd-select>
     </ng-template>
   </sd-calc-row>
   <sd-calc-row>
@@ -106,16 +98,9 @@
           id="weight"
           formControlName="weight"
           />
-        <select class="form-control" formControlName="weightUnits">
-            <option *ngFor="let ratio of weightUnitsOptions" [ngValue]="ratio">
-                {{ratio.units}}
-            </option>
-        </select>
-<!--
-        <sd-select>
-          <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio.units"></option>
+        <sd-select formControlName="weightUnits">
+          <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
--->
     </ng-template>
   </sd-calc-row>
   <sd-calc-row>
@@ -129,16 +114,9 @@
           id="dose"
           formControlName="dose"
           />
-        <select class="form-control" formControlName="doseUnits">
-            <option *ngFor="let ratio of doseUnitsOptions" [ngValue]="ratio">
-                {{ratio.units}}
-            </option>
-        </select>
-<!--
-        <sd-select>
-          <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio.units"></option>
+        <sd-select formControlName="doseUnits">
+          <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
--->
     </ng-template>
   </sd-calc-row>
     <div class="form-group form-row">

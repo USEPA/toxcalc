@@ -3,10 +3,10 @@
   <div ngbDropdownMenu>
     <ng-container *ngFor="let group of groups">
       <h6 class="dropdown-header">{{ group.label }}</h6>
-      <button class="dropdown-item" type="button" (click)="onGroupItemSelected(group, item)" *ngFor="let item of group.items">{{ item.value }}</button>
+      <button class="dropdown-item" type="button" (click)="onGroupItemSelected(group, item)" *ngFor="let item of group.items">{{ item.label }}</button>
     </ng-container>
     <ng-container *ngIf="groups.length == 0">
-      <button class="dropdown-item" type="button" (click)="onItemSelected(item)" *ngFor="let item of items">{{ item.value }}</button>
+      <button class="dropdown-item" type="button" (click)="onItemSelected(item)" *ngFor="let item of items">{{ item.label }}</button>
     </ng-container>
   </div>
 </div>

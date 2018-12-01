@@ -1,9 +1,12 @@
-import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, Input, Output, QueryList } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, Input, Output, QueryList, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Directive({selector: 'option'})
 export class SdSelectItem {
-  @Input() value: string;
+  @Input() label: string;
   index: number;
+
+  @Input() value: any;
 }
 
 @Directive({selector: 'optgroup'})
@@ -20,23 +23,32 @@ export class SdSelectGroup implements AfterContentInit {
 @Component({
   selector: 'sd-select',
   templateUrl: './sd-select.component.html',
-  styleUrls: ['./sd-select.component.css']
+  styleUrls: ['./sd-select.component.css'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SdSelectComponent),
+      multi: true
+    }
+  ],
 })
-export class SdSelectComponent implements AfterContentInit {
+export class SdSelectComponent implements AfterContentInit, ControlValueAccessor {
   selectedItem: SdSelectItem;
   selectedGroup: SdSelectGroup;
 
   @ContentChildren(SdSelectGroup) groups: QueryList<SdSelectGroup>;
   @ContentChildren(SdSelectItem) items: QueryList<SdSelectItem>;
 
-  onGroupItemSelected(group: SdSelectGroup, item: SdSelectItem) {
+  onGroupItemSelected(group: SdSelectGroup, item: SdSelectItem): void {
     this.selectedGroup = group;
     this.selectedItem = item;
     this.change.emit({group: group, item: item});
+    if (this.onChangedFn) this.onChangedFn(item.value);
   }
-  onItemSelected(item: SdSelectItem) {
+  onItemSelected(item: SdSelectItem): void {
     this.selectedItem = item;
     this.change.emit({item: item});
+    if (this.onChangedFn) this.onChangedFn(item.value);
   }
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
@@ -46,7 +58,7 @@ export class SdSelectComponent implements AfterContentInit {
   // false produce the result that is correct for the default state of the page.
 
   get selectedIndex(): number { return this.selectedItem.index; }
-  get selectedName(): string { return this.selectedItem.value; }
+  get selectedName(): string { return this.selectedItem.label; }
 
   get selectedGroupIndex(): number { return this.selectedGroup.index; }
   get selectedGroupName(): string { return this.selectedGroup.label; }
@@ -65,5 +77,35 @@ export class SdSelectComponent implements AfterContentInit {
     }
     this.ready_ = true;
   }
-}
 
+  // ControlValueAccessor implementation for @angular/forms integration.
+
+  writeValue(obj: any): void {
+    if (!this.ready_) return;
+    // TODO: use QueryList.forEach instead?
+    if (this.groups.length == 0) {
+      let item = this.items.find(function(item: SdSelectItem, index: number, array: SdSelectItem[]): boolean {
+        return item.value == obj;
+      });
+      if (!item) return;
+      this.onItemSelected(item);
+      return;
+    } else {
+      for (let group of this.groups.toArray()) {
+        let item = group.items.find(function(item: SdSelectItem, index: number, array: SdSelectItem[]): boolean {
+          return item.value == obj;
+        });
+        if (!item) return;
+        this.onGroupItemSelected(group, item);
+        return;
+      }
+    }
+  }
+
+  registerOnChange(fn: any): void { this.onChangedFn = fn; }
+  registerOnTouched(fn: any): void {}
+
+  private onChangedFn: any = null;
+
+  get value(): any { return this.selectedItem.value; }
+}
