@@ -10,7 +10,7 @@
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
-          class="form-control"
+          class="form-control text-right"
           type="number"
           id="animalDose"
           formControlName="animalDose"
@@ -27,7 +27,7 @@
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
-          class="form-control"
+          class="form-control text-right"
           type="number"
           id="animalWeight"
           formControlName="animalWeight"
@@ -44,7 +44,7 @@
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
-          class="form-control"
+          class="form-control text-right"
           type="number"
           id="humanWeight"
           formControlName="humanWeight"
@@ -88,7 +88,7 @@
         Human equivalent Dose
       </ng-template>
       <ng-template sdCalcRowInput>
-        <input class="form-control" readonly [value]="submitted ? humanDose : ''"/>
+        <input class="form-control text-right" readonly [value]="submitted ? humanDose : ''"/>
         <div class="input-group-append">
           <span class="input-group-text">mg/kg BW/day</span>
         </div>
