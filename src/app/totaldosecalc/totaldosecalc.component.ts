@@ -29,9 +29,10 @@ export class TotaldosecalcComponent {
   solutionDensityShow: boolean = false;
   underConstructionShow: boolean = false;
 
-  // Should the calculation reciprocate molar mass? Only meaningful when
-  // molarMassShow is true.
+  // Should the calculation reciprocate its value and unit? Value is meaningless
+  // when the matching Show variable is false.
   molarMassRecip: boolean = false;
+  solutionDensityRecip: boolean = false;
 
   // Variables for equation calculation.
   concenVar: Variable = new Variable;
@@ -148,9 +149,13 @@ export class TotaldosecalcComponent {
       return;
 
     // Load text in the form into the equation variables.
-    function setValue(v: Variable, i: ElementRef<HTMLInputElement>, sad: ScalarAndDimension): void {
+    function setValue(v: Variable, i: ElementRef<HTMLInputElement>, sad: ScalarAndDimension, recip: boolean): void {
       if (i.nativeElement.value == '') {
         v.setValue(null);
+        return;
+      }
+      if (recip) {
+        v.setValue(new ScalarAndDimension(1/(parseFloat(i.nativeElement.value) * sad.n), sad.d.recip()));
         return;
       }
       v.setValue(new ScalarAndDimension(parseFloat(i.nativeElement.value) * sad.n, sad.d));
@@ -159,37 +164,27 @@ export class TotaldosecalcComponent {
     // A unit-less 1. Use this value for variables on hidden rows.
     const ONE = new ScalarAndDimension(1, null);
 
-    setValue(this.concenVar, this.concenInput, this.getConcenUnit());
-    setValue(this.intakeVar, this.intakeInput, this.getIntakeUnit());
-    setValue(this.bodyWeightVar, this.bodyWeightInput, this.getBodyWeightUnit());
-    setValue(this.doseVar, this.doseInput, this.getDoseUnit());
+    setValue(this.concenVar, this.concenInput, this.getConcenUnit(), false);
+    setValue(this.intakeVar, this.intakeInput, this.getIntakeUnit(), false);
+    setValue(this.bodyWeightVar, this.bodyWeightInput, this.getBodyWeightUnit(), false);
+    setValue(this.doseVar, this.doseInput, this.getDoseUnit(), false);
 
     if (this.substanceDensityShow) {
-      setValue(this.substanceDensityVar, this.substanceDensityInput, this.getSubstanceDensityUnit());
+      setValue(this.substanceDensityVar, this.substanceDensityInput, this.getSubstanceDensityUnit(), false);
     } else {
       this.substanceDensityVar.setValue(ONE);
     }
 
-    if (this.solutionDensityShow) {
-      setValue(this.solutionDensityVar, this.solutionDensityInput, this.getSolutionDensityUnit());
-    } else {
-      this.solutionDensityVar.setValue(ONE);
-    }
-
     if (this.molarMassShow) {
-      setValue(this.molarMassVar, this.molarMassInput, this.getMolarMassUnit());
-      if (this.molarMassVar.getValue() != null && this.molarMassRecip) {
-        // TypeScript isn't convinced getValue() will return non-null again.
-        let value = this.molarMassVar.getValue()!.clone();
-        let error = value.expEq(new ScalarAndDimension(-1, null));
-        if (error) {
-          this.internalError = error;
-          return;
-        }
-        this.molarMassVar.setValue(value);
-      }
+      setValue(this.molarMassVar, this.molarMassInput, this.getMolarMassUnit(), this.molarMassRecip);
     } else {
       this.molarMassVar.setValue(ONE);
+    }
+
+    if (this.solutionDensityShow) {
+      setValue(this.solutionDensityVar, this.solutionDensityInput, this.getSolutionDensityUnit(), this.solutionDensityRecip);
+    } else {
+      this.solutionDensityVar.setValue(ONE);
     }
 
     let solution: Term;
@@ -230,7 +225,8 @@ export class TotaldosecalcComponent {
       return;
     }
 
-    if (solution == this.molarMassTerm && this.molarMassRecip) {
+    if ((solution == this.molarMassTerm && this.molarMassRecip) ||
+        (solution == this.solutionDensityTerm && this.solutionDensityRecip)) {
       let mut_result = result.clone();
       let error = mut_result.expEq(new ScalarAndDimension(-1, null));
       if (error) {
@@ -340,6 +336,27 @@ export class TotaldosecalcComponent {
       return;
     }
 
+    // Substance density and reciprocal solution density are indistinguishable.
+    // Handle the two cases of reciprocal solution density up front.
+    if (this.concenUnits.selectedGroupName == 'mol/mass' &&
+        this.intakeUnits.selectedGroupName == 'volume/time') {
+      this.substanceDensityShow = false;
+      this.molarMassShow = true;
+      this.solutionDensityShow = true;
+      this.solutionDensityRecip = true;
+      this.underConstructionShow = false;
+      return;
+    }
+    if (this.concenUnits.selectedGroupName == 'mass/mass' &&
+        this.intakeUnits.selectedGroupName == 'volume/time') {
+      this.substanceDensityShow = false;
+      this.molarMassShow = false;
+      this.solutionDensityShow = true;
+      this.solutionDensityRecip = true;
+      this.underConstructionShow = false;
+      return;
+    }
+
     // Use dimensional analysis to determine which rows to show.
     let residual =
         this.getConcenUnit().d
@@ -387,6 +404,7 @@ export class TotaldosecalcComponent {
       this.substanceDensityShow = false;
       this.molarMassShow = false;
       this.solutionDensityShow = true;
+      this.solutionDensityRecip = false;
       this.underConstructionShow = false;
       return;
     }
@@ -413,6 +431,7 @@ export class TotaldosecalcComponent {
       this.molarMassShow = true;
       this.molarMassRecip = false;
       this.solutionDensityShow = true;
+      this.solutionDensityRecip = false;
       this.underConstructionShow = false;
       return;
     }
@@ -421,6 +440,7 @@ export class TotaldosecalcComponent {
       this.molarMassShow = true;
       this.molarMassRecip = true;
       this.solutionDensityShow = true;
+      this.solutionDensityRecip = false;
       this.underConstructionShow = false;
       return;
     }
