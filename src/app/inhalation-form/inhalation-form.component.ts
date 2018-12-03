@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { CalcService } from '../shared/calc.service';
@@ -21,6 +21,10 @@ import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE
     ]
 })
 export class InhalationFormComponent implements OnInit {
+    @ViewChild('concenVolVol') concenVolVol: ElementRef<HTMLInputElement>
+    @ViewChild('concenMassVol') concenMassVol: ElementRef<HTMLInputElement>
+    @ViewChild('molarMass') molarMass: ElementRef<HTMLInputElement>
+
     inhalationSubmitted = false;
     conversionSubmitted = false;
     //should probably rework the data model
@@ -183,15 +187,20 @@ export class InhalationFormComponent implements OnInit {
     convert() {
         let ratio1 = this.conversionForm.get('concenUnitsVolVol')!.value.value;
         let ratio2 = this.conversionForm.get('concenUnitsMassVol')!.value.value;
-        let val1 = this.conversionForm.get('concenVolVol')!.value;
-        let val2 = this.conversionForm.get('concenMassVol')!.value;
-        let molMass = this.conversionForm.get('molarMass')!.value;
-        if (!val1) {
-            val1 = val2 * ratio2 * SATP_RATIO /  (molMass * ratio1);
+        // conversionForm.get('foo')!.value returns '' after we use patchValue.
+        // Just access the element value directly.
+        let val1 = this.concenVolVol.nativeElement.value ? parseFloat(this.concenVolVol.nativeElement.value) : null;
+        let val2 = this.concenMassVol.nativeElement.value ? parseFloat(this.concenMassVol.nativeElement.value) : null;
+        let molMass = this.molarMass.nativeElement.value ? parseFloat(this.molarMass.nativeElement.value) : null
+        if ((!val1 && val2 && molMass) ||
+            (val1 && val2 && molMass && this.concenVolVol.nativeElement.readOnly)) {
+            val1 = val2 * ratio2 * SATP_RATIO / (molMass * ratio1);
             this.conversionForm.patchValue({
                 concenVolVol: val1
             });
-        } else if (!val2) {
+            this.concenVolVol.nativeElement.readOnly = true;
+        } else if ((val1 && !val2 && molMass) ||
+                   (val1 && val2 && molMass && this.concenMassVol.nativeElement.readOnly)) {
             val2 = val1 * ratio1 * molMass / (SATP_RATIO * ratio2);
             this.conversionForm.patchValue({
                 concenMassVol: val2
@@ -200,17 +209,65 @@ export class InhalationFormComponent implements OnInit {
                 concen: val2,
                 concenUnits: this.conversionForm.get('concenUnitsMassVol')!.value
             });
+            this.concenMassVol.nativeElement.readOnly = true;
             this.inhalationSubmitted = false;
-        } else if (!molMass) {
+        } else if ((val1 && val2 && !molMass) ||
+                   (val1 && val2 && molMass && this.molarMass.nativeElement.readOnly)) {
             molMass = val2 * ratio2 * SATP_RATIO / (val1 * ratio1);
             this.conversionForm.patchValue({
                 molarMass: molMass
             });
+            this.molarMass.nativeElement.readOnly = true;
+        } else if (val1 && val2 && molMass) {
+            // Do nothing. Occurs when the user focuses and blurs on the
+            // result <input>.
+        } else {
+            // No single output was found. (Two or three blank inputs.)
+            this.concenVolVol.nativeElement.readOnly = false;
+            this.concenMassVol.nativeElement.readOnly = false;
+            this.molarMass.nativeElement.readOnly = false;
         }
+    }
+
+    conversion_suppress_change: boolean = false;
+    conversionFormChange(): void {
+      if (this.conversion_suppress_change)
+        return;
+
+      this.convert();
+    }
+
+    conversionInputBlur(): void {
+      this.conversion_suppress_change = false;
+      this.convert();
+    }
+
+    conversionInputFocus(self: HTMLInputElement): void {
+      this.conversion_suppress_change = true;
+
+      if (this.concenVolVol.nativeElement.readOnly &&
+          this.concenVolVol.nativeElement != self) {
+        this.conversionForm.patchValue({
+            concenVolVol: '',
+        });
+      } else if (this.concenMassVol.nativeElement.readOnly &&
+                 this.concenMassVol.nativeElement != self) {
+        this.conversionForm.patchValue({
+            concenMassVol: '',
+        });
+      } else if (this.molarMass.nativeElement.readOnly &&
+                 this.molarMass.nativeElement != self) {
+        this.conversionForm.patchValue({
+            molarMass: '',
+        });
+      }
     }
 
     clearConversion(): void {
         this.createConversionForm();
+        this.concenVolVol.nativeElement.readOnly = false;
+        this.concenMassVol.nativeElement.readOnly = false;
+        this.molarMass.nativeElement.readOnly = false;
         this.conversionSubmitted = false;
     }
 

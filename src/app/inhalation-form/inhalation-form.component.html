@@ -2,7 +2,7 @@
 <div class="container py-3">
   <p class="lead font-weight-bold mb-4">Inhalation Dose Conversion Calculator</p>
   <p><b>Convert between concentration unit types:</b></p>
-  <form autocomplete="off" novalidate [formGroup]="conversionForm">
+  <form autocomplete="off" novalidate [formGroup]="conversionForm" (change)="conversionFormChange()">
     <sd-calc-row>
       <ng-template sdCalcRowLabel></ng-template>
       <ng-template sdCalcRowInput>
@@ -11,8 +11,11 @@
           type="number"
           id="concenVolVol"
           formControlName="concenVolVol"
+          (blur)="conversionInputBlur()"
+          (focus)="conversionInputFocus($event.target)"
+          #concenVolVol
           />
-        <sd-select formControlName="concenUnitsVolVol">
+        <sd-select formControlName="concenUnitsVolVol" (click)="conversionFormChange();">
           <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
       </ng-template>
@@ -25,8 +28,11 @@
           type="number"
           id="concenMassVol"
           formControlName="concenMassVol"
+          (blur)="conversionInputBlur()"
+          (focus)="conversionInputFocus($event.target)"
+          #concenMassVol
           />
-        <sd-select formControlName="concenUnitsMassVol">
+        <sd-select formControlName="concenUnitsMassVol" (click)="conversionFormChange();">
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
       </ng-template>
@@ -41,6 +47,9 @@
           type="number"
           id="molarMass"
           formControlName="molarMass"
+          (blur)="conversionInputBlur()"
+          (focus)="conversionInputFocus($event.target)"
+          #molarMass
           />
         <div class="input-group-append">
           <span class="input-group-text">g/mol</span>
@@ -66,7 +75,7 @@
           id="concen"
           formControlName="concen"
           />
-        <sd-select formControlName="concenUnits">
+        <sd-select formControlName="concenUnits" (click)="conversionFormChange();">
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
     </ng-template>
