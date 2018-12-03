@@ -1,21 +1,11 @@
-import { Component, Directive, ElementRef, HostListener, ViewChild, isDevMode } from '@angular/core';
+import { Component, ElementRef, ViewChild, isDevMode } from '@angular/core';
 
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
 import { Dimension } from '../shared/dimension';
 import { Term, Equation, Variable, ScalarAndDimension, isCalculateError } from '../shared/equation';
-
-@Directive({
-  selector: '[sdInputPosNum]',
-  host: {'class': 'text-right', type: 'text'}
-})
-export class SdInputPositiveNumber {
-  constructor(public e: ElementRef<HTMLInputElement>) {}
-  @HostListener('input') onInput() {
-    this.e.nativeElement.value = this.e.nativeElement.value.replace(/[^\d.]/g, '');
-  }
-}
+import { SdInputPositiveNumber, printNum } from '../shared/number-util';
 
 @Component({
   selector: 'app-totaldosecalc',
@@ -95,11 +85,6 @@ export class TotaldosecalcComponent {
       return;
 
     this.calculate();
-  }
-
-  printNum(n: number): string {
-    // Never use scientific notation, round to 9 decimal places or fewer.
-    return Number(n).toLocaleString('fullwide', { useGrouping: false, maximumFractionDigits: 9 });
   }
 
   private calculate(): void {
@@ -247,7 +232,7 @@ export class TotaldosecalcComponent {
       return;
     }
 
-    out_control.value = this.printNum(result.n / solutionUnit.n);
+    out_control.value = printNum(result.n / solutionUnit.n);
   }
 
   readonly VOLUME = Dimension.initLength().exp(3);

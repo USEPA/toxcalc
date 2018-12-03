@@ -19,7 +19,8 @@ import { LandingComponent } from './landing/landing.component';
 import { SdReturnToCalculatorsComponent } from './sd-return-to-calculators/sd-return-to-calculators.component';
 import { SdSelectComponent, SdSelectItem, SdSelectGroup } from './sd-select/sd-select.component';
 import { SdCalcRowComponent, SdCalcRowLabel, SdCalcRowInput, SdCalcRowHelp } from './sd-calc-row/sd-calc-row.component';
-import { TotaldosecalcComponent, SdInputPositiveNumber } from './totaldosecalc/totaldosecalc.component';
+import { TotaldosecalcComponent } from './totaldosecalc/totaldosecalc.component';
+import { SdInputPositiveNumber } from './shared/number-util';
 
 @NgModule({
   declarations: [
