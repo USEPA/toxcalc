@@ -11,12 +11,7 @@
         <input class="form-control" name="concen" id="concen" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #concenInput>
         <sd-select name="concen-units" #concenUnits (change)="changeUnits(); formChange();">
           <optgroup label="mass/volume">
-            <option label="mg/L"></option>
-            <option label="g/L"></option>
-            <option label="µg/L"></option>
-            <option label="ppm (w/v)"></option>
-            <option label="ppb (w/v)"></option>
-            <option label="% (w/v)"></option>
+            <option *ngFor="let unit of iterUnits(CONCEN_UNITS, MASS_VOLUME)" [label]="unit"></option>
           </optgroup>
           <optgroup label="volume/volume">
             <option label="mL/L"></option>
@@ -27,14 +22,10 @@
             <option label="% (v/v)"></option>
           </optgroup>
           <optgroup label="mol/volume">
-            <option label="mol/L"></option>
-            <option label="mmol/L"></option>
-            <option label="µmol/L"></option>
+            <option *ngFor="let unit of iterUnits(CONCEN_UNITS, MOL_VOLUME)" [label]="unit"></option>
           </optgroup>
           <optgroup label="mol/mass">
-            <option label="mol/kg"></option>
-            <option label="mmol/kg"></option>
-            <option label="µmol/kg"></option>
+            <option *ngFor="let unit of iterUnits(CONCEN_UNITS, MOL_MASS)" [label]="unit"></option>
           </optgroup>
           <optgroup label="mass/mass">
             <option label="mg/kg"></option>
@@ -54,12 +45,10 @@
         <input class="form-control" name="intake" id="intake" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #intakeInput>
         <sd-select name="intake-units" #intakeUnits (change)="changeUnits(); formChange()">
           <optgroup label="volume/time">
-            <option label="L/day"></option>
-            <option label="mL/day"></option>
+            <option *ngFor="let unit of iterUnits(INTAKE_UNITS, VOLUME_TIME)" [label]="unit"></option>
           </optgroup>
           <optgroup label="mass/time">
-            <option label="kg/day"></option>
-            <option label="g/day"></option>
+            <option *ngFor="let unit of iterUnits(INTAKE_UNITS, MASS_TIME)" [label]="unit"></option>
           </optgroup>
         </sd-select>
       </ng-template>
@@ -131,10 +120,7 @@
       <ng-template sdCalcRowInput>
         <input class="form-control" name="dose" id="dose" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #doseInput>
         <sd-select name="dose-units" #doseUnits (change)="changeUnits(); formChange()">
-          <option label="mg/kg BW/day"></option>
-          <option label="µg/kg BW/day"></option>
-          <option label="mol/kg BW/day"></option>
-          <option label="mmol/kg BW/day"></option>
+          <option *ngFor="let unit of iterUnits(DOSE_UNITS)" [label]="unit"></option>
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>

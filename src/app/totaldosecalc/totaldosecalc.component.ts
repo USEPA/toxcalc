@@ -235,6 +235,16 @@ export class TotaldosecalcComponent {
     out_control.value = printNum(result.n / solutionUnit.n);
   }
 
+  // Allow the template to iterate over unit labels filtered by dimension.
+  iterUnits(table: {[index: string]: ScalarAndDimension}, d: Dimension | null): string[] {
+    let results: string[] = [];
+    Object.keys(table).forEach(function(key) {
+      if (d == null || table[key].d.equal(d))
+        results.push(key);
+    });
+    return results;
+  }
+
   readonly VOLUME = Dimension.initLength().exp(3);
   readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
   readonly MOL_VOLUME = Dimension.initMolarMass().div(this.VOLUME);
@@ -265,11 +275,14 @@ export class TotaldosecalcComponent {
     return this.CONCEN_UNITS[this.concenUnits.selectedName];
   }
 
+
+  readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
+  readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
   readonly INTAKE_UNITS: {[index: string]: ScalarAndDimension} = {
-    'L/day': new ScalarAndDimension(1, this.VOLUME.div(Dimension.initTime())),
-    'mL/day': new ScalarAndDimension(0.001, this.VOLUME.div(Dimension.initTime())),
-    'kg/day': new ScalarAndDimension(1000, Dimension.initMass().div(Dimension.initTime())),
-    'g/day': new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initTime())),
+    'L/day': new ScalarAndDimension(1, this.VOLUME_TIME),
+    'mL/day': new ScalarAndDimension(0.001, this.VOLUME_TIME),
+    'kg/day': new ScalarAndDimension(1000, this.MASS_TIME),
+    'g/day': new ScalarAndDimension(1, this.MASS_TIME),
   }
   getIntakeUnit(): ScalarAndDimension {
     return this.INTAKE_UNITS[this.intakeUnits.selectedName];
