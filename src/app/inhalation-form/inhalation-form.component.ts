@@ -36,8 +36,8 @@ export class InhalationFormComponent implements OnInit {
     ];
 
     concenUnitsMassVolOptions: ToxRatio[] = [
-        {units: 'mg/m3', value: 1},
-        {units: '\u03BCg/m3', value: 0.001},
+        {units: 'mg/m³', value: 1},
+        {units: '\u03BCg/m³', value: 0.001},
         {units: 'mg/L', value: 1000},
         {units: '\u03BCg/L', value: 1}
     ];
@@ -122,7 +122,7 @@ export class InhalationFormComponent implements OnInit {
         console.log('inhalation form created');
 
         this.concenTox = new Toxicology(new ToxUnit(UnitTypes.CONCENTRATION, new ToxRatio('ppm', 1)));
-        this.intakeTox = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('m3/day', 1)));
+        this.intakeTox = new Toxicology(new ToxUnit(UnitTypes.INTAKE_RATE, new ToxRatio('m³/day', 1)));
         this.weightTox = new Toxicology(new ToxUnit(UnitTypes.BODY_WEIGHT, new ToxRatio('kg', 1)));
         this.doseTox = new Toxicology(new ToxUnit(UnitTypes.DOSE, new ToxRatio('mg/kg BW/day', 1)));
 
