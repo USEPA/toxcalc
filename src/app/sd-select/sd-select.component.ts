@@ -82,21 +82,25 @@ export class SdSelectComponent implements AfterContentInit, ControlValueAccessor
 
   writeValue(obj: any): void {
     if (!this.ready_) return;
+    let onChangedSave = this.onChangedFn;
+    this.onChangedFn = null;
     // TODO: use QueryList.forEach instead?
     if (this.groups.length == 0) {
       let item = this.items.find(function(item: SdSelectItem, index: number, array: SdSelectItem[]): boolean {
         return item.value == obj;
       });
-      if (!item) return;
+      if (!item) { this.onChangedFn = onChangedSave; return; }
       this.onItemSelected(item);
+      this.onChangedFn = onChangedSave;
       return;
     } else {
       for (let group of this.groups.toArray()) {
         let item = group.items.find(function(item: SdSelectItem, index: number, array: SdSelectItem[]): boolean {
           return item.value == obj;
         });
-        if (!item) return;
+        if (!item) { this.onChangedFn = onChangedSave; return; }
         this.onGroupItemSelected(group, item);
+        this.onChangedFn = onChangedSave;
         return;
       }
     }
