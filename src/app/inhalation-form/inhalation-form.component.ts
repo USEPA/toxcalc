@@ -201,6 +201,11 @@ export class InhalationFormComponent implements OnInit {
                 concenUnits: this.conversionForm.get('concenUnitsMassVol')!.value
             });
             this.inhalationSubmitted = false;
+        } else if (!molMass) {
+            molMass = val2 * ratio2 * SATP_RATIO / (val1 * ratio1);
+            this.conversionForm.patchValue({
+                molarMass: molMass
+            });
         }
     }
 
