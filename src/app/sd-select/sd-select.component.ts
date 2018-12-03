@@ -84,7 +84,6 @@ export class SdSelectComponent implements AfterContentInit, ControlValueAccessor
     if (!this.ready_) return;
     let onChangedSave = this.onChangedFn;
     this.onChangedFn = null;
-    // TODO: use QueryList.forEach instead?
     if (this.groups.length == 0) {
       let item = this.items.find(function(item: SdSelectItem, index: number, array: SdSelectItem[]): boolean {
         return item.value == obj;
