@@ -51,7 +51,7 @@ export const INTAKE_RATIOS_MASS_TIME: ToxRatio[] = [
 ];
 
 export const INTAKE_RATIOS_INHALATION: ToxRatio[] = [
-    {units: 'm3/day', value: 1}
+    {units: 'm³/day', value: 1}
 ];
 
 export const WEIGHT_RATIOS: ToxRatio[] = [
