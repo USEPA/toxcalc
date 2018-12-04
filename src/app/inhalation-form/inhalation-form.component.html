@@ -21,23 +21,6 @@
       </ng-template>
     </sd-calc-row>
     <sd-calc-row>
-      <ng-template sdCalcRowLabel></ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control text-right"
-          type="number"
-          id="concenMassVol"
-          formControlName="concenMassVol"
-          (blur)="conversionInputBlur()"
-          (focus)="conversionInputFocus($event.target)"
-          #concenMassVol
-          />
-        <sd-select formControlName="concenUnitsMassVol" (click)="conversionFormChange();">
-          <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
-        </sd-select>
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
         Molar Mass
       </ng-template>
@@ -54,6 +37,23 @@
         <div class="input-group-append">
           <span class="input-group-text">g/mol</span>
         </div>
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel></ng-template>
+      <ng-template sdCalcRowInput>
+        <input
+          class="form-control text-right"
+          type="number"
+          id="concenMassVol"
+          formControlName="concenMassVol"
+          (blur)="conversionInputBlur()"
+          (focus)="conversionInputFocus($event.target)"
+          #concenMassVol
+          />
+        <sd-select formControlName="concenUnitsMassVol" (click)="conversionFormChange();">
+          <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
+        </sd-select>
       </ng-template>
     </sd-calc-row>
     <div class="form-group form-row">
