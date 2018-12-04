@@ -25,6 +25,7 @@ export class SdCalcRowHelp {
   styleUrls: ['./sd-calc-row.component.css']
 })
 export class SdCalcRowComponent {
+  @Input('sdShow') show: boolean = true;
   showHelp: boolean = false;
   errorText: string;
 

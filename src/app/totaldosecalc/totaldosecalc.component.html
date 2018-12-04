@@ -56,7 +56,7 @@
         The amount of the total mixture being consumed in a day.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row [ngbCollapse]="!substanceDensityShow" #substanceDensity>
+    <sd-calc-row [sdShow]="substanceDensityShow" #substanceDensity>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="substanceDensity">
         Substance density
       </ng-template>
@@ -70,7 +70,7 @@
         <b>Substance density</b> is the density of the substance or chemical of interest. It is the chemical that is present in a small amount that is being added to the solvent or media which is present in large amount.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row [ngbCollapse]="!molarMassShow" #molarMass>
+    <sd-calc-row [sdShow]="molarMassShow" #molarMass>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
         Molar mass of substance
       </ng-template>
@@ -84,7 +84,7 @@
         The mass of a given substance divided by the amount of substance.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row [ngbCollapse]="!solutionDensityShow" #solutionDensity>
+    <sd-calc-row [sdShow]="solutionDensityShow" #solutionDensity>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="solutionDensity">
         Solvent or media density
       </ng-template>
