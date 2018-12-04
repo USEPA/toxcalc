@@ -2,34 +2,32 @@
 <div class="container py-3">
   <p class="lead font-weight-bold mb-4">Inhalation Dose Conversion Calculator</p>
   <p><b>Convert between concentration unit types:</b></p>
-  <form autocomplete="off" novalidate [formGroup]="conversionForm" (change)="conversionFormChange()">
-    <sd-calc-row>
+  <form autocomplete="off" novalidate (change)="conversionFormChange()">
+    <sd-calc-row #concenVolVolRow>
       <ng-template sdCalcRowLabel></ng-template>
       <ng-template sdCalcRowInput>
         <input
-          class="form-control text-right"
-          type="number"
+          class="form-control"
           id="concenVolVol"
-          formControlName="concenVolVol"
+          sdInputPosNum
           (blur)="conversionInputBlur()"
           (focus)="conversionInputFocus($event.target)"
           #concenVolVol
           />
-        <sd-select formControlName="concenUnitsVolVol" (click)="conversionFormChange();">
+        <sd-select (click)="conversionFormChange();" #concenUnitsVolVol>
           <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row>
+    <sd-calc-row #molarMassRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
         Molar Mass
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
-          class="form-control text-right"
-          type="number"
+          class="form-control"
           id="molarMass"
-          formControlName="molarMass"
+          sdInputPosNum
           (blur)="conversionInputBlur()"
           (focus)="conversionInputFocus($event.target)"
           #molarMass
@@ -39,25 +37,24 @@
         </div>
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row>
+    <sd-calc-row #concenMassVolRow>
       <ng-template sdCalcRowLabel></ng-template>
       <ng-template sdCalcRowInput>
         <input
-          class="form-control text-right"
-          type="number"
+          class="form-control"
           id="concenMassVol"
-          formControlName="concenMassVol"
+          sdInputPosNum
           (blur)="conversionInputBlur()"
           (focus)="conversionInputFocus($event.target)"
           #concenMassVol
           />
-        <sd-select formControlName="concenUnitsMassVol" (click)="conversionFormChange();">
+        <sd-select (click)="conversionFormChange();" #concenUnitsMassVol>
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
       </ng-template>
     </sd-calc-row>
     <div class="form-group form-row">
-      <button class="btn btn-primary mr-3" (click)="convert()">Convert!</button>
+      <button class="btn btn-primary mr-3" (click)="conversionUpdateErrors(true)">Convert!</button>
       <button class="btn btn-secondary" (click)="clearConversion()">Clear</button>
     </div>
 </form>
