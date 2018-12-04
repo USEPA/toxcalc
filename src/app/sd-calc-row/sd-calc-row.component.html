@@ -17,6 +17,11 @@
 <div class="form-row" id="help" *ngIf="showHelp">
   <div class="col-12 mb-3">
     <div class="shadow-sm p-3 bg-light">
+      <div class="float-right ml-2">
+        <button type="button" class="close" aria-label="Close" (click)="showHelp = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <ng-template [ngTemplateOutlet]="help.templateRef"></ng-template>
     </div>
   </div>
