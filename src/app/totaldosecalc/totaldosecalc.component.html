@@ -53,7 +53,7 @@
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        The amount of the total mixture being consumed in a day.
+        <b>Intake</b> is the amount of the total mixture being consumed in a day.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row [sdShow]="substanceDensityShow" #substanceDensity>
@@ -81,7 +81,7 @@
         </div>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        The mass of a given substance divided by the amount of substance.
+        <b>Molar mass</b> is the mass of a given substance divided by the amount of substance.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row [sdShow]="solutionDensityShow" #solutionDensity>
@@ -110,7 +110,7 @@
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        The weight of the animal or human for which the calculation is being performed.
+        The <b>weight</b> of the animal or human consuming the substance.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #dose>
@@ -124,7 +124,7 @@
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        Amount of a substance administered or received by the animal or human in a day.
+        The <b>dose</b> is the amount of a substance administered to or received by the animal or human in a day.
       </ng-template>
     </sd-calc-row>
 
