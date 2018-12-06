@@ -60,74 +60,89 @@
 </form>
 <hr />
 <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
-<form autocomplete="off" novalidate [formGroup]="inhalationForm">
-  <sd-calc-row>
+<form autocomplete="off" novalidate (change)="inhalationFormChange()">
+  <sd-calc-row #concenRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
       Concentration
     </ng-template>
     <ng-template sdCalcRowInput>
         <input
-          class="form-control text-right"
-          type="number"
+          class="form-control"
           id="concen"
-          formControlName="concen"
+          sdInputPosNum
+          (blur)="inhalationInputBlur()"
+          (focus)="inhalationInputFocus($event.target)"
+          #concen
           />
-        <sd-select formControlName="concenUnits" (click)="conversionFormChange();">
+        <sd-select (click)="inhalationFormChange();" #concenUnits>
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
     </ng-template>
   </sd-calc-row>
-  <sd-calc-row>
+  <sd-calc-row #intakeRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
       Intake Rate
     </ng-template>
     <ng-template sdCalcRowInput>
         <input
-          class="form-control text-right"
-          type="number"
+          class="form-control"
           id="intake"
-          formControlName="intake"
+          sdInputPosNum
+          (blur)="inhalationInputBlur()"
+          (focus)="inhalationInputFocus($event.target)"
+          #intake
           />
-        <sd-select formControlName="intakeUnits">
+        <sd-select (click)="inhalationFormChange();" #intakeUnits>
           <option *ngFor="let ratio of intakeUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
     </ng-template>
   </sd-calc-row>
-  <sd-calc-row>
+  <sd-calc-row #weightRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="weight">
       Body Weight
     </ng-template>
     <ng-template sdCalcRowInput>
         <input
-          class="form-control text-right"
-          type="number"
+          class="form-control"
           id="weight"
-          formControlName="weight"
+          sdInputPosNum
+          (blur)="inhalationInputBlur()"
+          (focus)="inhalationInputFocus($event.target)"
+          #weight
           />
-        <sd-select formControlName="weightUnits">
+        <sd-select (click)="inhalationFormChange();" #weightUnits>
           <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
     </ng-template>
   </sd-calc-row>
-  <sd-calc-row>
+  <sd-calc-row #doseRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
       Dose
     </ng-template>
     <ng-template sdCalcRowInput>
         <input
-          class="form-control text-right"
-          type="number"
+          class="form-control"
           id="dose"
-          formControlName="dose"
+          sdInputPosNum
+          (blur)="inhalationInputBlur()"
+          (focus)="inhalationInputFocus($event.target)"
+          #dose
           />
-        <sd-select formControlName="doseUnits">
+        <sd-select (click)="inhalationFormChange();" #doseUnits>
           <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
     </ng-template>
   </sd-calc-row>
-    <div class="form-group form-row">
-      <button class="btn btn-primary mr-3" (click)="calculate()" [disabled]="!inhalationForm.valid">Calculate!</button>
-      <button class="btn btn-secondary" (click)="clearInhalation()">Clear</button>
-    </div>
+  <div class="form-row">
+    <ngb-alert *ngIf="inhalationInternalError" [dismissible]="false" type="danger" class="w-100">
+      <p class="lead">Internal calculator error!</p>
+      <p class="px-3"><kbd>{{inhalationInternalError}}</kbd></p>
+      <p class="mb-0">Click <strong>Clear</strong> to clear this error and reset the form.</p>
+    </ngb-alert>
+  </div>
+  <div class="form-group form-row">
+    <button class="btn btn-primary mr-3" (click)="inhalationUpdateErrors(true)">Calculate!</button>
+    <button class="btn btn-secondary" (click)="clearInhalation()">Clear</button>
+  </div>
 </form>
 <hr />
