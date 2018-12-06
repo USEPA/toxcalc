@@ -40,10 +40,14 @@ export class InhalationFormComponent {
   @ViewChild('doseUnits') doseUnits: SdSelectComponent;
   @ViewChild('doseRow') doseRow: SdCalcRowComponent;
 
+  // TODO: While unicode does have a subscript 'v' character, it does not have a
+  // subscript slash character subscript, nor a combining subscript character.
+  // We use "right low paraphrase bracket" for its visual similarity, though we
+  // should probably switch to a proper HTML <sub>.
   readonly concenUnitsVolVolOptions: ToxRatio[] = [
-    {units: 'ppm', value: 1},
-    {units: 'ppb', value: 0.001},
-    {units: '%', value: 10000}
+    {units: 'ppmᵥ⸝ᵥ', value: 1},
+    {units: 'ppbᵥ⸝ᵥ', value: 0.001},
+    {units: '%ᵥ⸝ᵥ', value: 10000}
   ];
 
   readonly concenUnitsMassVolOptions: ToxRatio[] = [

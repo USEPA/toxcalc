@@ -1,10 +1,12 @@
 <sd-return-to-calculators></sd-return-to-calculators>
 <div class="container py-3">
   <p class="lead font-weight-bold mb-4">Inhalation Dose Conversion Calculator</p>
-  <p><b>Convert between concentration unit types:</b></p>
+  <p><b>Use this calculator to convert between ppm and mg/m³ in air.</b></p>
+  <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
+  <p>ppm should be used to express air concentrations for gases and vapours and mg/m³ for aerosols</p>
   <form autocomplete="off" novalidate (change)="conversionFormChange()">
     <sd-calc-row #concenVolVolRow>
-      <ng-template sdCalcRowLabel></ng-template>
+      <ng-template sdCalcRowLabel>Air Concentration</ng-template>
       <ng-template sdCalcRowInput>
         <input
           class="form-control"
@@ -17,6 +19,9 @@
         <sd-select (click)="conversionFormChange();" #concenUnitsVolVol>
           <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        <b>Air Concentration</b> is the amount of the substance present in a volume of air.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #molarMassRow>
@@ -36,9 +41,12 @@
           <span class="input-group-text">g/mol</span>
         </div>
       </ng-template>
+      <ng-template sdCalcRowHelp>
+        <b>Molar mass</b> is the mass of a given substance divided by the amount of substance.
+      </ng-template>
     </sd-calc-row>
     <sd-calc-row #concenMassVolRow>
-      <ng-template sdCalcRowLabel></ng-template>
+      <ng-template sdCalcRowLabel>Air Concentration</ng-template>
       <ng-template sdCalcRowInput>
         <input
           class="form-control"
@@ -52,6 +60,9 @@
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
       </ng-template>
+      <ng-template sdCalcRowHelp>
+        <b>Air Concentration</b> is the amount of the substance present in a volume of air.
+      </ng-template>
     </sd-calc-row>
     <div class="form-group form-row">
       <button class="btn btn-primary mr-3" (click)="conversionUpdateErrors(true)">Convert!</button>
@@ -63,7 +74,7 @@
 <form autocomplete="off" novalidate (change)="inhalationFormChange()">
   <sd-calc-row #concenRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
-      Concentration
+      Air Concentration
     </ng-template>
     <ng-template sdCalcRowInput>
         <input
@@ -78,10 +89,13 @@
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
     </ng-template>
+    <ng-template sdCalcRowHelp>
+      <b>Air Concentration</b> is the amount of the substance present in a volume of air.
+    </ng-template>
   </sd-calc-row>
   <sd-calc-row #intakeRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
-      Intake Rate
+      Intake
     </ng-template>
     <ng-template sdCalcRowInput>
         <input
@@ -95,6 +109,9 @@
         <sd-select (click)="inhalationFormChange();" #intakeUnits>
           <option *ngFor="let ratio of intakeUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
+    </ng-template>
+    <ng-template sdCalcRowHelp>
+      <b>Intake</b> is the amount of air inhaled in a day.
     </ng-template>
   </sd-calc-row>
   <sd-calc-row #weightRow>
@@ -114,6 +131,9 @@
           <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
     </ng-template>
+    <ng-template sdCalcRowHelp>
+      The <b>weight</b> of the animal or human consuming the substance.
+    </ng-template>
   </sd-calc-row>
   <sd-calc-row #doseRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
@@ -131,6 +151,9 @@
         <sd-select (click)="inhalationFormChange();" #doseUnits>
           <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
+    </ng-template>
+    <ng-template sdCalcRowHelp>
+      The <b>dose</b> is the amount of a substance administered to or received by the animal or human in a day.
     </ng-template>
   </sd-calc-row>
   <div class="form-row">
