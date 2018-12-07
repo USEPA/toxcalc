@@ -93,10 +93,10 @@ export class TotaldosecalcComponent {
     this.bodyWeightTerm = (<Equation>calcEq.solve(this.bodyWeightVar)).RHS;
     this.doseTerm = (<Equation>calcEq.solve(this.doseVar)).RHS;
 
-    this.variableMap.set(this.concenVar, 'C');
-    this.variableMap.set(this.intakeVar, 'IR');
-    this.variableMap.set(this.bodyWeightVar, 'BW');
-    this.variableMap.set(this.doseVar, 'D');
+    this.variableMap.set(this.concenVar, 'Concentration');
+    this.variableMap.set(this.intakeVar, 'Intake');
+    this.variableMap.set(this.bodyWeightVar, 'Body weight');
+    this.variableMap.set(this.doseVar, 'Dose');
     this.updateEquation();
   }
 
@@ -368,15 +368,15 @@ export class TotaldosecalcComponent {
 
   updateEquation(): void {
     this.variableMap.set(this.substanceDensityVar,
-                         this.substanceDensityShow ? 'SD' : '');
+                         this.substanceDensityShow ? 'Substance density' : '');
     this.variableMap.set(this.molarMassVar,
-                         this.molarMassShow && !this.molarMassRecip ? 'MM' : '');
+                         this.molarMassShow && !this.molarMassRecip ? 'Molar mass' : '');
     this.variableMap.set(this.molarMassRecipVar,
-                         this.molarMassShow && this.molarMassRecip ? 'MM' : '');
+                         this.molarMassShow && this.molarMassRecip ? 'Molar mass' : '');
     this.variableMap.set(this.solutionDensityVar,
-                         this.solutionDensityShow && !this.solutionDensityRecip ? 'MD' : '');
+                         this.solutionDensityShow && !this.solutionDensityRecip ? 'Solvent or media density' : '');
     this.variableMap.set(this.solutionDensityRecipVar,
-                         this.solutionDensityShow && this.solutionDensityRecip ? 'MD' : '');
+                         this.solutionDensityShow && this.solutionDensityRecip ? 'Solvent or media density' : '');
     this.equationSnippet = this.variableMap.get(this.doseVar) + ' = ' + this.eqPrinter.dispatch(this.doseTerm);
   }
 
