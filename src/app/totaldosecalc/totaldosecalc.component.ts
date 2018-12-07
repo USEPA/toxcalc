@@ -395,12 +395,26 @@ export class TotaldosecalcComponent {
     }
 
     // Substance density and reciprocal solution density are indistinguishable.
-    // Handle the two cases of reciprocal solution density up front.
+    // Handle the three cases of reciprocal solution density up front.
     if (this.concenUnits.selectedGroupName == 'mol/mass' &&
-        this.intakeUnits.selectedGroupName == 'volume/time') {
+        this.intakeUnits.selectedGroupName == 'volume/time' &&
+        (this.doseUnits.selectedName == 'mg/kg BW/day' ||
+         this.doseUnits.selectedName == 'µg/kg BW/day')) {
       this.substanceDensityShow = false;
       this.molarMassShow = true;
       this.molarMassRecip = false;
+      this.solutionDensityShow = true;
+      this.solutionDensityRecip = false;
+      this.underConstructionShow = false;
+      this.updateEquation();
+      return;
+    }
+    if (this.concenUnits.selectedGroupName == 'mol/mass' &&
+        this.intakeUnits.selectedGroupName == 'volume/time' &&
+        (this.doseUnits.selectedName == 'mol/kg BW/day' ||
+         this.doseUnits.selectedName == 'mmol/kg BW/day')) {
+      this.substanceDensityShow = false;
+      this.molarMassShow = false;
       this.solutionDensityShow = true;
       this.solutionDensityRecip = false;
       this.underConstructionShow = false;
