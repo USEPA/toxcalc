@@ -4,8 +4,16 @@ import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
 import { Dimension } from '../shared/dimension';
-import { Term, Equation, Variable, ScalarAndDimension, isCalculateError } from '../shared/equation';
+import { Term, Equation, EquationToHtml, Variable, ScalarAndDimension, isCalculateError } from '../shared/equation';
 import { SdInputPositiveNumber, printNum } from '../shared/number-util';
+
+class EquationPrinter extends EquationToHtml {
+  constructor(readonly variables: Map<Variable, string>) { super(); }
+
+  visitVariable(v: Variable): string {
+    return <string>this.variables.get(v);
+  }
+}
 
 @Component({
   selector: 'app-totaldosecalc',
@@ -29,7 +37,9 @@ export class TotaldosecalcComponent {
   intakeVar: Variable = new Variable;
   substanceDensityVar: Variable = new Variable;
   molarMassVar: Variable = new Variable;
+  molarMassRecipVar: Variable = new Variable
   solutionDensityVar: Variable = new Variable;
+  solutionDensityRecipVar: Variable = new Variable;
   bodyWeightVar: Variable = new Variable;
   doseVar: Variable = new Variable;
 
@@ -38,7 +48,9 @@ export class TotaldosecalcComponent {
   intakeTerm: Term;
   substanceDensityTerm: Term;
   molarMassTerm: Term;
+  molarMassRecipTerm: Term;
   solutionDensityTerm: Term;
+  solutionDensityRecipTerm: Term;
   bodyWeightTerm: Term;
   doseTerm: Term;
 
@@ -65,14 +77,27 @@ export class TotaldosecalcComponent {
   @ViewChild('doseInput') doseInput: ElementRef<HTMLInputElement>;
   @ViewChild('doseUnits') doseUnits: SdSelectComponent;
 
+  variableMap: Map<Variable, string> = new Map();
+  eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
+  equationSnippet: string;
+
   constructor() {
-    let calcEq = new Equation(Equation.div(Equation.mul(this.concenVar, this.intakeVar, this.substanceDensityVar, this.molarMassVar), Equation.mul(this.solutionDensityVar, this.bodyWeightVar, this.doseVar)), Equation.constantFromNumber(1));    this.concenTerm = (<Equation>calcEq.solve(this.concenVar)).RHS;
+    let calcEq = new Equation(Equation.div(Equation.mul(this.concenVar, this.intakeVar, this.substanceDensityVar, this.molarMassVar, this.solutionDensityVar), Equation.mul(this.molarMassRecipVar, this.solutionDensityRecipVar, this.bodyWeightVar, this.doseVar)), Equation.constantFromNumber(1));
+    this.concenTerm = (<Equation>calcEq.solve(this.concenVar)).RHS;
     this.intakeTerm = (<Equation>calcEq.solve(this.intakeVar)).RHS;
     this.substanceDensityTerm = (<Equation>calcEq.solve(this.substanceDensityVar)).RHS;
     this.molarMassTerm = (<Equation>calcEq.solve(this.molarMassVar)).RHS;
     this.solutionDensityTerm = (<Equation>calcEq.solve(this.solutionDensityVar)).RHS;
+    this.molarMassRecipTerm = (<Equation>calcEq.solve(this.molarMassRecipVar)).RHS;
+    this.solutionDensityRecipTerm = (<Equation>calcEq.solve(this.solutionDensityRecipVar)).RHS;
     this.bodyWeightTerm = (<Equation>calcEq.solve(this.bodyWeightVar)).RHS;
     this.doseTerm = (<Equation>calcEq.solve(this.doseVar)).RHS;
+
+    this.variableMap.set(this.concenVar, 'C');
+    this.variableMap.set(this.intakeVar, 'IR');
+    this.variableMap.set(this.bodyWeightVar, 'BW');
+    this.variableMap.set(this.doseVar, 'D');
+    this.updateEquation();
   }
 
   // Set to true between focus and blur to prevent formChange from updating the
@@ -124,6 +149,7 @@ export class TotaldosecalcComponent {
           inout_controls[i].value = '';
         }
       }
+      this.updateEquation();
       return;
     }
 
@@ -134,13 +160,9 @@ export class TotaldosecalcComponent {
       return;
 
     // Load text in the form into the equation variables.
-    function setValue(v: Variable, i: ElementRef<HTMLInputElement>, sad: ScalarAndDimension, recip: boolean): void {
+    function setValue(v: Variable, i: ElementRef<HTMLInputElement>, sad: ScalarAndDimension): void {
       if (i.nativeElement.value == '') {
         v.setValue(null);
-        return;
-      }
-      if (recip) {
-        v.setValue(new ScalarAndDimension(1/(parseFloat(i.nativeElement.value) * sad.n), sad.d.recip()));
         return;
       }
       v.setValue(new ScalarAndDimension(parseFloat(i.nativeElement.value) * sad.n, sad.d));
@@ -149,27 +171,41 @@ export class TotaldosecalcComponent {
     // A unit-less 1. Use this value for variables on hidden rows.
     const ONE = new ScalarAndDimension(1, null);
 
-    setValue(this.concenVar, this.concenInput, this.getConcenUnit(), false);
-    setValue(this.intakeVar, this.intakeInput, this.getIntakeUnit(), false);
-    setValue(this.bodyWeightVar, this.bodyWeightInput, this.getBodyWeightUnit(), false);
-    setValue(this.doseVar, this.doseInput, this.getDoseUnit(), false);
+    setValue(this.concenVar, this.concenInput, this.getConcenUnit());
+    setValue(this.intakeVar, this.intakeInput, this.getIntakeUnit());
+    setValue(this.bodyWeightVar, this.bodyWeightInput, this.getBodyWeightUnit());
+    setValue(this.doseVar, this.doseInput, this.getDoseUnit());
 
     if (this.substanceDensityShow) {
-      setValue(this.substanceDensityVar, this.substanceDensityInput, this.getSubstanceDensityUnit(), false);
+      setValue(this.substanceDensityVar, this.substanceDensityInput, this.getSubstanceDensityUnit());
     } else {
       this.substanceDensityVar.setValue(ONE);
     }
 
     if (this.molarMassShow) {
-      setValue(this.molarMassVar, this.molarMassInput, this.getMolarMassUnit(), this.molarMassRecip);
+      if (this.molarMassRecip) {
+        this.molarMassVar.setValue(ONE);
+        setValue(this.molarMassRecipVar, this.molarMassInput, this.getMolarMassUnit());
+      } else {
+        setValue(this.molarMassVar, this.molarMassInput, this.getMolarMassUnit());
+        this.molarMassRecipVar.setValue(ONE);
+      }
     } else {
       this.molarMassVar.setValue(ONE);
+      this.molarMassRecipVar.setValue(ONE);
     }
 
     if (this.solutionDensityShow) {
-      setValue(this.solutionDensityVar, this.solutionDensityInput, this.getSolutionDensityUnit(), this.solutionDensityRecip);
+      if (this.solutionDensityRecip) {
+        this.solutionDensityVar.setValue(ONE);
+        setValue(this.solutionDensityRecipVar, this.solutionDensityInput, this.getSolutionDensityUnit());
+      } else {
+        setValue(this.solutionDensityVar, this.solutionDensityInput, this.getSolutionDensityUnit());
+        this.solutionDensityRecipVar.setValue(ONE);
+      }
     } else {
       this.solutionDensityVar.setValue(ONE);
+      this.solutionDensityRecipVar.setValue(ONE);
     }
 
     let solution: Term;
@@ -177,24 +213,43 @@ export class TotaldosecalcComponent {
     if (out_control == this.concenInput.nativeElement) {
       solution = this.concenTerm;
       solutionUnit = this.getConcenUnit();
+      this.equationSnippet = this.variableMap.get(this.concenVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else if (out_control == this.intakeInput.nativeElement) {
       solution = this.intakeTerm;
       solutionUnit = this.getIntakeUnit();
+      this.equationSnippet = this.variableMap.get(this.intakeVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else if (out_control == this.substanceDensityInput.nativeElement) {
       solution = this.substanceDensityTerm;
       solutionUnit = this.getSubstanceDensityUnit();
+      this.equationSnippet = this.variableMap.get(this.substanceDensityVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else if (out_control == this.molarMassInput.nativeElement) {
-      solution = this.molarMassTerm;
-      solutionUnit = this.getMolarMassUnit();
+      if (this.molarMassRecip) {
+        solution = this.molarMassRecipTerm;
+        solutionUnit = this.getMolarMassUnit();
+        this.equationSnippet = this.variableMap.get(this.molarMassRecipVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      } else {
+        solution = this.molarMassTerm;
+        solutionUnit = this.getMolarMassUnit();
+        this.equationSnippet = this.variableMap.get(this.molarMassVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      }
     } else if (out_control == this.solutionDensityInput.nativeElement) {
-      solution = this.solutionDensityTerm;
-      solutionUnit = this.getSolutionDensityUnit();
+      if (this.solutionDensityRecip) {
+        solution = this.solutionDensityRecipTerm;
+        solutionUnit = this.getSolutionDensityUnit();
+        this.equationSnippet = this.variableMap.get(this.solutionDensityRecipVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      } else {
+        solution = this.solutionDensityTerm;
+        solutionUnit = this.getSolutionDensityUnit();
+        this.equationSnippet = this.variableMap.get(this.solutionDensityVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      }
     } else if (out_control == this.bodyWeightInput.nativeElement) {
       solution = this.bodyWeightTerm;
       solutionUnit = this.getBodyWeightUnit();
+      this.equationSnippet = this.variableMap.get(this.bodyWeightVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else if (out_control == this.doseInput.nativeElement) {
       solution = this.doseTerm;
       solutionUnit = this.getDoseUnit();
+      this.equationSnippet = this.variableMap.get(this.doseVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else {
       this.internalError = 'calculator has no output box';
       return;
@@ -208,17 +263,6 @@ export class TotaldosecalcComponent {
     if (isCalculateError(result)) {
       this.internalError = result;
       return;
-    }
-
-    if ((solution == this.molarMassTerm && this.molarMassRecip) ||
-        (solution == this.solutionDensityTerm && this.solutionDensityRecip)) {
-      let mut_result = result.clone();
-      let error = mut_result.expEq(new ScalarAndDimension(-1, null));
-      if (error) {
-        this.internalError = error;
-        return;
-      }
-      result = mut_result;
     }
 
     if (!result.d.equal(solutionUnit.d)) {
@@ -300,6 +344,7 @@ export class TotaldosecalcComponent {
     return this.G_MOL;
   }
 
+  readonly ML_G = new ScalarAndDimension(0.001, this.VOLUME.div(Dimension.initMass()));
   getSolutionDensityUnit(): ScalarAndDimension {
     // g/mL
     return this.G_ML;
@@ -321,6 +366,20 @@ export class TotaldosecalcComponent {
     return this.DOSE_UNITS[this.doseUnits.selectedName];
   }
 
+  updateEquation(): void {
+    this.variableMap.set(this.substanceDensityVar,
+                         this.substanceDensityShow ? 'SD' : '');
+    this.variableMap.set(this.molarMassVar,
+                         this.molarMassShow && !this.molarMassRecip ? 'MM' : '');
+    this.variableMap.set(this.molarMassRecipVar,
+                         this.molarMassShow && this.molarMassRecip ? 'MM' : '');
+    this.variableMap.set(this.solutionDensityVar,
+                         this.solutionDensityShow && !this.solutionDensityRecip ? 'MD' : '');
+    this.variableMap.set(this.solutionDensityRecipVar,
+                         this.solutionDensityShow && this.solutionDensityRecip ? 'MD' : '');
+    this.equationSnippet = this.variableMap.get(this.doseVar) + ' = ' + this.eqPrinter.dispatch(this.doseTerm);
+  }
+
   changeUnits(): void {
     // Concentration of volume/volume and intake of mass/time has units that
     // line up, but the calculation would not be correct without considering the
@@ -331,6 +390,7 @@ export class TotaldosecalcComponent {
       this.molarMassShow = false;
       this.solutionDensityShow = false;
       this.underConstructionShow = true;
+      this.updateEquation();
       return;
     }
 
@@ -340,9 +400,11 @@ export class TotaldosecalcComponent {
         this.intakeUnits.selectedGroupName == 'volume/time') {
       this.substanceDensityShow = false;
       this.molarMassShow = true;
+      this.molarMassRecip = false;
       this.solutionDensityShow = true;
-      this.solutionDensityRecip = true;
+      this.solutionDensityRecip = false;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
     if (this.concenUnits.selectedGroupName == 'mass/mass' &&
@@ -350,8 +412,9 @@ export class TotaldosecalcComponent {
       this.substanceDensityShow = false;
       this.molarMassShow = false;
       this.solutionDensityShow = true;
-      this.solutionDensityRecip = true;
+      this.solutionDensityRecip = false;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
 
@@ -368,6 +431,7 @@ export class TotaldosecalcComponent {
       this.molarMassShow = false;
       this.solutionDensityShow = false;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
 
@@ -376,6 +440,7 @@ export class TotaldosecalcComponent {
       this.molarMassShow = false;
       this.solutionDensityShow = false;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
 
@@ -385,6 +450,7 @@ export class TotaldosecalcComponent {
       this.molarMassRecip = false;
       this.solutionDensityShow = false;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
     if (residual.equal(this.getMolarMassUnit().d.recip())) {
@@ -393,17 +459,17 @@ export class TotaldosecalcComponent {
       this.molarMassRecip = true;
       this.solutionDensityShow = false;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
 
-    // Take the reciprocal because we divide by solution density instead of
-    // multiplying by it.
     if (residual.equal(this.getSolutionDensityUnit().d.recip())) {
       this.substanceDensityShow = false;
       this.molarMassShow = false;
       this.solutionDensityShow = true;
-      this.solutionDensityRecip = false;
+      this.solutionDensityRecip = true;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
 
@@ -413,6 +479,7 @@ export class TotaldosecalcComponent {
       this.molarMassRecip = false;
       this.solutionDensityShow = false;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
     if (residual.equal(this.getSubstanceDensityUnit().d.div(this.getMolarMassUnit().d))) {
@@ -421,6 +488,7 @@ export class TotaldosecalcComponent {
       this.molarMassRecip = true;
       this.solutionDensityShow = false;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
 
@@ -429,8 +497,9 @@ export class TotaldosecalcComponent {
       this.molarMassShow = true;
       this.molarMassRecip = false;
       this.solutionDensityShow = true;
-      this.solutionDensityRecip = false;
+      this.solutionDensityRecip = true;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
     if (residual.equal(this.getSolutionDensityUnit().d.recip().mul(this.getMolarMassUnit().d.recip()))) {
@@ -438,14 +507,16 @@ export class TotaldosecalcComponent {
       this.molarMassShow = true;
       this.molarMassRecip = true;
       this.solutionDensityShow = true;
-      this.solutionDensityRecip = false;
+      this.solutionDensityRecip = true;
       this.underConstructionShow = false;
+      this.updateEquation();
       return;
     }
 
     if (isDevMode())
       console.log(residual);
 
+    this.updateEquation();
     this.underConstructionShow = true;
   }
 

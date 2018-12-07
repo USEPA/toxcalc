@@ -1,4 +1,5 @@
 import { Dimension } from './dimension';
+import { printNum } from './number-util';
 
 // A tiny computer algebra system, supporting one equation with one unknown, on
 // an equality relation. Create Variable objects to hold on to and build an
@@ -197,10 +198,7 @@ class Multiply implements Term {
 class Exponentiate implements Term {
   kind = TypeDiscriminator.Exponentiate;
 
-  private base: Term;
-  private exponent: Term;
-
-  constructor(b: Term, e: Term) { [this.base, this.exponent] = [b, e]; }
+  constructor(private base: Term, private exponent: Term) {}
 
   getBase(): Term { return this.base; }
   getExponent(): Term { return this.exponent; }
@@ -402,9 +400,16 @@ export class Equation {
       }
     }
     terms = newTerms;
-    // TODO: handle constant zero and one. What if it has units?
-    if (constants)
-      terms.push(Equation.constant(constants));
+
+    // TODO: handle constant zero. It may have units which must be preserved.
+    if (constants) {
+      if (constants.n == 1 && constants.d.unit()) {
+        if (terms.length == 0)
+          return Equation.constant(constants);
+      } else {
+        terms.push(Equation.constant(constants));
+      }
+    }
 
     // TODO: got the same term twice or more? Convert to an exponentiation.
     // TODO: got exponentiate terms with the same base? Fold them.
@@ -442,8 +447,125 @@ export class Equation {
       let base_exp = <Exponentiate>base;
       return Equation.exp(base_exp.getBase(), Equation.mul(base_exp.getExponent(), exponent));
     }
+
+    // If base is a multiplication, distribute across its elements instead.
+    if (base.kind == TypeDiscriminator.Multiply) {
+      let base_mul = <Multiply>base;
+      return Equation.mulFromArray(base_mul.multipliers.map(x => Equation.exp(x, exponent)));
+    }
+
     return new Exponentiate(base, exponent);
   }
   // TODO: log.
 
+}
+
+export abstract class EquationToHtml {
+  protected precedence: number = 0;
+
+  // Emit parentheses when moving to a region of lower precedence.
+  // Example 1: add[a, mul[b, c], d]/ Precedence starts at zero, then we visit
+  // the Add and it goes up to 10. Emit a, emit the multiply which pushes the
+  // precedence up to 20. Exiting the multiply, it calls leaveGroup(10) which
+  // restores the precedence back to 10, and finally Add emits d
+  // producing 'a + b * c + d'.
+  // Example 2: mul[add[a, b], add[c, d]]. Precedence starts at zero, enters the
+  // mul and goes to 20. Then it goes to emit its first member, the add enters
+  // precedence 10 which is less than 20 so enterGroup returns [20, '('], the
+  // first value being the remembered precedence to pop back to, the second
+  // value being the grouping character. After emitting a and b, we reach
+  // leaveGroup(20) and it restores the precedence to 20 and also detects that
+  // this an increase in the precedence, so we must be closing a group and
+  // returns ')'. We emit '(a + b) * (c + d)'.
+  enterGroup(new_precedence: number): [number, string] {
+    let old_precedence = this.precedence;
+    this.precedence = new_precedence;
+    return [old_precedence, new_precedence > old_precedence ? '' : '('];
+  }
+  leaveGroup(new_precedence: number): string {
+    let old_precedence = this.precedence;
+    this.precedence = new_precedence;
+    return new_precedence < old_precedence ? '' : ')';
+  }
+
+  abstract visitVariable(v: Variable): string;
+
+  visitConstant(c: Constant): string {
+    return printNum(c.getValue().n);
+  }
+
+  visitAdd(a: Add): string {
+    // TODO: convert a + -1 * b into a - b. See the code in multiply.
+    let p = this.enterGroup(10);
+    return p[1] + a.summands.map(x => this.dispatch(x)).filter(x => x != '').join(' + ') + this.leaveGroup(p[0]);
+  }
+
+  visitMultiply(m: Multiply): string {
+    let p = this.enterGroup(20);
+    let result = p[1];
+    // Emit A ÷ B instead of A × B^-1. Collect all b^e where e is a negative
+    // constant and emit those second, with division signs, and with a
+    // sign-flipped exponent. Everything else gets emitted in the first pass.
+    let denominator = m.collect(function(t: Term) {
+      return t.kind == TypeDiscriminator.Exponentiate &&
+             (<Exponentiate>t).getExponent().kind == TypeDiscriminator.Constant &&
+             (<Constant>(<Exponentiate>t).getExponent()).getValue().n < 0; });
+    if (denominator['anticollected'].length == 0) {
+      // Used when the whole multiply is emitted in the second pass. We get
+      // "1 ÷ A ÷ B".
+      result += '1';
+    } else {
+      result += denominator['anticollected'].map(x => this.dispatch(x)).filter(x => x != '').join(' × ');
+    }
+    if (denominator['collected'].length != 0) {
+      result += ' ÷ ' + denominator['collected'].map(x => Equation.exp(x, Equation.constantFromNumber(-1))).map(x => this.dispatch(x)).filter(x => x != '').join(' ÷ ');
+    }
+    result += this.leaveGroup(p[0]);
+    return result;
+  }
+
+  visitExponentiate(e: Exponentiate): string {
+    let p_enter = this.enterGroup(30);
+    let base_str = this.dispatch(e.getBase());
+    let p_close = this.leaveGroup(p_enter[0]);
+
+    // Because we enter a new superscript region for every exponent, we never
+    // need parenthesis to disambiguate order of operation.
+    let savePrecedence = this.precedence;
+    this.precedence = 0;
+    let exp_str = this.dispatch(e.getExponent());
+    this.precedence = savePrecedence;
+
+    if (base_str == '' || exp_str == '')
+      return '';
+    return p_enter[1] + base_str + p_close + '<sup>' + exp_str + '</sup>';
+  }
+
+  visitLogarithmize(l: Logarithmize): string {
+    // TODO
+    return '';
+  }
+
+  dispatch(t: Term): string {
+    switch (t.kind) {
+      case TypeDiscriminator.Constant:
+        return this.visitConstant(<Constant>t);
+        break;
+      case TypeDiscriminator.Variable:
+        return this.visitVariable(<Variable>t);
+        break;
+      case TypeDiscriminator.Add:
+        return this.visitAdd(<Add>t);
+        break;
+      case TypeDiscriminator.Multiply:
+        return this.visitMultiply(<Multiply>t);
+        break;
+      case TypeDiscriminator.Exponentiate:
+        return this.visitExponentiate(<Exponentiate>t);
+        break;
+      case TypeDiscriminator.Logarithmize:
+        return this.visitLogarithmize(<Logarithmize>t);
+        break;
+    }
+  }
 }
