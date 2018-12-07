@@ -6,7 +6,7 @@
   <p>ppm should be used to express air concentrations for gases and vapours and mg/m³ for aerosols</p>
   <form autocomplete="off" novalidate (change)="conversionFormChange()">
     <sd-calc-row #concenVolVolRow>
-      <ng-template sdCalcRowLabel>Air Concentration</ng-template>
+      <ng-template sdCalcRowLabel>Air concentration</ng-template>
       <ng-template sdCalcRowInput>
         <input
           class="form-control"
@@ -21,12 +21,12 @@
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        <b>Air Concentration</b> is the amount of the substance present in a volume of air.
+        <b>Air concentration</b> is the amount of the substance present in a volume of air.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #molarMassRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
-        Molar Mass
+        Molar mass
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
@@ -42,11 +42,13 @@
         </div>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        <b>Molar mass</b> is the mass of a given substance divided by the amount of substance.
+        <b>Molar mass</b> is the sum of the total mass in grams of all the atoms that make up a mole of a particular molecule. The unit used to measure is grams per mole. To calculate molar mass, you can look it for your molecule from a trusted source, or you can calculate it using the atomic masses of individual atoms that make up the molecule. So, for sodium chloride or NaCl, the atomic mass of sodium is 22.99 g/mol. The atomic mass of chlorine is 35.45 g/mol. Since there is only one atom of sodium and one atom of chlorine in sodium chloride, we add these two together to get the molar mass of NaCl, which is 58.44 g/mol (22.99+35.45=58.44 g/mol).
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #concenMassVolRow>
-      <ng-template sdCalcRowLabel>Air Concentration</ng-template>
+      <ng-template sdCalcRowLabel>
+        Air concentration
+      </ng-template>
       <ng-template sdCalcRowInput>
         <input
           class="form-control"
@@ -61,7 +63,7 @@
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        <b>Air Concentration</b> is the amount of the substance present in a volume of air.
+        <b>Air concentration</b> is the amount of the substance present in a volume of air.
       </ng-template>
     </sd-calc-row>
     <div class="form-group form-row">
@@ -74,7 +76,7 @@
 <form autocomplete="off" novalidate (change)="inhalationFormChange()">
   <sd-calc-row #concenRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
-      Air Concentration
+      Air concentration
     </ng-template>
     <ng-template sdCalcRowInput>
         <input
@@ -90,7 +92,7 @@
         </sd-select>
     </ng-template>
     <ng-template sdCalcRowHelp>
-      <b>Air Concentration</b> is the amount of the substance present in a volume of air.
+      <b>Air concentration</b> is the amount of the substance present in a volume of air.
     </ng-template>
   </sd-calc-row>
   <sd-calc-row #intakeRow>
@@ -106,9 +108,9 @@
           (focus)="inhalationInputFocus($event.target)"
           #intake
           />
-        <sd-select (click)="inhalationFormChange();" #intakeUnits>
-          <option *ngFor="let ratio of intakeUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
-        </sd-select>
+        <div class="input-group-append">
+          <span class="input-group-text">m³/day</span>
+        </div>
     </ng-template>
     <ng-template sdCalcRowHelp>
       <b>Intake</b> is the amount of air inhaled in a day.
@@ -116,7 +118,7 @@
   </sd-calc-row>
   <sd-calc-row #weightRow>
     <ng-template sdCalcRowLabel sdCalcRowLabelFor="weight">
-      Body Weight
+      Body weight
     </ng-template>
     <ng-template sdCalcRowInput>
         <input
@@ -132,7 +134,7 @@
         </sd-select>
     </ng-template>
     <ng-template sdCalcRowHelp>
-      The <b>weight</b> of the animal or human consuming the substance.
+      The <b>body weight</b> of the animal or human consuming the substance.
     </ng-template>
   </sd-calc-row>
   <sd-calc-row #doseRow>
@@ -153,7 +155,7 @@
         </sd-select>
     </ng-template>
     <ng-template sdCalcRowHelp>
-      The <b>dose</b> is the amount of a substance administered to or received by the animal or human in a day.
+      The <b>dose</b> is the quantity of a substance administered to or received by the animal or human in a day.
     </ng-template>
   </sd-calc-row>
   <div class="form-row">

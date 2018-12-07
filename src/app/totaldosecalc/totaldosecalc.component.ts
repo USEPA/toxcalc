@@ -656,5 +656,7 @@ export class TotaldosecalcComponent {
     this.solutionDensityInput.nativeElement.readOnly = false;
     this.bodyWeightInput.nativeElement.readOnly = false;
     this.doseInput.nativeElement.readOnly = false;
+
+    this.updateEquation();
   }
 }

@@ -31,7 +31,6 @@ export class InhalationFormComponent {
   @ViewChild('concenUnits') concenUnits: SdSelectComponent;
   @ViewChild('concenRow') concenRow: SdCalcRowComponent;
   @ViewChild('intake') intake: ElementRef<HTMLInputElement>
-  @ViewChild('intakeUnits') intakeUnits: SdSelectComponent;
   @ViewChild('intakeRow') intakeRow: SdCalcRowComponent;
   @ViewChild('weight') weight: ElementRef<HTMLInputElement>
   @ViewChild('weightUnits') weightUnits: SdSelectComponent;
@@ -40,14 +39,10 @@ export class InhalationFormComponent {
   @ViewChild('doseUnits') doseUnits: SdSelectComponent;
   @ViewChild('doseRow') doseRow: SdCalcRowComponent;
 
-  // TODO: While unicode does have a subscript 'v' character, it does not have a
-  // subscript slash character, nor a combining subscript character. We use
-  // "right low paraphrase bracket" for its visual similarity, though we should
-  // probably switch to a proper HTML <sub>.
   readonly concenUnitsVolVolOptions: ToxRatio[] = [
-    {units: 'ppmᵥ⸝ᵥ', value: 1},
-    {units: 'ppbᵥ⸝ᵥ', value: 0.001},
-    {units: '%ᵥ⸝ᵥ', value: 10000}
+    {units: 'ppm (v/v)', value: 1},
+    {units: 'ppb (v/v)', value: 0.001},
+    {units: '% (v/v)', value: 10000}
   ];
 
   readonly concenUnitsMassVolOptions: ToxRatio[] = [
@@ -58,7 +53,6 @@ export class InhalationFormComponent {
   ];
 
   concenUnitsOptions = CONCEN_RATIOS_INHALATION;
-  intakeUnitsOptions = INTAKE_RATIOS_INHALATION;
   weightUnitsOptions = WEIGHT_RATIOS;
   doseUnitsOptions = DOSE_RATIOS_INHALATION;
 
@@ -83,7 +77,7 @@ export class InhalationFormComponent {
   getIntakeUnit(): ScalarAndDimension {
     const VOLUME = Dimension.initLength().exp(3);
     const VOLUME_TIME = VOLUME.div(Dimension.initTime());
-    return new ScalarAndDimension(this.intakeUnits.value.value, VOLUME_TIME);
+    return new ScalarAndDimension(1, VOLUME_TIME);
   }
 
   getWeightUnit(): ScalarAndDimension {
