@@ -21,6 +21,7 @@ import { SdSelectComponent, SdSelectItem, SdSelectGroup } from './sd-select/sd-s
 import { SdCalcRowComponent, SdCalcRowLabel, SdCalcRowInput, SdCalcRowHelp } from './sd-calc-row/sd-calc-row.component';
 import { TotaldosecalcComponent } from './totaldosecalc/totaldosecalc.component';
 import { SdInputPositiveNumber } from './shared/number-util';
+import { SdMathJaxDirective } from './sd-math-jax.directive';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SdInputPositiveNumber } from './shared/number-util';
     SdCalcRowInput,
     SdCalcRowLabel,
     SdInputPositiveNumber,
+    SdMathJaxDirective,
     SdProductListComponent,
     SdProductListItem,
     SdProductListItemDescription,
@@ -42,7 +44,8 @@ import { SdInputPositiveNumber } from './shared/number-util';
     SdSelectComponent,
     SdSelectItem,
     SdSelectGroup,
-    TotaldosecalcComponent
+    TotaldosecalcComponent,
+    SdMathJaxDirective
   ],
   imports: [
     AppRoutingModule,
