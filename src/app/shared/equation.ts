@@ -1,4 +1,4 @@
-import { Dimension } from './dimension';
+import { Dimension, ScalarAndDimension, ScalarAndDimensionMutable, CalculateErrors, isCalculateError } from './dimension';
 import { printNum } from './number-util';
 
 // A tiny computer algebra system, supporting one equation with one unknown, on
@@ -8,69 +8,6 @@ import { printNum } from './number-util';
 // only once.) Call solved_eq = my_eq.solve(my_var) to return a new Equation in
 // my_var = expr... form. If all your variables are set, solved_eq.RHS.getValue()
 // should result in a concrete value.
-
-type CalculateErrors = 'dimension conformity error' | 'zero to the power of zero' | 'complex exponential';
-export function isCalculateError(x: ScalarAndDimension | Term | null | CalculateErrors): x is CalculateErrors {
-  return x == 'dimension conformity error' || x == 'zero to the power of zero' || x == 'complex exponential';
-}
-
-export class ScalarAndDimension {
-  protected _n: number;
-  protected _d: Dimension;
-
-  get n(): number { return this._n; }
-  get d(): Dimension { return this._d; }
-
-  constructor(n: number, d: Dimension | null) {
-    this._n = n;
-    this._d = d == null ? Dimension.initUnit() : d;
-  }
-
-  clone(): ScalarAndDimensionMutable {
-    return new ScalarAndDimensionMutable(this.n, this.d);
-  }
-};
-
-export class ScalarAndDimensionMutable extends ScalarAndDimension {
-  // The getters should have been inherited:
-  //   https://github.com/Microsoft/TypeScript/issues/25927
-  get n(): number { return this._n; }
-  get d(): Dimension { return this._d; }
-
-  set n(n: number) { this._n = n; }
-  set d(d: Dimension) { this._d = d; }
-
-  constructor(n: number, d: Dimension | null) { super(n, d); }
-
-  addEq(other: ScalarAndDimension): void | CalculateErrors {
-    if (!this.d.equal(other.d))
-      return 'dimension conformity error';
-    this.n += other.n;
-  }
-
-  mulEq(other: ScalarAndDimension): void {
-    this.d = this.d.mul(other.d);
-    this.n *= other.n;
-  }
-
-  expEq(exponent: ScalarAndDimension): void | CalculateErrors {
-    // 'this' is the base of the exponentiation.
-    if (!exponent.d.unit())
-      return 'dimension conformity error';
-    if (this.n == 0 && exponent.n == 0)
-      return 'zero to the power of zero';
-    if (this.n < 0 && !Number.isInteger(exponent.n))
-      return 'complex exponential';
-    this.n **= exponent.n;
-    this.d = this.d.exp(exponent.n);
-  }
-
-  /* TODO
-  logEq(antilogarithm: ScalarAndDimension): void | CalculateErrors {
-    // 'this' is the base of the logarithm.
-  }
-  */
-}
 
 enum TypeDiscriminator {
   Constant,

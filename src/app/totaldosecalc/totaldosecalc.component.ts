@@ -3,8 +3,8 @@ import { Component, ElementRef, ViewChild, isDevMode } from '@angular/core';
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
-import { Dimension } from '../shared/dimension';
-import { Term, Equation, EquationToHtml, Variable, ScalarAndDimension, isCalculateError } from '../shared/equation';
+import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
+import { Term, Equation, EquationToHtml, Variable } from '../shared/equation';
 import { SdInputPositiveNumber, printNum } from '../shared/number-util';
 
 class EquationPrinter extends EquationToHtml {
