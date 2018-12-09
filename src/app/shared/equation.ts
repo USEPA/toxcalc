@@ -397,7 +397,7 @@ export class Equation {
 
 }
 
-export abstract class EquationToHtml {
+export abstract class EquationToMathJax {
   protected precedence: number = 0;
 
   // Emit parentheses when moving to a region of lower precedence.
@@ -417,12 +417,12 @@ export abstract class EquationToHtml {
   enterGroup(new_precedence: number): [number, string] {
     let old_precedence = this.precedence;
     this.precedence = new_precedence;
-    return [old_precedence, new_precedence > old_precedence ? '' : '('];
+    return [old_precedence, new_precedence > old_precedence ? '' : '\\left('];
   }
   leaveGroup(new_precedence: number): string {
     let old_precedence = this.precedence;
     this.precedence = new_precedence;
-    return new_precedence < old_precedence ? '' : ')';
+    return new_precedence < old_precedence ? '' : '\\right)';
   }
 
   abstract visitVariable(v: Variable): string;
@@ -447,18 +447,20 @@ export abstract class EquationToHtml {
       return t.kind == TypeDiscriminator.Exponentiate &&
              (<Exponentiate>t).getExponent().kind == TypeDiscriminator.Constant &&
              (<Constant>(<Exponentiate>t).getExponent()).getValue().n < 0; });
+    let numerator_str;
     if (denominator['anticollected'].length == 0) {
       // Used when the whole multiply is emitted in the second pass. We get
       // "1 ÷ A ÷ B".
-      result += '1';
+      numerator_str = '1';
     } else {
-      result += denominator['anticollected'].map(x => this.dispatch(x)).filter(x => x != '').join(' × ');
+      numerator_str = denominator['anticollected'].map(x => this.dispatch(x)).filter(x => x != '').join(' \\times ');
     }
     if (denominator['collected'].length != 0) {
-      result += ' ÷ ' + denominator['collected'].map(x => Equation.exp(x, Equation.constantFromNumber(-1))).map(x => this.dispatch(x)).filter(x => x != '').join(' ÷ ');
+      result += '\\frac{' + numerator_str + '}{' + denominator['collected'].map(x => Equation.exp(x, Equation.constantFromNumber(-1))).map(x => this.dispatch(x)).filter(x => x != '').join(' \\times ') + '}';
+    } else {
+      result += numerator_str;
     }
-    result += this.leaveGroup(p[0]);
-    return result;
+    return result + this.leaveGroup(p[0]);
   }
 
   visitExponentiate(e: Exponentiate): string {
@@ -467,7 +469,7 @@ export abstract class EquationToHtml {
     let p_close = this.leaveGroup(p_enter[0]);
 
     // Because we enter a new superscript region for every exponent, we never
-    // need parenthesis to disambiguate order of operation.
+    // need parentheses to disambiguate order of operation.
     let savePrecedence = this.precedence;
     this.precedence = 0;
     let exp_str = this.dispatch(e.getExponent());
@@ -475,7 +477,7 @@ export abstract class EquationToHtml {
 
     if (base_str == '' || exp_str == '')
       return '';
-    return p_enter[1] + base_str + p_close + '<sup>' + exp_str + '</sup>';
+    return `${p_enter[1]}${base_str}${p_close}^{${exp_str}}`;
   }
 
   visitLogarithmize(l: Logarithmize): string {

@@ -4,14 +4,17 @@ import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
-import { Term, Equation, EquationToHtml, Variable } from '../shared/equation';
+import { Term, Equation, EquationToMathJax, Variable } from '../shared/equation';
 import { SdInputPositiveNumber, printNum } from '../shared/number-util';
+import { SdMathJaxDirective } from '../sd-math-jax.directive';
 
-class EquationPrinter extends EquationToHtml {
+class EquationPrinter extends EquationToMathJax {
   constructor(readonly variables: Map<Variable, string>) { super(); }
 
   visitVariable(v: Variable): string {
-    return <string>this.variables.get(v);
+    let s = <string>this.variables.get(v);
+    if (!s) return '';
+    return `\\text{${s}}`;
   }
 }
 
@@ -213,43 +216,43 @@ export class TotaldosecalcComponent {
     if (out_control == this.concenInput.nativeElement) {
       solution = this.concenTerm;
       solutionUnit = this.getConcenUnit();
-      this.equationSnippet = this.variableMap.get(this.concenVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.dispatch(this.concenVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else if (out_control == this.intakeInput.nativeElement) {
       solution = this.intakeTerm;
       solutionUnit = this.getIntakeUnit();
-      this.equationSnippet = this.variableMap.get(this.intakeVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.dispatch(this.intakeVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else if (out_control == this.substanceDensityInput.nativeElement) {
       solution = this.substanceDensityTerm;
       solutionUnit = this.getSubstanceDensityUnit();
-      this.equationSnippet = this.variableMap.get(this.substanceDensityVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.dispatch(this.substanceDensityVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else if (out_control == this.molarMassInput.nativeElement) {
       if (this.molarMassRecip) {
         solution = this.molarMassRecipTerm;
         solutionUnit = this.getMolarMassUnit();
-        this.equationSnippet = this.variableMap.get(this.molarMassRecipVar) + ' = ' + this.eqPrinter.dispatch(solution);
+        this.equationSnippet = this.eqPrinter.dispatch(this.molarMassRecipVar) + ' = ' + this.eqPrinter.dispatch(solution);
       } else {
         solution = this.molarMassTerm;
         solutionUnit = this.getMolarMassUnit();
-        this.equationSnippet = this.variableMap.get(this.molarMassVar) + ' = ' + this.eqPrinter.dispatch(solution);
+        this.equationSnippet = this.eqPrinter.dispatch(this.molarMassVar) + ' = ' + this.eqPrinter.dispatch(solution);
       }
     } else if (out_control == this.solutionDensityInput.nativeElement) {
       if (this.solutionDensityRecip) {
         solution = this.solutionDensityRecipTerm;
         solutionUnit = this.getSolutionDensityUnit();
-        this.equationSnippet = this.variableMap.get(this.solutionDensityRecipVar) + ' = ' + this.eqPrinter.dispatch(solution);
+        this.equationSnippet = this.eqPrinter.dispatch(this.solutionDensityRecipVar) + ' = ' + this.eqPrinter.dispatch(solution);
       } else {
         solution = this.solutionDensityTerm;
         solutionUnit = this.getSolutionDensityUnit();
-        this.equationSnippet = this.variableMap.get(this.solutionDensityVar) + ' = ' + this.eqPrinter.dispatch(solution);
+        this.equationSnippet = this.eqPrinter.dispatch(this.solutionDensityVar) + ' = ' + this.eqPrinter.dispatch(solution);
       }
     } else if (out_control == this.bodyWeightInput.nativeElement) {
       solution = this.bodyWeightTerm;
       solutionUnit = this.getBodyWeightUnit();
-      this.equationSnippet = this.variableMap.get(this.bodyWeightVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.dispatch(this.bodyWeightVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else if (out_control == this.doseInput.nativeElement) {
       solution = this.doseTerm;
       solutionUnit = this.getDoseUnit();
-      this.equationSnippet = this.variableMap.get(this.doseVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.dispatch(this.doseVar) + ' = ' + this.eqPrinter.dispatch(solution);
     } else {
       this.internalError = 'calculator has no output box';
       return;
@@ -377,7 +380,7 @@ export class TotaldosecalcComponent {
                          this.solutionDensityShow && !this.solutionDensityRecip ? 'Solvent or media density' : '');
     this.variableMap.set(this.solutionDensityRecipVar,
                          this.solutionDensityShow && this.solutionDensityRecip ? 'Solvent or media density' : '');
-    this.equationSnippet = this.variableMap.get(this.doseVar) + ' = ' + this.eqPrinter.dispatch(this.doseTerm);
+    this.equationSnippet = this.eqPrinter.dispatch(this.doseVar) + ' = ' + this.eqPrinter.dispatch(this.doseTerm);
   }
 
   changeUnits(): void {
