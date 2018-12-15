@@ -131,15 +131,7 @@
     <div class="form-row">
       <ngb-alert *ngIf="underConstructionShow" [dismissible]="false" type="warning" class="w-100"><strong class="mr-2">Sorry!</strong>Calculation with these units is not supported.</ngb-alert>
     </div>
-
-    <div class="form-row">
-      <ngb-alert *ngIf="internalError" [dismissible]="false" type="danger" class="w-100">
-        <p class="lead">Internal calculator error!</p>
-        <!-- Yes, this is an abuse of 'kbd', but the visual style is right. -->
-        <p class="px-3"><kbd>{{internalError}}</kbd></p>
-        <p class="mb-0">Click <strong>Clear</strong> to clear this error and reset the form.</p></ngb-alert>
-    </div>
-
+    <sd-internal-calc-error [errorText]="internalError"></sd-internal-calc-error>
     <div class="form-row">
       <button type="button" class="btn btn-primary mr-3" (click)="updateErrors(true)" [disabled]="underConstructionShow || internalError">Calculate!</button>
       <button type="reset" class="btn btn-secondary" (click)="clear()">Clear</button>

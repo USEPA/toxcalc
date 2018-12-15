@@ -1,0 +1,7 @@
+<div class="form-row" *ngIf="errorText">
+  <ngb-alert [dismissible]="false" type="danger" class="w-100">
+    <p class="lead">Internal calculator error!</p>
+    <p class="px-3"><kbd>{{errorText}}</kbd></p>
+    <p class="mb-0">Click <strong>Clear</strong> to clear this error and reset the form.</p>
+  </ngb-alert>
+</div>

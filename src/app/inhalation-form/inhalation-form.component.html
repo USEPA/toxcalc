@@ -158,13 +158,7 @@
       <b>Dose</b> is the quantity of a substance administered to or received by the animal or human in a day.
     </ng-template>
   </sd-calc-row>
-  <div class="form-row">
-    <ngb-alert *ngIf="inhalationInternalError" [dismissible]="false" type="danger" class="w-100">
-      <p class="lead">Internal calculator error!</p>
-      <p class="px-3"><kbd>{{inhalationInternalError}}</kbd></p>
-      <p class="mb-0">Click <strong>Clear</strong> to clear this error and reset the form.</p>
-    </ngb-alert>
-  </div>
+  <sd-internal-calc-error [errorText]="inhalationInternalError"></sd-internal-calc-error>
   <div class="form-group form-row">
     <button class="btn btn-primary mr-3" (click)="inhalationUpdateErrors(true)">Calculate!</button>
     <button class="btn btn-secondary" (click)="clearInhalation()">Clear</button>
