@@ -1,7 +1,7 @@
 <sd-return-to-calculators></sd-return-to-calculators>
 <div class="container py-3">
   <p class="lead font-weight-bold">Total Dose Conversion Calculator</p>
-  <p class="mb-4">This calculator is designed to only be used for homogenous (i.e. uniform) chemical mixtures. It should not be used for radionuclides.</p>
+  <p class="mb-4">This calculator is designed to only be used for homogenous (i.e. uniform) chemical <a target="_blank" href="assets/terms.html#mixture">mixtures</a>. It should not be used for radionuclides.</p>
   <form autocomplete="off" novalidate (change)="formChange()">
     <sd-calc-row #concen>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
@@ -34,7 +34,7 @@
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        <b>Concentration</b> is the amount of one substance present in another substance. In other words, it is the amount of a substance present in a mixture that contains at least two substances. Commonly, these mixtures are solutions. Concentration can be used to express the amount of any substance in any media. Examples of media that are relevant to human or environmental health include food, soil, water, air, bodily fluids, tissues, pharmaceuticals and consumer products.
+        <b>Concentration</b> is the amount of one substance present in another substance. In other words, it is the amount of a substance present in a <a target="_blank" href="assets/terms.html#mixture">mixture</a> that contains at least two substances. Commonly, these mixtures are <a target="_blank" href="assets/terms.html#solution">solutions</a>. Concentration can be used to express the amount of any substance in any media. Examples of media that are relevant to human or environmental health include food, soil, water, air, bodily fluids, tissues, pharmaceuticals and consumer products. <a target="_blank" href="assets/terms.html#concentration">Click here</a> for more information on concentration.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #intake>
