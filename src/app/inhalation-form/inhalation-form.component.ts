@@ -5,12 +5,28 @@ import { ToxRatio } from '../toxicology/tox-ratio';
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
+import { SdMathJaxDirective } from '../sd-math-jax.directive';
+
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
-import { Term, Equation, Variable } from '../shared/equation';
+import { Term, Equation, EquationToMathJax, Variable } from '../shared/equation';
 
 import { printNum } from '../shared/number-util';
 
 import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE_RATIOS_INHALATION, SATP_RATIO } from '../toxicology/UNIT_LISTS';
+
+class EquationPrinter extends EquationToMathJax {
+  constructor(readonly variables: Map<Variable, string>) { super(); }
+
+  visitVariable(v: Variable): string {
+    let s = <string>this.variables.get(v);
+    if (!s) return '';
+    return `\\text{${s}}`;
+  }
+
+  print(lhs: Term, rhs: Term): string {
+    return this.dispatch(lhs) + ' = ' + this.dispatch(rhs);
+  }
+}
 
 @Component({
   selector: 'app-inhalation-form',
@@ -68,6 +84,10 @@ export class InhalationFormComponent {
 
   inhalationInternalError: string;
 
+  inhalationVariableMap: Map<Variable, string> = new Map();
+  inhalationEqPrinter: EquationPrinter = new EquationPrinter(this.inhalationVariableMap);
+  inhalationEquationSnippet: string;
+
   getConcenUnit(): ScalarAndDimension {
     const VOLUME = Dimension.initLength().exp(3);
     const MASS_VOLUME = Dimension.initMass().div(VOLUME);
@@ -94,6 +114,13 @@ export class InhalationFormComponent {
     this.intakeTerm = (<Equation>inhalationEq.solve(this.intakeVar)).RHS;
     this.weightTerm = (<Equation>inhalationEq.solve(this.weightVar)).RHS;
     this.doseTerm = (<Equation>inhalationEq.solve(this.doseVar)).RHS;
+
+    this.inhalationVariableMap.set(this.concenVar, 'Concentration');
+    this.inhalationVariableMap.set(this.intakeVar, 'Intake');
+    this.inhalationVariableMap.set(this.weightVar, 'Body weight');
+    this.inhalationVariableMap.set(this.doseVar, 'Dose');
+
+    this.inhalationEquationSnippet = this.inhalationEqPrinter.print(this.doseVar, this.doseTerm);
   }
 
   calculate(): void {
@@ -127,6 +154,7 @@ export class InhalationFormComponent {
           inout_controls[i].value = '';
         }
       }
+      this.inhalationEquationSnippet = this.inhalationEqPrinter.print(this.doseVar, this.doseTerm);
       return;
     }
 
@@ -155,15 +183,19 @@ export class InhalationFormComponent {
     if (out_control == this.concen.nativeElement) {
       solution = this.concenTerm;
       solutionUnit = this.getConcenUnit();
+      this.inhalationEquationSnippet = this.inhalationEqPrinter.print(this.concenVar, solution);
     } else if (out_control == this.intake.nativeElement) {
       solution = this.intakeTerm;
       solutionUnit = this.getIntakeUnit();
+      this.inhalationEquationSnippet = this.inhalationEqPrinter.print(this.intakeVar, solution);
     } else if (out_control == this.weight.nativeElement) {
       solution = this.weightTerm;
       solutionUnit = this.getWeightUnit();
+      this.inhalationEquationSnippet = this.inhalationEqPrinter.print(this.weightVar, solution);
     } else if (out_control == this.dose.nativeElement) {
       solution = this.doseTerm;
       solutionUnit = this.getDoseUnit();
+      this.inhalationEquationSnippet = this.inhalationEqPrinter.print(this.doseVar, solution);
     } else {
       this.inhalationInternalError = 'calculator has no output box';
       return;
@@ -375,6 +407,8 @@ export class InhalationFormComponent {
     this.doseRow.errorText = '';
     this.dose.nativeElement.readOnly = false;
     this.dose.nativeElement.value = '';
+
+    this.inhalationEquationSnippet = this.inhalationEqPrinter.print(this.doseVar, this.doseTerm);
   }
 
 }
