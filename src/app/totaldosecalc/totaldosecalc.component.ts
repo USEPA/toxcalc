@@ -16,6 +16,10 @@ class EquationPrinter extends EquationToMathJax {
     if (!s) return '';
     return `\\text{${s}}`;
   }
+
+  print(lhs: Term, rhs: Term): string {
+    return this.dispatch(lhs) + ' = ' + this.dispatch(rhs);
+  }
 }
 
 @Component({
@@ -216,43 +220,43 @@ export class TotaldosecalcComponent {
     if (out_control == this.concenInput.nativeElement) {
       solution = this.concenTerm;
       solutionUnit = this.getConcenUnit();
-      this.equationSnippet = this.eqPrinter.dispatch(this.concenVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.print(this.concenVar, solution);
     } else if (out_control == this.intakeInput.nativeElement) {
       solution = this.intakeTerm;
       solutionUnit = this.getIntakeUnit();
-      this.equationSnippet = this.eqPrinter.dispatch(this.intakeVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.print(this.intakeVar, solution);
     } else if (out_control == this.substanceDensityInput.nativeElement) {
       solution = this.substanceDensityTerm;
       solutionUnit = this.getSubstanceDensityUnit();
-      this.equationSnippet = this.eqPrinter.dispatch(this.substanceDensityVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.print(this.substanceDensityVar, solution);
     } else if (out_control == this.molarMassInput.nativeElement) {
       if (this.molarMassRecip) {
         solution = this.molarMassRecipTerm;
         solutionUnit = this.getMolarMassUnit();
-        this.equationSnippet = this.eqPrinter.dispatch(this.molarMassRecipVar) + ' = ' + this.eqPrinter.dispatch(solution);
+        this.equationSnippet = this.eqPrinter.print(this.molarMassRecipVar, solution);
       } else {
         solution = this.molarMassTerm;
         solutionUnit = this.getMolarMassUnit();
-        this.equationSnippet = this.eqPrinter.dispatch(this.molarMassVar) + ' = ' + this.eqPrinter.dispatch(solution);
+        this.equationSnippet = this.eqPrinter.print(this.molarMassVar, solution);
       }
     } else if (out_control == this.solutionDensityInput.nativeElement) {
       if (this.solutionDensityRecip) {
         solution = this.solutionDensityRecipTerm;
         solutionUnit = this.getSolutionDensityUnit();
-        this.equationSnippet = this.eqPrinter.dispatch(this.solutionDensityRecipVar) + ' = ' + this.eqPrinter.dispatch(solution);
+        this.equationSnippet = this.eqPrinter.print(this.solutionDensityRecipVar, solution);
       } else {
         solution = this.solutionDensityTerm;
         solutionUnit = this.getSolutionDensityUnit();
-        this.equationSnippet = this.eqPrinter.dispatch(this.solutionDensityVar) + ' = ' + this.eqPrinter.dispatch(solution);
+        this.equationSnippet = this.eqPrinter.print(this.solutionDensityVar, solution);
       }
     } else if (out_control == this.bodyWeightInput.nativeElement) {
       solution = this.bodyWeightTerm;
       solutionUnit = this.getBodyWeightUnit();
-      this.equationSnippet = this.eqPrinter.dispatch(this.bodyWeightVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.print(this.bodyWeightVar, solution);
     } else if (out_control == this.doseInput.nativeElement) {
       solution = this.doseTerm;
       solutionUnit = this.getDoseUnit();
-      this.equationSnippet = this.eqPrinter.dispatch(this.doseVar) + ' = ' + this.eqPrinter.dispatch(solution);
+      this.equationSnippet = this.eqPrinter.print(this.doseVar, solution);
     } else {
       this.internalError = 'calculator has no output box';
       return;
