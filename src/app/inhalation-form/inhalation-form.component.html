@@ -14,9 +14,12 @@
           sdInputPosNum
           (blur)="conversionInputBlur()"
           (focus)="conversionInputFocus($event.target)"
-          #concenVolVol
+          [readonly]="concenVolVol.readOnly"
+          [(ngModel)]="concenVolVol.value"
+          [ngModelOptions]="{standalone: true}"
+          #concenVolVolInput
           />
-        <sd-select (click)="conversionFormChange();" #concenUnitsVolVol>
+        <sd-select (click)="conversionFormChange();" #concenVolVolUnits>
           <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
       </ng-template>
@@ -35,7 +38,10 @@
           sdInputPosNum
           (blur)="conversionInputBlur()"
           (focus)="conversionInputFocus($event.target)"
-          #molarMass
+          [readonly]="molarMass.readOnly"
+          [(ngModel)]="molarMass.value"
+          [ngModelOptions]="{standalone: true}"
+          #molarMassInput
           />
         <div class="input-group-append">
           <span class="input-group-text">g/mol</span>
@@ -56,9 +62,12 @@
           sdInputPosNum
           (blur)="conversionInputBlur()"
           (focus)="conversionInputFocus($event.target)"
-          #concenMassVol
+          [readonly]="concenMassVol.readOnly"
+          [(ngModel)]="concenMassVol.value"
+          [ngModelOptions]="{standalone: true}"
+          #concenMassVolInput
           />
-        <sd-select (click)="conversionFormChange();" #concenUnitsMassVol>
+        <sd-select (click)="conversionFormChange();" #concenMassVolUnits>
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
       </ng-template>

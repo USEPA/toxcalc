@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
 import { ToxRatio } from '../toxicology/tox-ratio';
 
@@ -14,20 +14,68 @@ import { printNum } from '../shared/number-util';
 
 import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE_RATIOS_INHALATION, SATP_RATIO } from '../toxicology/UNIT_LISTS';
 
+abstract class Field {
+  input: ElementRef<HTMLInputElement>;
+  units?: SdSelectComponent;
+  row: SdCalcRowComponent;
+  var: Variable = new Variable;
+  term: Term;
+  readonly unit: ScalarAndDimension;
+  readOnly: boolean = false;
+  value: string = '';
+
+  // Update our 'var' from the text in 'value'.
+  updateVar(): void {
+    if (this.value == '') {
+      this.var.setValue(null);
+      return;
+    }
+    this.var.setValue(new ScalarAndDimension(parseFloat(this.value) * this.unit.n, this.unit.d));
+  }
+
+  equationSnippet(eqPrinter: EquationPrinter) {
+    return eqPrinter.print(this.var, this.term);
+  }
+}
+
+class ConcenVolVol extends Field {
+  get unit(): ScalarAndDimension {
+    return new ScalarAndDimension(this.units!.value.value, Dimension.initUnit());
+  }
+}
+
+class MolarMass extends Field {
+  private readonly G_MOL = new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initMolarMass()));
+  get unit(): ScalarAndDimension { return this.G_MOL; }
+}
+
+class ConcenMassVol extends Field {
+  private readonly VOLUME = Dimension.initLength().exp(3);
+  private readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
+  get unit(): ScalarAndDimension {
+    return new ScalarAndDimension(this.units!.value.value, this.MASS_VOLUME);
+  }
+}
+
 @Component({
   selector: 'app-inhalation-form',
   templateUrl: './inhalation-form.component.html',
   styleUrls: ['./inhalation-form.component.css'],
 })
-export class InhalationFormComponent {
-  @ViewChild('concenVolVol') concenVolVol: ElementRef<HTMLInputElement>
-  @ViewChild('concenUnitsVolVol') concenUnitsVolVol: SdSelectComponent;
+export class InhalationFormComponent implements AfterViewInit {
+  concenVolVol: ConcenVolVol = new ConcenVolVol;
+  @ViewChild('concenVolVolInput') concenVolVolInput: ElementRef<HTMLInputElement>
+  @ViewChild('concenVolVolUnits') concenVolVolUnits: SdSelectComponent;
   @ViewChild('concenVolVolRow') concenVolVolRow: SdCalcRowComponent;
-  @ViewChild('concenMassVol') concenMassVol: ElementRef<HTMLInputElement>
-  @ViewChild('concenUnitsMassVol') concenUnitsMassVol: SdSelectComponent;
-  @ViewChild('concenMassVolRow') concenMassVolRow: SdCalcRowComponent;
-  @ViewChild('molarMass') molarMass: ElementRef<HTMLInputElement>
+
+  molarMass: MolarMass = new MolarMass;
+  @ViewChild('molarMassInput') molarMassInput: ElementRef<HTMLInputElement>
   @ViewChild('molarMassRow') molarMassRow: SdCalcRowComponent;
+
+  concenMassVol: ConcenMassVol = new ConcenMassVol;
+  @ViewChild('concenMassVolInput') concenMassVolInput: ElementRef<HTMLInputElement>
+  @ViewChild('concenMassVolUnits') concenMassVolUnits: SdSelectComponent;
+  @ViewChild('concenMassVolRow') concenMassVolRow: SdCalcRowComponent;
 
   @ViewChild('concen') concen: ElementRef<HTMLInputElement>
   @ViewChild('concenUnits') concenUnits: SdSelectComponent;
@@ -58,17 +106,11 @@ export class InhalationFormComponent {
   weightUnitsOptions = WEIGHT_RATIOS;
   doseUnitsOptions = DOSE_RATIOS_INHALATION;
 
-  concenVolVolVar: Variable = new Variable;
-  molarMassVar: Variable = new Variable;
-  concenMassVolVar: Variable = new Variable;
   concenVar: Variable = new Variable;
   intakeVar: Variable = new Variable;
   weightVar: Variable = new Variable;
   doseVar: Variable = new Variable;
 
-  concenVolVolTerm: Term;
-  molarMassTerm: Term;
-  concenMassVolTerm: Term;
   concenTerm: Term;
   intakeTerm: Term;
   weightTerm: Term;
@@ -81,21 +123,6 @@ export class InhalationFormComponent {
   eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
   conversionEquationSnippet: string;
   inhalationEquationSnippet: string;
-
-  getConcenVolVolUnit(): ScalarAndDimension {
-    return new ScalarAndDimension(this.concenUnitsVolVol.value.value, Dimension.initUnit());
-  }
-
-  readonly G_MOL = new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initMolarMass()));
-  getMolarMassUnit(): ScalarAndDimension {
-    return this.G_MOL;
-  }
-
-  getConcenMassVolUnit(): ScalarAndDimension {
-    const VOLUME = Dimension.initLength().exp(3);
-    const MASS_VOLUME = Dimension.initMass().div(VOLUME);
-    return new ScalarAndDimension(this.concenUnitsMassVol.value.value, MASS_VOLUME);
-  }
 
   getConcenUnit(): ScalarAndDimension {
     const VOLUME = Dimension.initLength().exp(3);
@@ -117,17 +144,30 @@ export class InhalationFormComponent {
     return new ScalarAndDimension(this.doseUnits.value.value, Dimension.initTime().recip());
   }
 
+  ngAfterViewInit() {
+    this.concenVolVol.input = this.concenVolVolInput;
+    this.concenVolVol.units = this.concenVolVolUnits;
+    this.concenVolVol.row = this.concenVolVolRow;
+
+    this.molarMass.input = this.molarMassInput;
+    this.molarMass.row = this.molarMassRow;
+
+    this.concenMassVol.input = this.concenMassVolInput;
+    this.concenMassVol.units = this.concenMassVolUnits;
+    this.concenMassVol.row = this.concenMassVolRow;
+  }
+
   constructor() {
-    let conversionEq = new Equation(Equation.div(Equation.mul(this.concenVolVolVar, this.molarMassVar), Equation.mul(Equation.constantFromNumberDimension(SATP_RATIO, Dimension.initLength().exp(3).div(Dimension.initMolarMass())), this.concenMassVolVar)), Equation.constantFromNumber(1));
-    this.concenVolVolTerm = (<Equation>conversionEq.solve(this.concenVolVolVar)).RHS;
-    this.molarMassTerm = (<Equation>conversionEq.solve(this.molarMassVar)).RHS;
-    this.concenMassVolTerm = (<Equation>conversionEq.solve(this.concenMassVolVar)).RHS;
+    let conversionEq = new Equation(Equation.div(Equation.mul(this.concenVolVol.var, this.molarMass.var), Equation.mul(Equation.constantFromNumberDimension(SATP_RATIO, Dimension.initLength().exp(3).div(Dimension.initMolarMass())), this.concenMassVol.var)), Equation.constantFromNumber(1));
+    this.concenVolVol.term = (<Equation>conversionEq.solve(this.concenVolVol.var)).RHS;
+    this.molarMass.term = (<Equation>conversionEq.solve(this.molarMass.var)).RHS;
+    this.concenMassVol.term = (<Equation>conversionEq.solve(this.concenMassVol.var)).RHS;
 
-    this.variableMap.set(this.concenVolVolVar, 'Air concentration (v/v)');
-    this.variableMap.set(this.molarMassVar, 'Molar mass');
-    this.variableMap.set(this.concenMassVolVar, 'Air concentration (m/v)');
+    this.variableMap.set(this.concenVolVol.var, 'Air concentration (v/v)');
+    this.variableMap.set(this.molarMass.var, 'Molar mass');
+    this.variableMap.set(this.concenMassVol.var, 'Air concentration (m/v)');
 
-    this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVolVar, this.concenMassVolTerm);
+    this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVol.var, this.concenMassVol.term);
 
     let inhalationEq = new Equation(Equation.div(Equation.mul(this.concenVar, this.intakeVar), Equation.mul(this.weightVar, this.doseVar)), Equation.constantFromNumber(1));
     this.concenTerm = (<Equation>inhalationEq.solve(this.concenVar)).RHS;
@@ -242,15 +282,15 @@ export class InhalationFormComponent {
   conversionCalculate() {
     this.conversionUpdateErrors(false);
 
-    let inout_controls: HTMLInputElement[] = [
-      this.concenVolVol.nativeElement,
-      this.molarMass.nativeElement,
-      this.concenMassVol.nativeElement
+    let inout_controls: Field[] = [
+      this.concenVolVol,
+      this.molarMass,
+      this.concenMassVol
     ];
 
-    let out_control: HTMLInputElement | null = null;
+    let out_control: Field | null = null;
     for (let i = 0; i != inout_controls.length; ++i) {
-      if (inout_controls[i].readOnly || inout_controls[i].value == ''){
+      if (inout_controls[i].readOnly || inout_controls[i].value == '') {
         if (out_control == null) {
           out_control = inout_controls[i];
         } else {
@@ -269,7 +309,7 @@ export class InhalationFormComponent {
           inout_controls[i].value = '';
         }
       }
-      this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVolVar, this.concenMassVolTerm);
+      this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVol.var, this.concenMassVol.term);
       return;
     }
 
@@ -279,39 +319,12 @@ export class InhalationFormComponent {
     if (this.conversionHasErrors())
       return;
 
-    // Load text in the form into the equation variables.
-    function setValue(v: Variable, i: ElementRef<HTMLInputElement>, sad: ScalarAndDimension): void {
-      if (i.nativeElement.value == '') {
-        v.setValue(null);
-        return;
-      }
-      v.setValue(new ScalarAndDimension(parseFloat(i.nativeElement.value) * sad.n, sad.d));
-    }
+    this.concenVolVol.updateVar();
+    this.molarMass.updateVar();
+    this.concenMassVol.updateVar();
+    this.conversionEquationSnippet = out_control.equationSnippet(this.eqPrinter);
 
-    setValue(this.concenVolVolVar, this.concenVolVol, this.getConcenVolVolUnit());
-    setValue(this.molarMassVar, this.molarMass, this.getMolarMassUnit());
-    setValue(this.concenMassVolVar, this.concenMassVol, this.getConcenMassVolUnit());
-
-    let solution: Term;
-    let solutionUnit: ScalarAndDimension;
-    if (out_control == this.concenVolVol.nativeElement) {
-      solution = this.concenVolVolTerm;
-      solutionUnit = this.getConcenVolVolUnit();
-      this.conversionEquationSnippet = this.eqPrinter.print(this.concenVolVolVar, solution);
-    } else if (out_control == this.molarMass.nativeElement) {
-      solution = this.molarMassTerm;
-      solutionUnit = this.getMolarMassUnit();
-      this.conversionEquationSnippet = this.eqPrinter.print(this.molarMassVar, solution);
-    } else if (out_control == this.concenMassVol.nativeElement) {
-      solution = this.concenMassVolTerm;
-      solutionUnit = this.getConcenMassVolUnit();
-      this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVolVar, solution);
-    } else {
-      this.conversionInternalError = 'calculator has no output box';
-      return;
-    }
-
-    let result = solution.getValue();
+    let result = out_control.term.getValue();
     if (result == null) {
       this.conversionInternalError = 'calculation returned null';
       return;
@@ -321,12 +334,12 @@ export class InhalationFormComponent {
       return;
     }
 
-    if (!result.d.equal(solutionUnit.d)) {
+    if (!result.d.equal(out_control.unit.d)) {
       this.conversionInternalError = 'dimension mismatch';
       return;
     }
 
-    out_control.value = printNum(result.n / solutionUnit.n);
+    out_control.value = printNum(result.n / out_control.unit.n);
   }
 
   conversion_suppress_change: boolean = false;
@@ -345,7 +358,7 @@ export class InhalationFormComponent {
     this.inhalationCalculate();
   }
 
-  requiredAndValidNumber(e: HTMLInputElement): string {
+  requiredAndValidNumber(e: HTMLInputElement | Field): string {
     if (e.readOnly) return '';
     if (e.value == '')
       return 'Please fill in a number.';
@@ -355,7 +368,7 @@ export class InhalationFormComponent {
       return 'Must be a number.';
     return '';
   }
-  validNumber(e: HTMLInputElement): string {
+  validNumber(e: HTMLInputElement | Field): string {
     if (e.readOnly || e.value == '')
       return '';
     if (e.value.match(/.*\..*\..*/))
@@ -367,9 +380,9 @@ export class InhalationFormComponent {
 
   conversionUpdateErrors(required: boolean): void {
     let checkFn = required ? this.requiredAndValidNumber : this.validNumber;
-    this.concenVolVolRow.errorText = checkFn(this.concenVolVol.nativeElement);
-    this.concenMassVolRow.errorText = checkFn(this.concenMassVol.nativeElement);
-    this.molarMassRow.errorText = checkFn(this.molarMass.nativeElement);
+    this.concenVolVol.row.errorText = checkFn(this.concenVolVol);
+    this.concenMassVol.row.errorText = checkFn(this.concenMassVol);
+    this.molarMass.row.errorText = checkFn(this.molarMass);
   }
 
   inhalationUpdateErrors(required: boolean): void {
@@ -381,9 +394,9 @@ export class InhalationFormComponent {
   }
 
   conversionHasErrors(): boolean {
-    return this.concenVolVolRow.errorText != '' ||
-           this.concenMassVolRow.errorText != '' ||
-           this.molarMassRow.errorText != '';
+    return this.concenVolVol.row.errorText != '' ||
+           this.concenMassVol.row.errorText != '' ||
+           this.molarMass.row.errorText != '';
   }
 
   inhalationHasErrors(): boolean {
@@ -406,15 +419,15 @@ export class InhalationFormComponent {
   conversionInputFocus(self: HTMLInputElement): void {
     this.conversion_suppress_change = true;
 
-    if (this.concenVolVol.nativeElement.readOnly &&
-        this.concenVolVol.nativeElement != self) {
-      this.concenVolVol.nativeElement.value = '';
-    } else if (this.concenMassVol.nativeElement.readOnly &&
-               this.concenMassVol.nativeElement != self) {
-      this.concenMassVol.nativeElement.value = '';
-    } else if (this.molarMass.nativeElement.readOnly &&
-               this.molarMass.nativeElement != self) {
-      this.molarMass.nativeElement.value = '';
+    if (this.concenVolVol.readOnly &&
+        this.concenVolVol.input.nativeElement != self) {
+      this.concenVolVol.value = '';
+    } else if (this.concenMassVol.readOnly &&
+               this.concenMassVol.input.nativeElement != self) {
+      this.concenMassVol.value = '';
+    } else if (this.molarMass.readOnly &&
+               this.molarMass.input.nativeElement != self) {
+      this.molarMass.value = '';
     }
   }
 
@@ -444,16 +457,16 @@ export class InhalationFormComponent {
   }
 
   clearConversion(): void {
-    this.concenVolVolRow.errorText = '';
-    this.concenVolVol.nativeElement.readOnly = false;
-    this.concenVolVol.nativeElement.value = '';
-    this.concenMassVolRow.errorText = '';
-    this.concenMassVol.nativeElement.readOnly = false;
-    this.concenMassVol.nativeElement.value = '';
-    this.molarMassRow.errorText = '';
-    this.molarMass.nativeElement.readOnly = false;
-    this.molarMass.nativeElement.value = '';
-    this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVolVar, this.concenMassVolTerm);
+    this.concenVolVol.row.errorText = '';
+    this.concenVolVol.readOnly = false;
+    this.concenVolVol.value = '';
+    this.molarMass.row.errorText = '';
+    this.molarMass.readOnly = false;
+    this.molarMass.value = '';
+    this.concenMassVol.row.errorText = '';
+    this.concenMassVol.readOnly = false;
+    this.concenMassVol.value = '';
+    this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVol.var, this.concenMassVol.term);
   }
 
   clearInhalation(): void {
