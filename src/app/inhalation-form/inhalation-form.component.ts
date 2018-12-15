@@ -123,7 +123,7 @@ export class InhalationFormComponent {
     this.inhalationEquationSnippet = this.inhalationEqPrinter.print(this.doseVar, this.doseTerm);
   }
 
-  calculate(): void {
+  inhalationCalculate(): void {
     this.inhalationUpdateErrors(false);
 
     let inout_controls: HTMLInputElement[] = [
@@ -219,7 +219,7 @@ export class InhalationFormComponent {
     out_control.value = printNum(result.n / solutionUnit.n);
   }
 
-  convert() {
+  conversionCalculate() {
     this.conversionUpdateErrors(false);
 
     let ratio1 = this.concenUnitsVolVol.value.value;
@@ -272,7 +272,7 @@ export class InhalationFormComponent {
     if (this.conversion_suppress_change)
       return;
 
-    this.convert();
+    this.conversionCalculate();
   }
 
   inhalation_suppress_change: boolean = false;
@@ -280,7 +280,7 @@ export class InhalationFormComponent {
     if (this.inhalation_suppress_change)
       return;
 
-    this.calculate();
+    this.inhalationCalculate();
   }
 
   requiredAndValidNumber(e: HTMLInputElement): string {
@@ -333,12 +333,12 @@ export class InhalationFormComponent {
 
   conversionInputBlur(): void {
     this.conversion_suppress_change = false;
-    this.convert();
+    this.conversionCalculate();
   }
 
   inhalationInputBlur(): void {
     this.inhalation_suppress_change = false;
-    this.calculate()
+    this.inhalationCalculate()
   }
 
   conversionInputFocus(self: HTMLInputElement): void {
