@@ -453,6 +453,7 @@ export class InhalationFormComponent {
     this.molarMassRow.errorText = '';
     this.molarMass.nativeElement.readOnly = false;
     this.molarMass.nativeElement.value = '';
+    this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVolVar, this.concenMassVolTerm);
   }
 
   clearInhalation(): void {
