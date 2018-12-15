@@ -97,7 +97,10 @@
           sdInputPosNum
           (blur)="inhalationInputBlur()"
           (focus)="inhalationInputFocus($event.target)"
-          #concen
+          [readonly]="concen.readOnly"
+          [(ngModel)]="concen.value"
+          [ngModelOptions]="{standalone: true}"
+          #concenInput
           />
         <sd-select (click)="inhalationFormChange();" #concenUnits>
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
@@ -118,7 +121,10 @@
           sdInputPosNum
           (blur)="inhalationInputBlur()"
           (focus)="inhalationInputFocus($event.target)"
-          #intake
+          [readonly]="intake.readOnly"
+          [(ngModel)]="intake.value"
+          [ngModelOptions]="{standalone: true}"
+          #intakeInput
           />
         <div class="input-group-append">
           <span class="input-group-text">m³/day</span>
@@ -139,7 +145,10 @@
           sdInputPosNum
           (blur)="inhalationInputBlur()"
           (focus)="inhalationInputFocus($event.target)"
-          #weight
+          [readonly]="weight.readOnly"
+          [(ngModel)]="weight.value"
+          [ngModelOptions]="{standalone: true}"
+          #weightInput
           />
         <sd-select (click)="inhalationFormChange();" #weightUnits>
           <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
@@ -160,7 +169,10 @@
           sdInputPosNum
           (blur)="inhalationInputBlur()"
           (focus)="inhalationInputFocus($event.target)"
-          #dose
+          [readonly]="dose.readOnly"
+          [(ngModel)]="dose.value"
+          [ngModelOptions]="{standalone: true}"
+          #doseInput
           />
         <sd-select (click)="inhalationFormChange();" #doseUnits>
           <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>

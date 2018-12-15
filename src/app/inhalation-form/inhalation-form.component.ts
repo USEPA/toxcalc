@@ -38,6 +38,8 @@ abstract class Field {
   }
 }
 
+// Conversion form fields.
+
 class ConcenVolVol extends Field {
   get unit(): ScalarAndDimension {
     return new ScalarAndDimension(this.units!.value.value, Dimension.initUnit());
@@ -56,6 +58,37 @@ class ConcenMassVol extends Field {
     return new ScalarAndDimension(this.units!.value.value, this.MASS_VOLUME);
   }
 }
+
+// Inhalation form fields.
+
+class Concen extends Field {
+  private readonly VOLUME = Dimension.initLength().exp(3);
+  private readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
+  get unit(): ScalarAndDimension {
+    return new ScalarAndDimension(this.units!.value.value, this.MASS_VOLUME);
+  }
+}
+
+class Intake extends Field {
+  private readonly VOLUME = Dimension.initLength().exp(3);
+  private readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
+  get unit(): ScalarAndDimension {
+    return new ScalarAndDimension(1, this.VOLUME_TIME);
+  }
+}
+
+class Weight extends Field {
+  get unit(): ScalarAndDimension {
+    return new ScalarAndDimension(this.units!.value.value, Dimension.initMass());
+  }
+}
+
+class Dose extends Field {
+  get unit(): ScalarAndDimension {
+    return new ScalarAndDimension(this.units!.value.value, Dimension.initTime().recip());
+  }
+}
+
 
 @Component({
   selector: 'app-inhalation-form',
@@ -77,15 +110,22 @@ export class InhalationFormComponent implements AfterViewInit {
   @ViewChild('concenMassVolUnits') concenMassVolUnits: SdSelectComponent;
   @ViewChild('concenMassVolRow') concenMassVolRow: SdCalcRowComponent;
 
-  @ViewChild('concen') concen: ElementRef<HTMLInputElement>
+  concen: Concen = new Concen;
+  @ViewChild('concenInput') concenInput: ElementRef<HTMLInputElement>
   @ViewChild('concenUnits') concenUnits: SdSelectComponent;
   @ViewChild('concenRow') concenRow: SdCalcRowComponent;
-  @ViewChild('intake') intake: ElementRef<HTMLInputElement>
+
+  intake: Intake = new Intake;
+  @ViewChild('intakeInput') intakeInput: ElementRef<HTMLInputElement>
   @ViewChild('intakeRow') intakeRow: SdCalcRowComponent;
-  @ViewChild('weight') weight: ElementRef<HTMLInputElement>
+
+  weight: Weight = new Weight;
+  @ViewChild('weightInput') weightInput: ElementRef<HTMLInputElement>
   @ViewChild('weightUnits') weightUnits: SdSelectComponent;
   @ViewChild('weightRow') weightRow: SdCalcRowComponent;
-  @ViewChild('dose') dose: ElementRef<HTMLInputElement>
+
+  dose: Dose = new Dose;
+  @ViewChild('doseInput') doseInput: ElementRef<HTMLInputElement>
   @ViewChild('doseUnits') doseUnits: SdSelectComponent;
   @ViewChild('doseRow') doseRow: SdCalcRowComponent;
 
@@ -106,16 +146,6 @@ export class InhalationFormComponent implements AfterViewInit {
   weightUnitsOptions = WEIGHT_RATIOS;
   doseUnitsOptions = DOSE_RATIOS_INHALATION;
 
-  concenVar: Variable = new Variable;
-  intakeVar: Variable = new Variable;
-  weightVar: Variable = new Variable;
-  doseVar: Variable = new Variable;
-
-  concenTerm: Term;
-  intakeTerm: Term;
-  weightTerm: Term;
-  doseTerm: Term;
-
   conversionInternalError: string;
   inhalationInternalError: string;
 
@@ -124,27 +154,8 @@ export class InhalationFormComponent implements AfterViewInit {
   conversionEquationSnippet: string;
   inhalationEquationSnippet: string;
 
-  getConcenUnit(): ScalarAndDimension {
-    const VOLUME = Dimension.initLength().exp(3);
-    const MASS_VOLUME = Dimension.initMass().div(VOLUME);
-    return new ScalarAndDimension(this.concenUnits.value.value, MASS_VOLUME);
-  }
-
-  getIntakeUnit(): ScalarAndDimension {
-    const VOLUME = Dimension.initLength().exp(3);
-    const VOLUME_TIME = VOLUME.div(Dimension.initTime());
-    return new ScalarAndDimension(1, VOLUME_TIME);
-  }
-
-  getWeightUnit(): ScalarAndDimension {
-    return new ScalarAndDimension(this.weightUnits.value.value, Dimension.initMass());
-  }
-
-  getDoseUnit(): ScalarAndDimension {
-    return new ScalarAndDimension(this.doseUnits.value.value, Dimension.initTime().recip());
-  }
-
   ngAfterViewInit() {
+    // Conversion form.
     this.concenVolVol.input = this.concenVolVolInput;
     this.concenVolVol.units = this.concenVolVolUnits;
     this.concenVolVol.row = this.concenVolVolRow;
@@ -155,6 +166,22 @@ export class InhalationFormComponent implements AfterViewInit {
     this.concenMassVol.input = this.concenMassVolInput;
     this.concenMassVol.units = this.concenMassVolUnits;
     this.concenMassVol.row = this.concenMassVolRow;
+
+    // Inhalation form.
+    this.concen.input = this.concenInput;
+    this.concen.units = this.concenUnits;
+    this.concen.row = this.concenRow;
+
+    this.intake.input = this.intakeInput;
+    this.intake.row = this.intakeRow;
+
+    this.weight.input = this.weightInput;
+    this.weight.units = this.weightUnits;
+    this.weight.row = this.weightRow;
+
+    this.dose.input = this.doseInput;
+    this.dose.units = this.doseUnits;
+    this.dose.row = this.doseRow;
   }
 
   constructor() {
@@ -167,33 +194,33 @@ export class InhalationFormComponent implements AfterViewInit {
     this.variableMap.set(this.molarMass.var, 'Molar mass');
     this.variableMap.set(this.concenMassVol.var, 'Air concentration (m/v)');
 
-    this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVol.var, this.concenMassVol.term);
+    this.conversionEquationSnippet = this.concenMassVol.equationSnippet(this.eqPrinter);
 
-    let inhalationEq = new Equation(Equation.div(Equation.mul(this.concenVar, this.intakeVar), Equation.mul(this.weightVar, this.doseVar)), Equation.constantFromNumber(1));
-    this.concenTerm = (<Equation>inhalationEq.solve(this.concenVar)).RHS;
-    this.intakeTerm = (<Equation>inhalationEq.solve(this.intakeVar)).RHS;
-    this.weightTerm = (<Equation>inhalationEq.solve(this.weightVar)).RHS;
-    this.doseTerm = (<Equation>inhalationEq.solve(this.doseVar)).RHS;
+    let inhalationEq = new Equation(Equation.div(Equation.mul(this.concen.var, this.intake.var), Equation.mul(this.weight.var, this.dose.var)), Equation.constantFromNumber(1));
+    this.concen.term = (<Equation>inhalationEq.solve(this.concen.var)).RHS;
+    this.intake.term = (<Equation>inhalationEq.solve(this.intake.var)).RHS;
+    this.weight.term = (<Equation>inhalationEq.solve(this.weight.var)).RHS;
+    this.dose.term = (<Equation>inhalationEq.solve(this.dose.var)).RHS;
 
-    this.variableMap.set(this.concenVar, 'Concentration');
-    this.variableMap.set(this.intakeVar, 'Intake');
-    this.variableMap.set(this.weightVar, 'Body weight');
-    this.variableMap.set(this.doseVar, 'Dose');
+    this.variableMap.set(this.concen.var, 'Concentration');
+    this.variableMap.set(this.intake.var, 'Intake');
+    this.variableMap.set(this.weight.var, 'Body weight');
+    this.variableMap.set(this.dose.var, 'Dose');
 
-    this.inhalationEquationSnippet = this.eqPrinter.print(this.doseVar, this.doseTerm);
+    this.inhalationEquationSnippet = this.dose.equationSnippet(this.eqPrinter);
   }
 
   inhalationCalculate(): void {
     this.inhalationUpdateErrors(false);
 
-    let inout_controls: HTMLInputElement[] = [
-      this.concen.nativeElement,
-      this.intake.nativeElement,
-      this.weight.nativeElement,
-      this.dose.nativeElement
+    let inout_controls: Field[] = [
+      this.concen,
+      this.intake,
+      this.weight,
+      this.dose,
     ];
 
-    let out_control: HTMLInputElement | null = null;
+    let out_control: Field | null = null;
     for (let i = 0; i != inout_controls.length; ++i) {
       if (inout_controls[i].readOnly || inout_controls[i].value == '') {
         if (out_control == null) {
@@ -214,7 +241,7 @@ export class InhalationFormComponent implements AfterViewInit {
           inout_controls[i].value = '';
         }
       }
-      this.inhalationEquationSnippet = this.eqPrinter.print(this.doseVar, this.doseTerm);
+      this.inhalationEquationSnippet = this.dose.equationSnippet(this.eqPrinter);
       return;
     }
 
@@ -233,35 +260,13 @@ export class InhalationFormComponent implements AfterViewInit {
       v.setValue(new ScalarAndDimension(parseFloat(i.nativeElement.value) * sad.n, sad.d));
     }
 
-    setValue(this.concenVar, this.concen, this.getConcenUnit());
-    setValue(this.intakeVar, this.intake, this.getIntakeUnit());
-    setValue(this.weightVar, this.weight, this.getWeightUnit());
-    setValue(this.doseVar, this.dose, this.getDoseUnit());
+    this.concen.updateVar();
+    this.intake.updateVar();
+    this.weight.updateVar();
+    this.dose.updateVar();
+    this.inhalationEquationSnippet = out_control.equationSnippet(this.eqPrinter);
 
-    let solution: Term;
-    let solutionUnit: ScalarAndDimension;
-    if (out_control == this.concen.nativeElement) {
-      solution = this.concenTerm;
-      solutionUnit = this.getConcenUnit();
-      this.inhalationEquationSnippet = this.eqPrinter.print(this.concenVar, solution);
-    } else if (out_control == this.intake.nativeElement) {
-      solution = this.intakeTerm;
-      solutionUnit = this.getIntakeUnit();
-      this.inhalationEquationSnippet = this.eqPrinter.print(this.intakeVar, solution);
-    } else if (out_control == this.weight.nativeElement) {
-      solution = this.weightTerm;
-      solutionUnit = this.getWeightUnit();
-      this.inhalationEquationSnippet = this.eqPrinter.print(this.weightVar, solution);
-    } else if (out_control == this.dose.nativeElement) {
-      solution = this.doseTerm;
-      solutionUnit = this.getDoseUnit();
-      this.inhalationEquationSnippet = this.eqPrinter.print(this.doseVar, solution);
-    } else {
-      this.inhalationInternalError = 'calculator has no output box';
-      return;
-    }
-
-    let result = solution.getValue();
+    let result = out_control.term.getValue();
     if (result == null) {
       this.inhalationInternalError = 'calculation returned null';
       return;
@@ -271,12 +276,12 @@ export class InhalationFormComponent implements AfterViewInit {
       return;
     }
 
-    if (!result.d.equal(solutionUnit.d)) {
+    if (!result.d.equal(out_control.unit.d)) {
       this.inhalationInternalError = 'dimension mismatch';
       return;
     }
 
-    out_control.value = printNum(result.n / solutionUnit.n);
+    out_control.value = printNum(result.n / out_control.unit.n);
   }
 
   conversionCalculate() {
@@ -309,7 +314,7 @@ export class InhalationFormComponent implements AfterViewInit {
           inout_controls[i].value = '';
         }
       }
-      this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVol.var, this.concenMassVol.term);
+      this.conversionEquationSnippet = this.concenMassVol.equationSnippet(this.eqPrinter);
       return;
     }
 
@@ -358,7 +363,7 @@ export class InhalationFormComponent implements AfterViewInit {
     this.inhalationCalculate();
   }
 
-  requiredAndValidNumber(e: HTMLInputElement | Field): string {
+  requiredAndValidNumber(e: Field): string {
     if (e.readOnly) return '';
     if (e.value == '')
       return 'Please fill in a number.';
@@ -368,7 +373,7 @@ export class InhalationFormComponent implements AfterViewInit {
       return 'Must be a number.';
     return '';
   }
-  validNumber(e: HTMLInputElement | Field): string {
+  validNumber(e: Field): string {
     if (e.readOnly || e.value == '')
       return '';
     if (e.value.match(/.*\..*\..*/))
@@ -381,29 +386,29 @@ export class InhalationFormComponent implements AfterViewInit {
   conversionUpdateErrors(required: boolean): void {
     let checkFn = required ? this.requiredAndValidNumber : this.validNumber;
     this.concenVolVol.row.errorText = checkFn(this.concenVolVol);
-    this.concenMassVol.row.errorText = checkFn(this.concenMassVol);
     this.molarMass.row.errorText = checkFn(this.molarMass);
+    this.concenMassVol.row.errorText = checkFn(this.concenMassVol);
   }
 
   inhalationUpdateErrors(required: boolean): void {
     let checkFn = required ? this.requiredAndValidNumber : this.validNumber;
-    this.concenRow.errorText = checkFn(this.concen.nativeElement);
-    this.intakeRow.errorText = checkFn(this.intake.nativeElement);
-    this.weightRow.errorText = checkFn(this.weight.nativeElement);
-    this.doseRow.errorText = checkFn(this.dose.nativeElement);
+    this.concen.row.errorText = checkFn(this.concen);
+    this.intake.row.errorText = checkFn(this.intake);
+    this.weight.row.errorText = checkFn(this.weight);
+    this.dose.row.errorText = checkFn(this.dose);
   }
 
   conversionHasErrors(): boolean {
     return this.concenVolVol.row.errorText != '' ||
-           this.concenMassVol.row.errorText != '' ||
-           this.molarMass.row.errorText != '';
+           this.molarMass.row.errorText != '' ||
+           this.concenMassVol.row.errorText != '';
   }
 
   inhalationHasErrors(): boolean {
-    return this.concenRow.errorText != '' ||
-           this.intakeRow.errorText != '' ||
-           this.weightRow.errorText != '' ||
-           this.doseRow.errorText != '';
+    return this.concen.row.errorText != '' ||
+           this.intake.row.errorText != '' ||
+           this.weight.row.errorText != '' ||
+           this.dose.row.errorText != '';
   }
 
   conversionInputBlur(): void {
@@ -422,36 +427,36 @@ export class InhalationFormComponent implements AfterViewInit {
     if (this.concenVolVol.readOnly &&
         this.concenVolVol.input.nativeElement != self) {
       this.concenVolVol.value = '';
-    } else if (this.concenMassVol.readOnly &&
-               this.concenMassVol.input.nativeElement != self) {
-      this.concenMassVol.value = '';
     } else if (this.molarMass.readOnly &&
                this.molarMass.input.nativeElement != self) {
       this.molarMass.value = '';
+    } else if (this.concenMassVol.readOnly &&
+               this.concenMassVol.input.nativeElement != self) {
+      this.concenMassVol.value = '';
     }
   }
 
   inhalationInputFocus(self: HTMLInputElement): void {
     this.inhalation_suppress_change = true;
 
-    if (this.concen.nativeElement.readOnly) {
-      if (this.concen.nativeElement != self)
-        this.concen.nativeElement.value = '';
+    if (this.concen.readOnly) {
+      if (this.concen.input.nativeElement != self)
+        this.concen.value = '';
       return;
     }
-    if (this.intake.nativeElement.readOnly) {
-      if (this.intake.nativeElement != self)
-        this.intake.nativeElement.value = '';
+    if (this.intake.readOnly) {
+      if (this.intake.input.nativeElement != self)
+        this.intake.value = '';
       return;
     }
-    if (this.weight.nativeElement.readOnly) {
-      if (this.weight.nativeElement != self)
-        this.weight.nativeElement.value = '';
+    if (this.weight.readOnly) {
+      if (this.weight.input.nativeElement != self)
+        this.weight.value = '';
       return;
     }
-    if (this.dose.nativeElement.readOnly) {
-      if (this.dose.nativeElement != self)
-        this.dose.nativeElement.value = '';
+    if (this.dose.readOnly) {
+      if (this.dose.input.nativeElement != self)
+        this.dose.value = '';
       return;
     }
   }
@@ -466,25 +471,24 @@ export class InhalationFormComponent implements AfterViewInit {
     this.concenMassVol.row.errorText = '';
     this.concenMassVol.readOnly = false;
     this.concenMassVol.value = '';
-    this.conversionEquationSnippet = this.eqPrinter.print(this.concenMassVol.var, this.concenMassVol.term);
+    this.conversionEquationSnippet = this.concenMassVol.equationSnippet(this.eqPrinter);
   }
 
   clearInhalation(): void {
     this.inhalationInternalError = '';
-    this.concenRow.errorText = '';
-    this.concen.nativeElement.readOnly = false;
-    this.concen.nativeElement.value = '';
-    this.intakeRow.errorText = '';
-    this.intake.nativeElement.readOnly = false;
-    this.intake.nativeElement.value = '';
-    this.weightRow.errorText = '';
-    this.weight.nativeElement.readOnly = false;
-    this.weight.nativeElement.value = '';
-    this.doseRow.errorText = '';
-    this.dose.nativeElement.readOnly = false;
-    this.dose.nativeElement.value = '';
-
-    this.inhalationEquationSnippet = this.eqPrinter.print(this.doseVar, this.doseTerm);
+    this.concen.row.errorText = '';
+    this.concen.readOnly = false;
+    this.concen.value = '';
+    this.intake.row.errorText = '';
+    this.intake.readOnly = false;
+    this.intake.value = '';
+    this.weight.row.errorText = '';
+    this.weight.readOnly = false;
+    this.weight.value = '';
+    this.dose.row.errorText = '';
+    this.dose.readOnly = false;
+    this.dose.value = '';
+    this.inhalationEquationSnippet = this.dose.equationSnippet(this.eqPrinter);
   }
 
 }
