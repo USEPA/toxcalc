@@ -66,11 +66,14 @@
         <b>Air concentration (mass/volume)</b> is the mass of the substance present in a specified volume of air.
       </ng-template>
     </sd-calc-row>
+    <sd-internal-calc-error [errorText]="conversionInternalError"></sd-internal-calc-error>
     <div class="form-group form-row">
       <button class="btn btn-primary mr-3" (click)="conversionUpdateErrors(true)">Convert!</button>
       <button class="btn btn-secondary" (click)="clearConversion()">Clear</button>
     </div>
 </form>
+<p>The above calculations are based on the following equation:</p>
+<p [sdMathJax]="conversionEquationSnippet"></p>
 <hr />
 <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
 <form autocomplete="off" novalidate (change)="inhalationFormChange()">
