@@ -397,7 +397,7 @@ export class Equation {
 
 }
 
-export abstract class EquationToMathJax {
+export class EquationPrinter {
   protected precedence: number = 0;
 
   // Emit parentheses when moving to a region of lower precedence.
@@ -425,7 +425,17 @@ export abstract class EquationToMathJax {
     return new_precedence < old_precedence ? '' : '\\right)';
   }
 
-  abstract visitVariable(v: Variable): string;
+  constructor(readonly variables: Map<Variable, string>) {}
+
+  print(lhs: Term, rhs: Term): string {
+    return this.dispatch(lhs) + ' = ' + this.dispatch(rhs);
+  }
+
+  visitVariable(v: Variable): string {
+    let s = <string>this.variables.get(v);
+    if (!s) return '';
+    return `\\text{${s}}`;
+  }
 
   visitConstant(c: Constant): string {
     return printNum(c.getValue().n);

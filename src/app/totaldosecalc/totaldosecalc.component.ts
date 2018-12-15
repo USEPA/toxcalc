@@ -4,23 +4,9 @@ import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
-import { Term, Equation, EquationToMathJax, Variable } from '../shared/equation';
+import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 import { SdInputPositiveNumber, printNum } from '../shared/number-util';
 import { SdMathJaxDirective } from '../sd-math-jax.directive';
-
-class EquationPrinter extends EquationToMathJax {
-  constructor(readonly variables: Map<Variable, string>) { super(); }
-
-  visitVariable(v: Variable): string {
-    let s = <string>this.variables.get(v);
-    if (!s) return '';
-    return `\\text{${s}}`;
-  }
-
-  print(lhs: Term, rhs: Term): string {
-    return this.dispatch(lhs) + ' = ' + this.dispatch(rhs);
-  }
-}
 
 @Component({
   selector: 'app-totaldosecalc',

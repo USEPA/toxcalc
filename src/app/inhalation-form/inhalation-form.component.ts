@@ -8,25 +8,11 @@ import { SdSelectComponent } from '../sd-select/sd-select.component';
 import { SdMathJaxDirective } from '../sd-math-jax.directive';
 
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
-import { Term, Equation, EquationToMathJax, Variable } from '../shared/equation';
+import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 
 import { printNum } from '../shared/number-util';
 
 import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE_RATIOS_INHALATION, SATP_RATIO } from '../toxicology/UNIT_LISTS';
-
-class EquationPrinter extends EquationToMathJax {
-  constructor(readonly variables: Map<Variable, string>) { super(); }
-
-  visitVariable(v: Variable): string {
-    let s = <string>this.variables.get(v);
-    if (!s) return '';
-    return `\\text{${s}}`;
-  }
-
-  print(lhs: Term, rhs: Term): string {
-    return this.dispatch(lhs) + ' = ' + this.dispatch(rhs);
-  }
-}
 
 @Component({
   selector: 'app-inhalation-form',
