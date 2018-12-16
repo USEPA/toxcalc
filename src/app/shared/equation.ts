@@ -463,7 +463,19 @@ export class EquationPrinter {
       // "1 ÷ A ÷ B".
       numerator_str = '1';
     } else {
-      numerator_str = denominator['anticollected'].map(x => this.dispatch(x)).filter(x => x != '').join(' \\times ');
+      // Print -A × B instead of A × -1 × B unless the -1 has a dimension.
+      let index = denominator['anticollected'].findIndex(function(t: Term): boolean {
+        return t.kind == TypeDiscriminator.Constant &&
+               (<Constant>t).getValue().n == -1 &&
+               (<Constant>t).getValue().d.unit();
+      });
+      if (index != -1 && denominator['anticollected'].length > 1) {
+        denominator['anticollected'].splice(index, 1);
+        numerator_str = '-';
+      } else {
+        numerator_str = '';
+      }
+      numerator_str += denominator['anticollected'].map(x => this.dispatch(x)).filter(x => x != '').join(' \\times ');
     }
     if (denominator['collected'].length != 0) {
       result += '\\frac{' + numerator_str + '}{' + denominator['collected'].map(x => Equation.exp(x, Equation.constantFromNumber(-1))).map(x => this.dispatch(x)).filter(x => x != '').join(' \\times ') + '}';
