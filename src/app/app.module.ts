@@ -8,7 +8,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from './app.component';
-import { IngestionFormComponent } from './ingestion-form/ingestion-form.component';
 import { CalcService } from './shared/calc.service';
 import { ValidationService } from './shared/validation.service';
 import { InhaleCalcComponent } from './inhalecalc/inhalecalc.component';
@@ -27,7 +26,6 @@ import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-intern
 @NgModule({
   declarations: [
     AppComponent,
-    IngestionFormComponent,
     InhaleCalcComponent,
     AllometryFormComponent,
     LandingComponent,

@@ -4,7 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { LandingComponent } from './landing/landing.component';
 import { TotaldosecalcComponent } from './totaldosecalc/totaldosecalc.component';
 import { AllometryFormComponent } from './ingestion-form/allometry-form.component';
-import { IngestionFormComponent } from './ingestion-form/ingestion-form.component';
 import { InhaleCalcComponent } from './inhalecalc/inhalecalc.component';
 
 const routes: Routes = [
@@ -12,9 +11,6 @@ const routes: Routes = [
   { path: 'TotalDoseCalc', component: TotaldosecalcComponent },
   { path: 'HumanCalc', component: AllometryFormComponent },
   { path: 'InhaleCalc', component: InhaleCalcComponent },
-
-  // DEPRECATED
-  { path: 'ingestion', component: IngestionFormComponent },
 ];
 
 @NgModule({
