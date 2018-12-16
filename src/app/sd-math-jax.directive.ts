@@ -22,6 +22,9 @@ export class SdMathJaxDirective implements OnChanges {
 
   ngOnChanges() {
     this.element.nativeElement.innerHTML = this.sanitizer.sanitize(SecurityContext.HTML, '$$' + this.value + '$$');
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element.nativeElement]);
+    // TODO: MathJax .d.ts doesn't contain isReady.
+    if ((MathJax as any).isReady) {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element.nativeElement]);
+    }
   }
 }
