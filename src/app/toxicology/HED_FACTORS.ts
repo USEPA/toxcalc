@@ -1,5 +1,4 @@
 export const SPECIES_CONVERSION = [
-    {species: '--Choose One--', factor: 0},
     {species: 'mouse', factor: 12.3},
     {species: 'hamster', factor: 7.4},
     {species: 'rat', factor: 6.2},
