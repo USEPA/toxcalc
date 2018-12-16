@@ -234,11 +234,11 @@ class Form {
 }
 
 @Component({
-  selector: 'app-inhalation-form',
-  templateUrl: './inhalation-form.component.html',
-  styleUrls: ['./inhalation-form.component.css'],
+  selector: 'app-inhalecalc',
+  templateUrl: './inhalecalc.component.html',
+  styleUrls: ['./inhalecalc.component.css'],
 })
-export class InhalationFormComponent implements AfterViewInit {
+export class InhaleCalcComponent implements AfterViewInit {
   variableMap: Map<Variable, string> = new Map();
   eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
 

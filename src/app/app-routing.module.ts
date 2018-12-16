@@ -5,13 +5,13 @@ import { LandingComponent } from './landing/landing.component';
 import { TotaldosecalcComponent } from './totaldosecalc/totaldosecalc.component';
 import { AllometryFormComponent } from './ingestion-form/allometry-form.component';
 import { IngestionFormComponent } from './ingestion-form/ingestion-form.component';
-import { InhalationFormComponent } from './inhalation-form/inhalation-form.component';
+import { InhaleCalcComponent } from './inhalecalc/inhalecalc.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: LandingComponent },
   { path: 'TotalDoseCalc', component: TotaldosecalcComponent },
   { path: 'HumanCalc', component: AllometryFormComponent },
-  { path: 'InhaleCalc', component: InhalationFormComponent },
+  { path: 'InhaleCalc', component: InhaleCalcComponent },
 
   // DEPRECATED
   { path: 'ingestion', component: IngestionFormComponent },

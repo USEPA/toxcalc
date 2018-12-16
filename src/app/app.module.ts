@@ -11,7 +11,7 @@ import { AppComponent } from './app.component';
 import { IngestionFormComponent } from './ingestion-form/ingestion-form.component';
 import { CalcService } from './shared/calc.service';
 import { ValidationService } from './shared/validation.service';
-import { InhalationFormComponent } from './inhalation-form/inhalation-form.component';
+import { InhaleCalcComponent } from './inhalecalc/inhalecalc.component';
 import { AllometryFormComponent } from './ingestion-form/allometry-form.component';
 import { FormsModule } from '@angular/forms';
 import { SdProductListComponent, SdProductListItem, SdProductListItemDescription, SdProductListItemTitle } from './sd-product-list/sd-product-list.component';
@@ -28,7 +28,7 @@ import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-intern
   declarations: [
     AppComponent,
     IngestionFormComponent,
-    InhalationFormComponent,
+    InhaleCalcComponent,
     AllometryFormComponent,
     LandingComponent,
     SdCalcRowComponent,

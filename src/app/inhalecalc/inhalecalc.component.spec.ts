@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InhalationFormComponent } from './inhalation-form.component';
+import { InhaleCalcComponent } from './inhalecalc.component';
 
-describe('InhalationFormComponent', () => {
-  let component: InhalationFormComponent;
-  let fixture: ComponentFixture<InhalationFormComponent>;
+describe('InhaleCalcComponent', () => {
+  let component: InhaleCalcComponent;
+  let fixture: ComponentFixture<InhaleCalcComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InhalationFormComponent ]
+      declarations: [ InhaleCalcComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InhalationFormComponent);
+    fixture = TestBed.createComponent(InhaleCalcComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
