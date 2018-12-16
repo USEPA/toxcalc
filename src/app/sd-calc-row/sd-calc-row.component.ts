@@ -27,7 +27,7 @@ export class SdCalcRowHelp {
 export class SdCalcRowComponent {
   @Input('sdShow') show: boolean = true;
   showHelp: boolean = false;
-  errorText: string;
+  errorText: string = '';
 
   @ContentChild(SdCalcRowLabel) label: SdCalcRowLabel;
   @ContentChild(SdCalcRowInput) input: SdCalcRowInput;
