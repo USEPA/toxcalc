@@ -22,6 +22,7 @@ import { TotaldosecalcComponent } from './totaldosecalc/totaldosecalc.component'
 import { SdInputPositiveNumber } from './shared/number-util';
 import { SdMathJaxDirective } from './sd-math-jax.directive';
 import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-internal-calc-error.component';
+import { SdKatexDirective } from './sd-katex.directive';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-intern
     SdSelectGroup,
     TotaldosecalcComponent,
     SdMathJaxDirective,
-    SdInternalCalcErrorComponent
+    SdInternalCalcErrorComponent,
+    SdKatexDirective
   ],
   imports: [
     AppRoutingModule,
