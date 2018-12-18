@@ -63,6 +63,7 @@ export class TotaldosecalcComponent {
   @ViewChild('molarMassInput') molarMassInput: ElementRef<HTMLInputElement>;
   @ViewChild('solutionDensity') solutionDensity: SdCalcRowComponent;
   @ViewChild('solutionDensityInput') solutionDensityInput: ElementRef<HTMLInputElement>;
+  @ViewChild('solutionDensityUnits') solutionDensityUnits: SdSelectComponent;
   @ViewChild('bodyWeight') bodyWeight: SdCalcRowComponent;
   @ViewChild('bodyWeightInput') bodyWeightInput: ElementRef<HTMLInputElement>;
   @ViewChild('bodyWeightUnits') bodyWeightUnits: SdSelectComponent;
@@ -338,9 +339,14 @@ export class TotaldosecalcComponent {
   }
 
   readonly ML_G = new ScalarAndDimension(0.001, this.VOLUME.div(Dimension.initMass()));
+  readonly SOLUTION_DENSITY_UNITS: {[index: string]: ScalarAndDimension} = {
+    'g/mL': this.G_ML,
+    'g/L': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
+    'kg/m³': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
+    'g/cm³': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
+  };
   getSolutionDensityUnit(): ScalarAndDimension {
-    // g/mL
-    return this.G_ML;
+    return this.SOLUTION_DENSITY_UNITS[this.solutionDensityUnits.selectedName];
   }
 
   readonly KG_UNIT = new ScalarAndDimension(1000, Dimension.initMass());

@@ -91,9 +91,12 @@
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="solutionDensity" id="solutionDensity" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #solutionDensityInput>
-        <div class="input-group-append">
-          <span class="input-group-text">g/mL</span>
-        </div>
+        <sd-select name="solutionDensity-units" #solutionDensityUnits (change)="changeUnits(); formChange()">
+          <option label="g/mL"></option>
+          <option label="g/L"></option>
+          <option label="kg/m³"></option>
+          <option label="g/cm³"></option>
+        </sd-select>
      </ng-template>
       <ng-template sdCalcRowHelp>
         <b>Solvent or media density</b> is the density of the chemical present in mixture in the larger amount. Note that the density of water is 1 g/mL, and for very dilute aqueous solutions, the density of water can be used as a surrogate.
