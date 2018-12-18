@@ -349,7 +349,48 @@ export class Equation {
     }
 
     // TODO: got the same term twice or more? Convert to an exponentiation.
-    // TODO: got exponentiate terms with the same base? Fold them.
+
+    // Turn a^x * a^y into a^(x+y).
+    // Collect the terms with common exponent bases.
+    let common_exp_bases = new Map<Term /* exp's base */, Array<number> /* index into terms */>();
+    for (let i = 0; i != terms.length; ++i) {
+      let term = terms[i];
+      if (terms[i].kind == TypeDiscriminator.Exponentiate) {
+        term = (<Exponentiate>term).getBase();
+      }
+      if (!common_exp_bases.has(term)) {
+        common_exp_bases.set(term, [i]);
+      } else {
+        common_exp_bases.get(term)!.push(i);
+      }
+    }
+    // Calculate the replacement terms into newTerms.
+    newTerms = [];
+    common_exp_bases.forEach(function(value: Array<number>, key: Term): void {
+      if (value.length > 1) {
+        console.log("Found term to coalesce.");
+        if (key.kind == TypeDiscriminator.Exponentiate) {
+          key = (<Exponentiate>key).getBase();
+        }
+        newTerms.push(Equation.exp(key, Equation.addFromArray(value.map(
+          i => terms[i].kind == TypeDiscriminator.Exponentiate ? (<Exponentiate>terms[i]).getExponent() : Equation.constantFromNumber(1)
+        ))));
+      }
+    });
+    // Remove now-dead terms. Produce a sorted list of indices so that we remove
+    // back to front, so as to not disrupt the later indices.
+    let deadIndices: Array<number> = [];
+    common_exp_bases.forEach(function(value: Array<number>, key: Term): void {
+      if (value.length > 1) {
+        deadIndices.push.apply(deadIndices, value);
+      }
+    });
+    deadIndices.sort().reverse();
+    for (let i = 0; i != deadIndices.length; ++i) {
+      terms.splice(deadIndices[i], 1);
+    }
+    terms.push.apply(terms, newTerms);
+
     if (terms.length == 1)
       return terms[0];
     return new Multiply(terms);
@@ -372,11 +413,14 @@ export class Equation {
         return Equation.constant(result);
     }
 
-    // If the exponent is one, return the base.
     if (exponent.kind == TypeDiscriminator.Constant) {
       let exponent_c = <Constant>exponent;
+      // If the exponent is one, return the base.
       if (exponent_c.getValue().n == 1)
         return base;
+      // If the exponent is zero, return one.
+      if (exponent_c.getValue().n == 0)
+        return Equation.constantFromNumber(1);
     }
 
     // If base is an exponentiation, combine our exponents.
