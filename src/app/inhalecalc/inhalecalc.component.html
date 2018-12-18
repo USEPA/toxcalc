@@ -7,7 +7,9 @@
   <p>Air concentrations for gases and vapours may be expressed in either ppm (v/v) or mg/m³ but for aerosols only mg/m³ should be used.</p>
   <form autocomplete="off" novalidate (change)="conversionForm.formChange()">
     <sd-calc-row #concenVolVolRow>
-      <ng-template sdCalcRowLabel>Air concentration</ng-template>
+      <ng-template sdCalcRowLabel>
+        Air concentration (v/v)
+      </ng-template>
       <ng-template sdCalcRowInput>
         <input
           class="form-control"
@@ -54,7 +56,7 @@
     </sd-calc-row>
     <sd-calc-row #concenMassVolRow>
       <ng-template sdCalcRowLabel>
-        Air concentration
+        Air concentration (m/v)
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
