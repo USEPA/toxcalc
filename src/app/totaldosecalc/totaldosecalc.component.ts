@@ -314,7 +314,6 @@ export class TotaldosecalcComponent {
     return this.CONCEN_UNITS[this.concenUnits.selectedName];
   }
 
-
   readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
   readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
   readonly INTAKE_UNITS: {[index: string]: ScalarAndDimension} = {
