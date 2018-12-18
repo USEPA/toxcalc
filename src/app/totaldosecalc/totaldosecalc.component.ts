@@ -6,7 +6,6 @@ import { SdSelectComponent } from '../sd-select/sd-select.component';
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
 import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 import { SdInputPositiveNumber, printNum } from '../shared/number-util';
-import { SdMathJaxDirective } from '../sd-math-jax.directive';
 
 @Component({
   selector: 'app-totaldosecalc',

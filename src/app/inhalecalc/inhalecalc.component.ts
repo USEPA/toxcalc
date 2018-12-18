@@ -5,8 +5,6 @@ import { ToxRatio } from '../toxicology/tox-ratio';
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
-import { SdMathJaxDirective } from '../sd-math-jax.directive';
-
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
 import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 

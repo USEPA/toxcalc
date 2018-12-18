@@ -20,7 +20,6 @@ import { SdSelectComponent, SdSelectItem, SdSelectGroup } from './sd-select/sd-s
 import { SdCalcRowComponent, SdCalcRowLabel, SdCalcRowInput, SdCalcRowHelp } from './sd-calc-row/sd-calc-row.component';
 import { TotaldosecalcComponent } from './totaldosecalc/totaldosecalc.component';
 import { SdInputPositiveNumber } from './shared/number-util';
-import { SdMathJaxDirective } from './sd-math-jax.directive';
 import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-internal-calc-error.component';
 import { SdKatexDirective } from './sd-katex.directive';
 
@@ -35,7 +34,6 @@ import { SdKatexDirective } from './sd-katex.directive';
     SdCalcRowInput,
     SdCalcRowLabel,
     SdInputPositiveNumber,
-    SdMathJaxDirective,
     SdProductListComponent,
     SdProductListItem,
     SdProductListItemDescription,
@@ -45,7 +43,6 @@ import { SdKatexDirective } from './sd-katex.directive';
     SdSelectItem,
     SdSelectGroup,
     TotaldosecalcComponent,
-    SdMathJaxDirective,
     SdInternalCalcErrorComponent,
     SdKatexDirective
   ],
