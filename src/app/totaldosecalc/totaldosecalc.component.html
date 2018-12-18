@@ -63,9 +63,12 @@
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="substanceDensity" id="substanceDensity" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #substanceDensityInput>
-        <div class="input-group-append">
-          <span class="input-group-text">g/mL</span>
-        </div>
+        <sd-select name="substanceDensity-units" #substanceDensityUnits (change)="changeUnits(); formChange()">
+          <option label="g/mL"></option>
+          <option label="g/L"></option>
+          <option label="kg/m³"></option>
+          <option label="g/cm³"></option>
+        </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
         <b>Substance density</b> is the density of the substance or chemical of interest. It is the chemical that is present in a small amount that is being added to the solvent or media which is present in large amount.

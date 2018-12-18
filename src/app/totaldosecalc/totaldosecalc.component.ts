@@ -59,6 +59,7 @@ export class TotaldosecalcComponent {
   @ViewChild('intakeUnits') intakeUnits: SdSelectComponent;
   @ViewChild('substanceDensity') substanceDensity: SdCalcRowComponent;
   @ViewChild('substanceDensityInput') substanceDensityInput: ElementRef<HTMLInputElement>;
+  @ViewChild('substanceDensityUnits') substanceDensityUnits: SdSelectComponent;
   @ViewChild('molarMass') molarMass: SdCalcRowComponent;
   @ViewChild('molarMassInput') molarMassInput: ElementRef<HTMLInputElement>;
   @ViewChild('solutionDensity') solutionDensity: SdCalcRowComponent;
@@ -326,10 +327,14 @@ export class TotaldosecalcComponent {
     return this.INTAKE_UNITS[this.intakeUnits.selectedName];
   }
 
-  readonly G_ML = new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME));
+  readonly DENSITY_UNITS: {[index: string]: ScalarAndDimension} = {
+    'g/mL': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
+    'g/L': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
+    'kg/m³': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
+    'g/cm³': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
+  };
   getSubstanceDensityUnit(): ScalarAndDimension {
-    // g/mL
-    return this.G_ML;
+    return this.DENSITY_UNITS[this.substanceDensityUnits.selectedName];
   }
 
   readonly G_MOL = new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initMolarMass()));
@@ -338,15 +343,8 @@ export class TotaldosecalcComponent {
     return this.G_MOL;
   }
 
-  readonly ML_G = new ScalarAndDimension(0.001, this.VOLUME.div(Dimension.initMass()));
-  readonly SOLUTION_DENSITY_UNITS: {[index: string]: ScalarAndDimension} = {
-    'g/mL': this.G_ML,
-    'g/L': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
-    'kg/m³': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
-    'g/cm³': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
-  };
   getSolutionDensityUnit(): ScalarAndDimension {
-    return this.SOLUTION_DENSITY_UNITS[this.solutionDensityUnits.selectedName];
+    return this.DENSITY_UNITS[this.solutionDensityUnits.selectedName];
   }
 
   readonly KG_UNIT = new ScalarAndDimension(1000, Dimension.initMass());
