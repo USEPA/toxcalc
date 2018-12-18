@@ -1,7 +1,8 @@
 <sd-return-to-calculators></sd-return-to-calculators>
 <div class="container py-3">
   <p class="lead font-weight-bold">Total Dose Conversion Calculator</p>
-  <p class="mb-4">This calculator is designed to only be used for homogenous (i.e. uniform) chemical <a target="_blank" href="assets/terms.html#mixture">mixtures</a>. It should not be used for radionuclides.</p>
+  <p><b>This is a MULTIDIRECTIONAL calculator. Leave any One field blank and hit Calculate! It will calculate the missing field for you.</b></p>
+  <p>This calculator is designed to only be used for homogenous (i.e. uniform) chemical <a target="_blank" href="assets/terms.html#mixture">mixtures</a>. It should not be used for radionuclides.</p>
   <form autocomplete="off" novalidate (change)="formChange()">
     <sd-calc-row #concen>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
