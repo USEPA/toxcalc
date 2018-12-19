@@ -337,7 +337,7 @@ class TotalDoseCalcForm extends Form {
   templateUrl: './totaldosecalc.component.html',
   styleUrls: ['./totaldosecalc.component.css']
 })
-export class TotaldosecalcComponent {
+export class TotalDoseCalcComponent {
   @ViewChild('concenRow') concenRow: SdCalcRowComponent;
   @ViewChild('concenInput') concenInput: ElementRef<HTMLInputElement>;
   @ViewChild('concenUnits') concenUnits: SdSelectComponent;
