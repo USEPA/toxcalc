@@ -5,54 +5,10 @@ import { SPECIES_CONVERSION } from '../toxicology/HED_FACTORS';
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
+import { Field } from '../shared/field';
 import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 
 import { printNum } from '../shared/number-util';
-
-abstract class Field {
-  input: ElementRef<HTMLInputElement> | null = null;
-  units: SdSelectComponent | null = null;
-  row: SdCalcRowComponent;
-  var: Variable = new Variable;
-  term: Term;
-  readonly unit: ScalarAndDimension;
-  readOnly: boolean = false;
-  value: string = '';
-  get hasError(): boolean {
-    return this.row.errorText != '';
-  }
-
-  // Only look for errors that are certainly wrong given the state of this field,
-  // ignoring the state of the of the rest of the form.
-  updateErrorState(): void {
-    if (this.readOnly || this.value == '') {
-      this.row.errorText = '';
-      return;
-    }
-    if (this.value.match(/.*\..*\..*/)) {
-      this.row.errorText = 'One decimal point maximum.';
-      return;
-    }
-    if (isNaN(parseFloat(this.value))) {
-      this.row.errorText = 'Must be a number.';
-      return;
-    }
-    this.row.errorText = '';
-  }
-
-  // Update our 'var' from the text in 'value'.
-  updateVar(): void {
-    if (this.value == '') {
-      this.var.setValue(null);
-      return;
-    }
-    this.var.setValue(new ScalarAndDimension(parseFloat(this.value) * this.unit.n, this.unit.d));
-  }
-
-  equationSnippet(eqPrinter: EquationPrinter) {
-    return eqPrinter.print(this.var, this.term);
-  }
-}
 
 class Species extends Field {
   get value() { return this.select.value.species; }

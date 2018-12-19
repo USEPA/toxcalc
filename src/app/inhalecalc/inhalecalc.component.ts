@@ -8,54 +8,11 @@ import { SdSelectComponent } from '../sd-select/sd-select.component';
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
 import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 
+import { Field } from '../shared/field';
+
 import { printNum } from '../shared/number-util';
 
 import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE_RATIOS_INHALATION, SATP_RATIO } from '../toxicology/UNIT_LISTS';
-
-abstract class Field {
-  input: ElementRef<HTMLInputElement>;
-  units?: SdSelectComponent;
-  row: SdCalcRowComponent;
-  var: Variable = new Variable;
-  term: Term;
-  readonly unit: ScalarAndDimension;
-  readOnly: boolean = false;
-  value: string = '';
-  get hasError(): boolean {
-    return this.row.errorText != '';
-  }
-
-  // Only look for errors that are certainly wrong given the state of this field,
-  // ignoring the state of the of the rest of the form.
-  updateErrorState(): void {
-    if (this.readOnly || this.value == '') {
-      this.row.errorText = '';
-      return;
-    }
-    if (this.value.match(/.*\..*\..*/)) {
-      this.row.errorText = 'One decimal point maximum.';
-      return;
-    }
-    if (isNaN(parseFloat(this.value))) {
-      this.row.errorText = 'Must be a number.';
-      return;
-    }
-    this.row.errorText = '';
-  }
-
-  // Update our 'var' from the text in 'value'.
-  updateVar(): void {
-    if (this.value == '') {
-      this.var.setValue(null);
-      return;
-    }
-    this.var.setValue(new ScalarAndDimension(parseFloat(this.value) * this.unit.n, this.unit.d));
-  }
-
-  equationSnippet(eqPrinter: EquationPrinter) {
-    return eqPrinter.print(this.var, this.term);
-  }
-}
 
 // Conversion form fields.
 
@@ -163,7 +120,8 @@ class Form {
     this.suppressChange = true;
     for (let i = 0; i != this.fields.length; ++i) {
       if (this.fields[i].readOnly &&
-          this.fields[i].input.nativeElement != self) {
+          this.fields[i].input &&
+          this.fields[i].input!.nativeElement != self) {
         this.fields[i].value = '';
         return;
       }
