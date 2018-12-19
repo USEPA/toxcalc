@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -48,7 +47,6 @@ import { SdKatexDirective } from './sd-katex.directive';
     BrowserModule,
     FontAwesomeModule,
     FormsModule,
-    HttpModule,
     NgbModule,
   ],
   bootstrap: [AppComponent]
