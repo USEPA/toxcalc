@@ -534,7 +534,10 @@ export class TotalDoseCalcComponent {
     if (this.concenUnits.selectedGroupName == 'mass/mass' &&
         this.intakeUnits.selectedGroupName == 'volume/time') {
       this.substanceDensity.row.show = false;
-      this.molarMass.row.show = false;
+      this.molarMass.row.show =
+          this.doseUnits.selectedName == 'mol/kg BW/day' ||
+          this.doseUnits.selectedName == 'mmol/kg BW/day';
+      this.molarMass.recip = true;
       this.solutionDensity.row.show = true;
       this.solutionDensity.recip = false;
       this.form.underConstructionShow = false;
