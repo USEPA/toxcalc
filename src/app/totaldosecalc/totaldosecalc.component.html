@@ -3,14 +3,14 @@
   <p class="lead font-weight-bold">Total Dose Conversion Calculator</p>
   <p><b>This is a MULTIDIRECTIONAL calculator. Leave any One field blank and hit Calculate! It will calculate the missing field for you.</b></p>
   <p>This calculator is designed to only be used for homogenous (i.e. uniform) chemical <a target="_blank" href="assets/terms.html#mixture">mixtures</a>. It should not be used for radionuclides.</p>
-  <form autocomplete="off" novalidate (change)="formChange()">
-    <sd-calc-row #concen>
+  <form autocomplete="off" novalidate (change)="form.formChange()">
+    <sd-calc-row #concenRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
         Concentration
       </ng-template>
       <ng-template sdCalcRowInput>
-        <input class="form-control" name="concen" id="concen" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #concenInput>
-        <sd-select name="concen-units" #concenUnits (change)="changeUnits(); formChange();">
+        <input class="form-control" name="concen" id="concen" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="concen.readOnly" [(ngModel)]="concen.value" [ngModelOptions]="{standalone: true}" #concenInput>
+        <sd-select name="concen-units" #concenUnits (change)="changeUnits();">
           <optgroup label="mass/volume">
             <option *ngFor="let unit of iterUnits(CONCEN_UNITS, MASS_VOLUME)" [label]="unit"></option>
           </optgroup>
@@ -38,13 +38,13 @@
         <b>Concentration</b> is the amount of one substance present in another substance. In other words, it is the amount of a substance present in a <a target="_blank" href="assets/terms.html#mixture">mixture</a> that contains at least two substances. Commonly, these mixtures are <a target="_blank" href="assets/terms.html#solution">solutions</a>. Concentration can be used to express the amount of any substance in any media. Examples of media that are relevant to human or environmental health include food, soil, water, air, bodily fluids, tissues, pharmaceuticals and consumer products. <a target="_blank" href="assets/terms.html#concentration">Click here</a> for more information on concentration.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row #intake>
+    <sd-calc-row #intakeRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
         Intake
       </ng-template>
       <ng-template sdCalcRowInput>
-        <input class="form-control" name="intake" id="intake" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #intakeInput>
-        <sd-select name="intake-units" #intakeUnits (change)="changeUnits(); formChange()">
+        <input class="form-control" name="intake" id="intake" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="intake.readOnly" [(ngModel)]="intake.value" [ngModelOptions]="{standalone: true}" #intakeInput>
+        <sd-select name="intake-units" #intakeUnits (change)="changeUnits();">
           <optgroup label="volume/time">
             <option *ngFor="let unit of iterUnits(INTAKE_UNITS, VOLUME_TIME)" [label]="unit"></option>
           </optgroup>
@@ -57,29 +57,26 @@
         <b>Intake</b> is the amount of the total mixture being consumed in a day.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row [sdShow]="substanceDensityShow" #substanceDensity>
+    <sd-calc-row [sdShow]="false" #substanceDensityRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="substanceDensity">
         Substance density
       </ng-template>
       <ng-template sdCalcRowInput>
-        <input class="form-control" name="substanceDensity" id="substanceDensity" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #substanceDensityInput>
-        <sd-select name="substanceDensity-units" #substanceDensityUnits (change)="changeUnits(); formChange()">
-          <option label="g/mL"></option>
-          <option label="g/L"></option>
-          <option label="kg/m³"></option>
-          <option label="g/cm³"></option>
+        <input class="form-control" name="substanceDensity" id="substanceDensity" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="substanceDensity.readOnly" [(ngModel)]="substanceDensity.value" [ngModelOptions]="{standalone: true}" #substanceDensityInput>
+        <sd-select name="substanceDensity-units" #substanceDensityUnits (change)="changeUnits();">
+          <option *ngFor="let unit of iterUnits(DENSITY_UNITS)" [label]="unit"></option>
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
         <b>Substance density</b> is the density of the substance or chemical of interest. It is the chemical that is present in a small amount that is being added to the solvent or media which is present in large amount.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row [sdShow]="molarMassShow" #molarMass>
+    <sd-calc-row [sdShow]="false" #molarMassRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
         Molar mass of substance
       </ng-template>
       <ng-template sdCalcRowInput>
-        <input class="form-control" name="molarMass" id="molarMass" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #molarMassInput>
+        <input class="form-control" name="molarMass" id="molarMass" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="molarMass.readOnly" [(ngModel)]="molarMass.value" [ngModelOptions]="{standalone: true}" #molarMassInput>
         <div class="input-group-append">
           <span class="input-group-text">g/mol</span>
         </div>
@@ -88,30 +85,27 @@
         <b>Molar mass</b> is the sum of the total mass in grams of all the atoms that make up a mole of a particular molecule. The unit used to measure molar mass is grams per mole. To calculate molar mass, you can look it up for your molecule from a trusted source, or you can calculate it using the atomic masses of individual atoms that make up the molecule. So, for sodium chloride or NaCl, the atomic mass of sodium is 22.99 g/mol. The atomic mass of chlorine is 35.45 g/mol. Since there is only one atom of sodium and one atom of chlorine in sodium chloride, we add these two together to get the molar mass of NaCl, which is 58.44 g/mol (22.99+35.45=58.44 g/mol).
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row [sdShow]="solutionDensityShow" #solutionDensity>
+    <sd-calc-row [sdShow]="false" #solutionDensityRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="solutionDensity">
         Solvent or media density
       </ng-template>
       <ng-template sdCalcRowInput>
-        <input class="form-control" name="solutionDensity" id="solutionDensity" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #solutionDensityInput>
-        <sd-select name="solutionDensity-units" #solutionDensityUnits (change)="changeUnits(); formChange()">
-          <option label="g/mL"></option>
-          <option label="g/L"></option>
-          <option label="kg/m³"></option>
-          <option label="g/cm³"></option>
+        <input class="form-control" name="solutionDensity" id="solutionDensity" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="solutionDensity.readOnly" [(ngModel)]="solutionDensity.value" [ngModelOptions]="{standalone: true}" #solutionDensityInput>
+        <sd-select name="solutionDensity-units" #solutionDensityUnits (change)="changeUnits();">
+          <option *ngFor="let unit of iterUnits(DENSITY_UNITS)" [label]="unit"></option>
         </sd-select>
      </ng-template>
       <ng-template sdCalcRowHelp>
         <b>Solvent or media density</b> is the density of the chemical present in mixture in the larger amount. Note that the density of water is 1 g/mL, and for very dilute aqueous solutions, the density of water can be used as a surrogate.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row #bodyWeight>
+    <sd-calc-row #bodyWeightRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
         Body weight
       </ng-template>
       <ng-template sdCalcRowInput>
-        <input class="form-control" name="bodyWeight" id="bodyWeight" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #bodyWeightInput>
-        <sd-select name="bodyWeight-units" #bodyWeightUnits (change)="changeUnits(); formChange()">
+        <input class="form-control" name="bodyWeight" id="bodyWeight" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="bodyWeight.readOnly" [(ngModel)]="bodyWeight.value" [ngModelOptions]="{standalone: true}" #bodyWeightInput>
+        <sd-select name="bodyWeight-units" #bodyWeightUnits (change)="changeUnits();">
           <option label="kg"></option>
           <option label="g"></option>
         </sd-select>
@@ -120,13 +114,13 @@
         The <b>body weight</b> of the animal or human consuming the substance.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row #dose>
+    <sd-calc-row #doseRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
         Dose
       </ng-template>
       <ng-template sdCalcRowInput>
-        <input class="form-control" name="dose" id="dose" sdInputPosNum (focus)="inputFocus($event.target)" (blur)="inputBlur()" #doseInput>
-        <sd-select name="dose-units" #doseUnits (change)="changeUnits(); formChange()">
+        <input class="form-control" name="dose" id="dose" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="dose.readOnly" [(ngModel)]="dose.value" [ngModelOptions]="{standalone: true}" #doseInput>
+        <sd-select name="dose-units" #doseUnits (change)="changeUnits();">
           <option *ngFor="let unit of iterUnits(DOSE_UNITS)" [label]="unit"></option>
         </sd-select>
       </ng-template>
@@ -136,12 +130,12 @@
     </sd-calc-row>
 
     <div class="form-row">
-      <ngb-alert *ngIf="underConstructionShow" [dismissible]="false" type="warning" class="w-100"><strong class="mr-2">Sorry!</strong>Calculation with these units is not supported.</ngb-alert>
+      <ngb-alert *ngIf="form.underConstructionShow" [dismissible]="false" type="warning" class="w-100"><strong class="mr-2">Sorry!</strong>Calculation with these units is not supported.</ngb-alert>
     </div>
-    <sd-internal-calc-error [errorText]="internalError"></sd-internal-calc-error>
+    <sd-internal-calc-error [errorText]="form.internalError"></sd-internal-calc-error>
     <div class="form-row">
-      <button type="button" class="btn btn-primary mr-3" (click)="updateErrors(true)" [disabled]="underConstructionShow || internalError">Calculate!</button>
-      <button type="reset" class="btn btn-secondary" (click)="clear()">Clear</button>
+      <button type="button" class="btn btn-primary mr-3" (click)="form.updateErrors(true)" [disabled]="form.underConstructionShow || form.internalError">Calculate!</button>
+      <button type="reset" class="btn btn-secondary" (click)="form.clear()">Clear</button>
     </div>
   </form>
   <p class="mt-3">
@@ -151,5 +145,5 @@
     If body weight of the animal or human is unknown, use defaults. Some defaults for rodents can be found here: <a rel="noopener" target="_blank" href="https://semspub.epa.gov/work/10/500017164.pdf">EPA Default Animal Body Weights</a> and here <a rel="noopener" target="_blank" href="https://www.tera.org/Tools/ratmousevalues.pdf">TERA Default Rat and Mouse Body Weights</a>.
   </p>
   <p>The above calculations are based on the following equation:</p>
-  <p [sdKatex]="equationSnippet"></p>
+  <p [sdKatex]="form.equationSnippet"></p>
 </div>

@@ -7,126 +7,267 @@ import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimen
 import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 import { SdInputPositiveNumber, printNum } from '../shared/number-util';
 
-@Component({
-  selector: 'app-totaldosecalc',
-  templateUrl: './totaldosecalc.component.html',
-  styleUrls: ['./totaldosecalc.component.css']
-})
-export class TotaldosecalcComponent {
-  // Controls for whether the optional rows are displayed.
-  substanceDensityShow: boolean = false;
-  molarMassShow: boolean = false;
-  solutionDensityShow: boolean = false;
-  underConstructionShow: boolean = false;
-
-  // Should the calculation reciprocate its value and unit? Value is meaningless
-  // when the matching Show variable is false.
-  molarMassRecip: boolean = false;
-  solutionDensityRecip: boolean = false;
-
-  // Variables for equation calculation.
-  concenVar: Variable = new Variable;
-  intakeVar: Variable = new Variable;
-  substanceDensityVar: Variable = new Variable;
-  molarMassVar: Variable = new Variable;
-  molarMassRecipVar: Variable = new Variable
-  solutionDensityVar: Variable = new Variable;
-  solutionDensityRecipVar: Variable = new Variable;
-  bodyWeightVar: Variable = new Variable;
-  doseVar: Variable = new Variable;
-
-  // Each variable in terms of the other variables.
-  concenTerm: Term;
-  intakeTerm: Term;
-  substanceDensityTerm: Term;
-  molarMassTerm: Term;
-  molarMassRecipTerm: Term;
-  solutionDensityTerm: Term;
-  solutionDensityRecipTerm: Term;
-  bodyWeightTerm: Term;
-  doseTerm: Term;
-
-  // User-visible alert, disables calculate button. Should never happen on any
-  // user input.
-  internalError: string;
-
-  @ViewChild('concen') concen: SdCalcRowComponent;
-  @ViewChild('concenInput') concenInput: ElementRef<HTMLInputElement>;
-  @ViewChild('concenUnits') concenUnits: SdSelectComponent;
-  @ViewChild('intake') intake: SdCalcRowComponent;
-  @ViewChild('intakeInput') intakeInput: ElementRef<HTMLInputElement>;
-  @ViewChild('intakeUnits') intakeUnits: SdSelectComponent;
-  @ViewChild('substanceDensity') substanceDensity: SdCalcRowComponent;
-  @ViewChild('substanceDensityInput') substanceDensityInput: ElementRef<HTMLInputElement>;
-  @ViewChild('substanceDensityUnits') substanceDensityUnits: SdSelectComponent;
-  @ViewChild('molarMass') molarMass: SdCalcRowComponent;
-  @ViewChild('molarMassInput') molarMassInput: ElementRef<HTMLInputElement>;
-  @ViewChild('solutionDensity') solutionDensity: SdCalcRowComponent;
-  @ViewChild('solutionDensityInput') solutionDensityInput: ElementRef<HTMLInputElement>;
-  @ViewChild('solutionDensityUnits') solutionDensityUnits: SdSelectComponent;
-  @ViewChild('bodyWeight') bodyWeight: SdCalcRowComponent;
-  @ViewChild('bodyWeightInput') bodyWeightInput: ElementRef<HTMLInputElement>;
-  @ViewChild('bodyWeightUnits') bodyWeightUnits: SdSelectComponent;
-  @ViewChild('dose') dose: SdCalcRowComponent;
-  @ViewChild('doseInput') doseInput: ElementRef<HTMLInputElement>;
-  @ViewChild('doseUnits') doseUnits: SdSelectComponent;
-
-  variableMap: Map<Variable, string> = new Map();
-  eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
-  equationSnippet: string;
-
-  constructor() {
-    let calcEq = new Equation(Equation.div(Equation.mul(this.concenVar, this.intakeVar, this.substanceDensityVar, this.molarMassVar, this.solutionDensityVar), Equation.mul(this.molarMassRecipVar, this.solutionDensityRecipVar, this.bodyWeightVar, this.doseVar)), Equation.constantFromNumber(1));
-    this.concenTerm = (<Equation>calcEq.solve(this.concenVar)).RHS;
-    this.intakeTerm = (<Equation>calcEq.solve(this.intakeVar)).RHS;
-    this.substanceDensityTerm = (<Equation>calcEq.solve(this.substanceDensityVar)).RHS;
-    this.molarMassTerm = (<Equation>calcEq.solve(this.molarMassVar)).RHS;
-    this.solutionDensityTerm = (<Equation>calcEq.solve(this.solutionDensityVar)).RHS;
-    this.molarMassRecipTerm = (<Equation>calcEq.solve(this.molarMassRecipVar)).RHS;
-    this.solutionDensityRecipTerm = (<Equation>calcEq.solve(this.solutionDensityRecipVar)).RHS;
-    this.bodyWeightTerm = (<Equation>calcEq.solve(this.bodyWeightVar)).RHS;
-    this.doseTerm = (<Equation>calcEq.solve(this.doseVar)).RHS;
-
-    this.variableMap.set(this.concenVar, 'Concentration');
-    this.variableMap.set(this.intakeVar, 'Intake');
-    this.variableMap.set(this.bodyWeightVar, 'Body weight');
-    this.variableMap.set(this.doseVar, 'Dose');
-    this.updateEquation();
+abstract class Field {
+  input: ElementRef<HTMLInputElement> | null = null;
+  units: SdSelectComponent | null = null;
+  row: SdCalcRowComponent;
+  protected mVar: Variable = new Variable;
+  public get var(): Variable { return this.mVar; }
+  protected mTerm: Term;
+  public get term(): Term { return this.mTerm; }
+  public set term(t: Term) { this.mTerm = t; }
+  readonly unit: ScalarAndDimension;
+  readOnly: boolean = false;
+  value: string = '';
+  get hasError(): boolean {
+    return this.row.errorText != '';
   }
 
-  // Set to true between focus and blur to prevent formChange from updating the
-  // result box. Normally formChange doesn't trigger when typing new numbers,
-  // but you can trigger it through other actions.
-  suppress_change: boolean = false;
-
-  formChange(): void {
-    if (this.suppress_change)
+  // Only look for errors that are certainly wrong given the state of this field,
+  // ignoring the state of the of the rest of the form.
+  updateErrorState(): void {
+    if (this.readOnly || this.value == '') {
+      this.row.errorText = '';
       return;
+    }
+    if (this.value.match(/.*\..*\..*/)) {
+      this.row.errorText = 'One decimal point maximum.';
+      return;
+    }
+    if (isNaN(parseFloat(this.value))) {
+      this.row.errorText = 'Must be a number.';
+      return;
+    }
+    this.row.errorText = '';
+  }
 
+  // Update our 'var' from the text in 'value'.
+  readonly ONE = new ScalarAndDimension(1, null);
+  updateVar(): void {
+    if (!this.row.show) {
+      this.var.setValue(this.ONE);
+      return;
+    }
+    if (this.value == '') {
+      this.var.setValue(null);
+      return;
+    }
+    this.var.setValue(new ScalarAndDimension(parseFloat(this.value) * this.unit.n, this.unit.d));
+  }
+
+  equationSnippet(eqPrinter: EquationPrinter) {
+    return eqPrinter.print(this.var, this.term);
+  }
+}
+
+class Concentration extends Field {
+  readonly VOLUME = Dimension.initLength().exp(3);
+  readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
+  readonly MOL_VOLUME = Dimension.initMolarMass().div(this.VOLUME);
+  readonly MOL_MASS = Dimension.initMolarMass().div(Dimension.initMass());
+  readonly CONCEN_UNITS: {[index: string]: ScalarAndDimension} = {
+    'mg/L': new ScalarAndDimension(0.001, this.MASS_VOLUME),
+    'g/L': new ScalarAndDimension(1, this.MASS_VOLUME),
+    'µg/L': new ScalarAndDimension(0.000001, this.MASS_VOLUME),
+    'ppm (w/v)': new ScalarAndDimension(0.001, this.MASS_VOLUME),
+    'ppb (w/v)': new ScalarAndDimension(0.000001, this.MASS_VOLUME),
+    '% (w/v)': new ScalarAndDimension(10, this.MASS_VOLUME),
+    'mL/L': new ScalarAndDimension(0.001, Dimension.initUnit()),
+    'µL/L': new ScalarAndDimension(0.000001, Dimension.initUnit()),
+    'µL/mL': new ScalarAndDimension(0.001, Dimension.initUnit()),
+    'ppm (v/v)': new ScalarAndDimension(0.000001, Dimension.initUnit()),
+    'ppb (v/v)': new ScalarAndDimension(0.000000001, Dimension.initUnit()),
+    '% (v/v)': new ScalarAndDimension(0.01, Dimension.initUnit()),
+    'mol/L': new ScalarAndDimension(1, this.MOL_VOLUME),
+    'mmol/L': new ScalarAndDimension(0.001, this.MOL_VOLUME),
+    'µmol/L': new ScalarAndDimension(0.000001, this.MOL_VOLUME),
+    'mol/kg': new ScalarAndDimension(0.001, this.MOL_MASS),
+    'mmol/kg': new ScalarAndDimension(0.000001, this.MOL_MASS),
+    'µmol/kg': new ScalarAndDimension(0.000000001, this.MOL_MASS),
+    'mg/kg': new ScalarAndDimension(0.000001, Dimension.initUnit()),
+    'µg/kg': new ScalarAndDimension(0.000000001, Dimension.initUnit()),
+  };
+  get unit(): ScalarAndDimension {
+    return this.CONCEN_UNITS[this.units!.selectedName];
+  }
+}
+
+class Intake extends Field {
+  readonly VOLUME = Dimension.initLength().exp(3);
+  readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
+  readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
+  readonly INTAKE_UNITS: {[index: string]: ScalarAndDimension} = {
+    'L/day': new ScalarAndDimension(1, this.VOLUME_TIME),
+    'mL/day': new ScalarAndDimension(0.001, this.VOLUME_TIME),
+    'kg/day': new ScalarAndDimension(1000, this.MASS_TIME),
+    'g/day': new ScalarAndDimension(1, this.MASS_TIME),
+  }
+  get unit(): ScalarAndDimension {
+    return this.INTAKE_UNITS[this.units!.selectedName];
+  }
+}
+
+class SubstanceDensity extends Field {
+  readonly VOLUME = Dimension.initLength().exp(3);
+  readonly DENSITY_UNITS: {[index: string]: ScalarAndDimension} = {
+    'g/mL': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
+    'g/L': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
+    'kg/m³': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
+    'g/cm³': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
+  };
+  get unit(): ScalarAndDimension {
+    return this.DENSITY_UNITS[this.units!.selectedName];
+  }
+}
+
+class MolarMass extends Field {
+  recip: boolean = false;
+  recipVar: Variable = new Variable;
+  recipTerm: Term;
+  get var(): Variable { return this.recip ? this.recipVar : this.mVar; }
+  get otherVar(): Variable { return this.recip ? this.mVar : this.recipVar; }
+  get term(): Term { return this.recip ? this.recipTerm : this.mTerm; }
+  set term(t: Term) { /* assert recip is false */ this.mTerm = t; }
+
+  readonly ONE = new ScalarAndDimension(1, null);
+  // Update our 'var' from the text in 'value'.
+  updateVar(): void {
+    this.otherVar.setValue(this.ONE);
+    super.updateVar();
+  }
+
+  readonly G_MOL = new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initMolarMass()));
+  get unit(): ScalarAndDimension {
+    // g/mol
+    return this.G_MOL;
+  }
+}
+
+class SolutionDensity extends Field {
+  recip: boolean = false;
+  recipVar: Variable = new Variable;
+  recipTerm: Term;
+  get var() { return this.recip ? this.recipVar : this.mVar; }
+  get otherVar() { return this.recip ? this.mVar : this.recipVar; }
+  get term(): Term { return this.recip ? this.recipTerm : this.mTerm; }
+  set term(t: Term) { /* assert recip is false */ this.mTerm = t; }
+
+  readonly ONE = new ScalarAndDimension(1, null);
+  // Update our 'var' from the text in 'value'.
+  updateVar(): void {
+    this.otherVar.setValue(this.ONE);
+    super.updateVar();
+  }
+
+  readonly VOLUME = Dimension.initLength().exp(3);
+  readonly DENSITY_UNITS: {[index: string]: ScalarAndDimension} = {
+    'g/mL': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
+    'g/L': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
+    'kg/m³': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
+    'g/cm³': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
+  };
+  get unit(): ScalarAndDimension {
+    return this.DENSITY_UNITS[this.units!.selectedName];
+  }
+}
+
+class BodyWeight extends Field {
+  readonly KG_UNIT = new ScalarAndDimension(1000, Dimension.initMass());
+  readonly G_UNIT = new ScalarAndDimension(1, Dimension.initMass());
+  get unit(): ScalarAndDimension {
+    return this.units!.selectedName == 'g' ? this.G_UNIT : this.KG_UNIT;
+  }
+}
+
+class Dose extends Field {
+  readonly DOSE_UNITS: {[index: string]: ScalarAndDimension} = {
+    'mg/kg BW/day': new ScalarAndDimension(0.000001, Dimension.initTime().recip()),
+    'µg/kg BW/day': new ScalarAndDimension(0.000000001, Dimension.initTime().recip()),
+    'mol/kg BW/day': new ScalarAndDimension(0.001, Dimension.initMolarMass().div(Dimension.initMass()).div(Dimension.initTime())),
+    'mmol/kg BW/day': new ScalarAndDimension(0.000001, Dimension.initMolarMass().div(Dimension.initMass()).div(Dimension.initTime())),
+  }
+  get unit(): ScalarAndDimension {
+    return this.DOSE_UNITS[this.units!.selectedName];
+  }
+}
+
+class Form {
+  constructor(eqPrinter: EquationPrinter, fields: Field[]) {
+    this.fields = fields;
+    this.eqPrinter = eqPrinter;
+  }
+
+  eqPrinter: EquationPrinter;
+
+  fields: Field[];
+
+  updateVars(): void {
+    this.fields.forEach(function(f: Field) {
+      f.updateVar();
+    });
+  }
+
+  updateErrors(required: boolean): void {
+    this.fields.forEach(function(f: Field) {
+      f.updateErrorState();
+      if (required && !f.hasError && f.value == '') {
+        f.row.errorText = 'Please fill in a number.';
+      }
+    });
+  }
+
+  hasErrors(): boolean {
+    return this.fields.some(function (f: Field) { return f.hasError; } );
+  }
+
+  internalError: string = '';
+
+  equationSnippet: string = '';
+
+  clear(): void {
+    this.suppressChange = false;
+    this.internalError = '';
+    this.fields.forEach(function(f: Field) {
+      f.row.errorText = '';
+      f.readOnly = false;
+      f.value = '';
+    });
+    this.equationSnippet = this.fields[this.fields.length - 1].equationSnippet(this.eqPrinter);
+  }
+
+  suppressChange: boolean = false;
+
+  inputBlur(): void {
+    this.suppressChange = false;
     this.calculate();
   }
 
-  private calculate(): void {
+  inputFocus(self: HTMLInputElement): void {
+    this.suppressChange = true;
+    for (let i = 0; i != this.fields.length; ++i) {
+      if (this.fields[i].readOnly &&
+          this.fields[i].input &&
+          this.fields[i].input!.nativeElement != self) {
+        this.fields[i].value = '';
+        return;
+      }
+    }
+  }
+
+  formChange(): void {
+    if (!this.suppressChange)
+      this.calculate();
+  }
+
+  calculate() {
     this.updateErrors(false);
 
-    let inout_controls: HTMLInputElement[] = [
-      this.concenInput.nativeElement,
-      this.intakeInput.nativeElement,
-      this.bodyWeightInput.nativeElement,
-      this.doseInput.nativeElement
-    ];
-    if (this.substanceDensityShow)
-      inout_controls.push(this.substanceDensityInput.nativeElement);
-    if (this.molarMassShow)
-      inout_controls.push(this.molarMassInput.nativeElement);
-    if (this.solutionDensityShow)
-      inout_controls.push(this.solutionDensityInput.nativeElement);
-
-    let out_control: HTMLInputElement | null = null;
-    for (let i = 0; i != inout_controls.length; ++i) {
-      if (inout_controls[i].readOnly || inout_controls[i].value == '') {
+    let out_control: Field | null = null;
+    let fields = this.fields.filter(x => x.row.show);
+    for (let i = 0; i != fields.length; ++i) {
+      if (fields[i].readOnly || fields[i].value == '') {
         if (out_control == null) {
-          out_control = inout_controls[i];
+          out_control = fields[i];
         } else {
           out_control = null;
           break;
@@ -135,121 +276,28 @@ export class TotaldosecalcComponent {
     }
 
     if (!out_control) {
-      // We might be here if there were multiple possible outputs found. Wipe
-      // values and readonly state for all of them.
-      for (let i = 0; i != inout_controls.length; ++i) {
-        if (inout_controls[i].readOnly) {
-          inout_controls[i].readOnly = false;
-          inout_controls[i].value = '';
+      // We might be here if there were multiple possible outputs found.
+      // Wipe values and readonly state for all of them.
+      for (let i = 0; i != fields.length; ++i) {
+        if (fields[i].readOnly) {
+          fields[i].readOnly = false;
+          fields[i].value = '';
         }
       }
-      this.updateEquation();
+      this.equationSnippet = fields[fields.length - 1].equationSnippet(this.eqPrinter);
       return;
     }
 
     out_control.readOnly = true;
     out_control.value = '';
 
-    if (this.hasErrors() || this.underConstructionShow || this.internalError)
+    if (this.hasErrors())
       return;
 
-    // Load text in the form into the equation variables.
-    function setValue(v: Variable, i: ElementRef<HTMLInputElement>, sad: ScalarAndDimension): void {
-      if (i.nativeElement.value == '') {
-        v.setValue(null);
-        return;
-      }
-      v.setValue(new ScalarAndDimension(parseFloat(i.nativeElement.value) * sad.n, sad.d));
-    }
+    this.updateVars();
+    this.equationSnippet = out_control.equationSnippet(this.eqPrinter);
 
-    // A unit-less 1. Use this value for variables on hidden rows.
-    const ONE = new ScalarAndDimension(1, null);
-
-    setValue(this.concenVar, this.concenInput, this.getConcenUnit());
-    setValue(this.intakeVar, this.intakeInput, this.getIntakeUnit());
-    setValue(this.bodyWeightVar, this.bodyWeightInput, this.getBodyWeightUnit());
-    setValue(this.doseVar, this.doseInput, this.getDoseUnit());
-
-    if (this.substanceDensityShow) {
-      setValue(this.substanceDensityVar, this.substanceDensityInput, this.getSubstanceDensityUnit());
-    } else {
-      this.substanceDensityVar.setValue(ONE);
-    }
-
-    if (this.molarMassShow) {
-      if (this.molarMassRecip) {
-        this.molarMassVar.setValue(ONE);
-        setValue(this.molarMassRecipVar, this.molarMassInput, this.getMolarMassUnit());
-      } else {
-        setValue(this.molarMassVar, this.molarMassInput, this.getMolarMassUnit());
-        this.molarMassRecipVar.setValue(ONE);
-      }
-    } else {
-      this.molarMassVar.setValue(ONE);
-      this.molarMassRecipVar.setValue(ONE);
-    }
-
-    if (this.solutionDensityShow) {
-      if (this.solutionDensityRecip) {
-        this.solutionDensityVar.setValue(ONE);
-        setValue(this.solutionDensityRecipVar, this.solutionDensityInput, this.getSolutionDensityUnit());
-      } else {
-        setValue(this.solutionDensityVar, this.solutionDensityInput, this.getSolutionDensityUnit());
-        this.solutionDensityRecipVar.setValue(ONE);
-      }
-    } else {
-      this.solutionDensityVar.setValue(ONE);
-      this.solutionDensityRecipVar.setValue(ONE);
-    }
-
-    let solution: Term;
-    let solutionUnit: ScalarAndDimension;
-    if (out_control == this.concenInput.nativeElement) {
-      solution = this.concenTerm;
-      solutionUnit = this.getConcenUnit();
-      this.equationSnippet = this.eqPrinter.print(this.concenVar, solution);
-    } else if (out_control == this.intakeInput.nativeElement) {
-      solution = this.intakeTerm;
-      solutionUnit = this.getIntakeUnit();
-      this.equationSnippet = this.eqPrinter.print(this.intakeVar, solution);
-    } else if (out_control == this.substanceDensityInput.nativeElement) {
-      solution = this.substanceDensityTerm;
-      solutionUnit = this.getSubstanceDensityUnit();
-      this.equationSnippet = this.eqPrinter.print(this.substanceDensityVar, solution);
-    } else if (out_control == this.molarMassInput.nativeElement) {
-      if (this.molarMassRecip) {
-        solution = this.molarMassRecipTerm;
-        solutionUnit = this.getMolarMassUnit();
-        this.equationSnippet = this.eqPrinter.print(this.molarMassRecipVar, solution);
-      } else {
-        solution = this.molarMassTerm;
-        solutionUnit = this.getMolarMassUnit();
-        this.equationSnippet = this.eqPrinter.print(this.molarMassVar, solution);
-      }
-    } else if (out_control == this.solutionDensityInput.nativeElement) {
-      if (this.solutionDensityRecip) {
-        solution = this.solutionDensityRecipTerm;
-        solutionUnit = this.getSolutionDensityUnit();
-        this.equationSnippet = this.eqPrinter.print(this.solutionDensityRecipVar, solution);
-      } else {
-        solution = this.solutionDensityTerm;
-        solutionUnit = this.getSolutionDensityUnit();
-        this.equationSnippet = this.eqPrinter.print(this.solutionDensityVar, solution);
-      }
-    } else if (out_control == this.bodyWeightInput.nativeElement) {
-      solution = this.bodyWeightTerm;
-      solutionUnit = this.getBodyWeightUnit();
-      this.equationSnippet = this.eqPrinter.print(this.bodyWeightVar, solution);
-    } else if (out_control == this.doseInput.nativeElement) {
-      solution = this.doseTerm;
-      solutionUnit = this.getDoseUnit();
-      this.equationSnippet = this.eqPrinter.print(this.doseVar, solution);
-    } else {
-      this.internalError = 'calculator has no output box';
-      return;
-    }
-
-    let result = solution.getValue();
+    let result = out_control.term.getValue();
     if (result == null) {
       this.internalError = 'calculation returned null';
       return;
@@ -258,19 +306,113 @@ export class TotaldosecalcComponent {
       this.internalError = result;
       return;
     }
-
-    if (!result.d.equal(solutionUnit.d)) {
+    if (!result.d.equal(out_control.unit.d)) {
       this.internalError = 'dimension mismatch';
       if (isDevMode()) {
         console.log(result.n);
         console.log(result.d);
-        console.log(solutionUnit.n);
-        console.log(solutionUnit.d);
+        console.log(out_control.unit.n);
+        console.log(out_control.unit.d);
       }
       return;
     }
 
-    out_control.value = printNum(result.n / solutionUnit.n);
+    out_control.value = printNum(result.n / out_control.unit.n);
+  }
+}
+
+class TotalDoseCalcForm extends Form {
+  constructor(eqPrinter: EquationPrinter, fields: Field[]) {
+    super(eqPrinter, fields);
+    this.equationSnippet = '\\text{Dose} = \\frac{\\text{Concentration} \\times \\text{Intake}}{\\text{Body weight}}';
+  }
+  underConstructionShow: boolean = false;
+  hasErrors(): boolean {
+    return this.underConstructionShow || super.hasErrors();
+  }
+}
+
+@Component({
+  selector: 'app-totaldosecalc',
+  templateUrl: './totaldosecalc.component.html',
+  styleUrls: ['./totaldosecalc.component.css']
+})
+export class TotaldosecalcComponent {
+  @ViewChild('concenRow') concenRow: SdCalcRowComponent;
+  @ViewChild('concenInput') concenInput: ElementRef<HTMLInputElement>;
+  @ViewChild('concenUnits') concenUnits: SdSelectComponent;
+  @ViewChild('intakeRow') intakeRow: SdCalcRowComponent;
+  @ViewChild('intakeInput') intakeInput: ElementRef<HTMLInputElement>;
+  @ViewChild('intakeUnits') intakeUnits: SdSelectComponent;
+  @ViewChild('substanceDensityRow') substanceDensityRow: SdCalcRowComponent;
+  @ViewChild('substanceDensityInput') substanceDensityInput: ElementRef<HTMLInputElement>;
+  @ViewChild('substanceDensityUnits') substanceDensityUnits: SdSelectComponent;
+  @ViewChild('molarMassRow') molarMassRow: SdCalcRowComponent;
+  @ViewChild('molarMassInput') molarMassInput: ElementRef<HTMLInputElement>;
+  @ViewChild('solutionDensityRow') solutionDensityRow: SdCalcRowComponent;
+  @ViewChild('solutionDensityInput') solutionDensityInput: ElementRef<HTMLInputElement>;
+  @ViewChild('solutionDensityUnits') solutionDensityUnits: SdSelectComponent;
+  @ViewChild('bodyWeightRow') bodyWeightRow: SdCalcRowComponent;
+  @ViewChild('bodyWeightInput') bodyWeightInput: ElementRef<HTMLInputElement>;
+  @ViewChild('bodyWeightUnits') bodyWeightUnits: SdSelectComponent;
+  @ViewChild('doseRow') doseRow: SdCalcRowComponent;
+  @ViewChild('doseInput') doseInput: ElementRef<HTMLInputElement>;
+  @ViewChild('doseUnits') doseUnits: SdSelectComponent;
+
+  variableMap: Map<Variable, string> = new Map();
+  eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
+  equationSnippet: string = '\\text{Dose} = \\frac{\\text{Concentration} \\times \\text{Intake}}{\\text{Body weight}}';
+
+  concen: Concentration = new Concentration;
+  intake: Intake = new Intake;
+  substanceDensity: SubstanceDensity = new SubstanceDensity;
+  molarMass: MolarMass = new MolarMass;
+  solutionDensity: SolutionDensity = new SolutionDensity;
+  bodyWeight: BodyWeight = new BodyWeight;
+  dose: Dose = new Dose;
+
+  form: TotalDoseCalcForm = new TotalDoseCalcForm(this.eqPrinter, [this.concen, this.intake, this.substanceDensity, this.molarMass, this.solutionDensity, this.bodyWeight, this.dose]);
+
+  constructor() {
+    let calcEq = new Equation(Equation.div(Equation.mul(this.concen.var, this.intake.var, this.substanceDensity.var, this.molarMass.var, this.solutionDensity.var), Equation.mul(this.molarMass.recipVar, this.solutionDensity.recipVar, this.bodyWeight.var, this.dose.var)), Equation.constantFromNumber(1));
+    this.concen.term = (<Equation>calcEq.solve(this.concen.var)).RHS;
+    this.intake.term = (<Equation>calcEq.solve(this.intake.var)).RHS;
+    this.substanceDensity.term = (<Equation>calcEq.solve(this.substanceDensity.var)).RHS;
+    this.molarMass.term = (<Equation>calcEq.solve(this.molarMass.var)).RHS;
+    this.solutionDensity.term = (<Equation>calcEq.solve(this.solutionDensity.var)).RHS;
+    this.molarMass.recipTerm = (<Equation>calcEq.solve(this.molarMass.recipVar)).RHS;
+    this.solutionDensity.recipTerm = (<Equation>calcEq.solve(this.solutionDensity.recipVar)).RHS;
+    this.bodyWeight.term = (<Equation>calcEq.solve(this.bodyWeight.var)).RHS;
+    this.dose.term = (<Equation>calcEq.solve(this.dose.var)).RHS;
+
+    this.variableMap.set(this.concen.var, 'Concentration');
+    this.variableMap.set(this.intake.var, 'Intake');
+    this.variableMap.set(this.bodyWeight.var, 'Body weight');
+    this.variableMap.set(this.dose.var, 'Dose');
+  }
+
+  ngAfterViewInit() {
+    this.concen.input = this.concenInput;
+    this.concen.units = this.concenUnits;
+    this.concen.row = this.concenRow;
+    this.intake.input = this.intakeInput;
+    this.intake.units = this.intakeUnits;
+    this.intake.row = this.intakeRow;
+    this.substanceDensity.input = this.substanceDensityInput;
+    this.substanceDensity.units = this.substanceDensityUnits;
+    this.substanceDensity.row = this.substanceDensityRow;
+    this.molarMass.input = this.molarMassInput;
+    this.molarMass.row = this.molarMassRow;
+    this.solutionDensity.input = this.solutionDensityInput;
+    this.solutionDensity.units = this.solutionDensityUnits;
+    this.solutionDensity.row = this.solutionDensityRow;
+    this.bodyWeight.input = this.bodyWeightInput;
+    this.bodyWeight.units = this.bodyWeightUnits;
+    this.bodyWeight.row = this.bodyWeightRow;
+    this.dose.input = this.doseInput;
+    this.dose.units = this.doseUnits;
+    this.dose.row = this.doseRow;
+    this.updateEquation();
   }
 
   // Allow the template to iterate over unit labels filtered by dimension.
@@ -309,9 +451,6 @@ export class TotaldosecalcComponent {
     'mg/kg': new ScalarAndDimension(0.000001, Dimension.initUnit()),
     'µg/kg': new ScalarAndDimension(0.000000001, Dimension.initUnit()),
   };
-  getConcenUnit(): ScalarAndDimension {
-    return this.CONCEN_UNITS[this.concenUnits.selectedName];
-  }
 
   readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
   readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
@@ -321,9 +460,6 @@ export class TotaldosecalcComponent {
     'kg/day': new ScalarAndDimension(1000, this.MASS_TIME),
     'g/day': new ScalarAndDimension(1, this.MASS_TIME),
   }
-  getIntakeUnit(): ScalarAndDimension {
-    return this.INTAKE_UNITS[this.intakeUnits.selectedName];
-  }
 
   readonly DENSITY_UNITS: {[index: string]: ScalarAndDimension} = {
     'g/mL': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
@@ -331,25 +467,6 @@ export class TotaldosecalcComponent {
     'kg/m³': new ScalarAndDimension(1, Dimension.initMass().div(this.VOLUME)),
     'g/cm³': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
   };
-  getSubstanceDensityUnit(): ScalarAndDimension {
-    return this.DENSITY_UNITS[this.substanceDensityUnits.selectedName];
-  }
-
-  readonly G_MOL = new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initMolarMass()));
-  getMolarMassUnit(): ScalarAndDimension {
-    // g/mol
-    return this.G_MOL;
-  }
-
-  getSolutionDensityUnit(): ScalarAndDimension {
-    return this.DENSITY_UNITS[this.solutionDensityUnits.selectedName];
-  }
-
-  readonly KG_UNIT = new ScalarAndDimension(1000, Dimension.initMass());
-  readonly G_UNIT = new ScalarAndDimension(1, Dimension.initMass());
-  getBodyWeightUnit(): ScalarAndDimension {
-    return this.bodyWeightUnits.selectedName == 'g' ? this.G_UNIT : this.KG_UNIT;
-  }
 
   readonly DOSE_UNITS: {[index: string]: ScalarAndDimension} = {
     'mg/kg BW/day': new ScalarAndDimension(0.000001, Dimension.initTime().recip()),
@@ -357,22 +474,17 @@ export class TotaldosecalcComponent {
     'mol/kg BW/day': new ScalarAndDimension(0.001, Dimension.initMolarMass().div(Dimension.initMass()).div(Dimension.initTime())),
     'mmol/kg BW/day': new ScalarAndDimension(0.000001, Dimension.initMolarMass().div(Dimension.initMass()).div(Dimension.initTime())),
   }
-  getDoseUnit(): ScalarAndDimension {
-    return this.DOSE_UNITS[this.doseUnits.selectedName];
-  }
 
   updateEquation(): void {
-    this.variableMap.set(this.substanceDensityVar,
-                         this.substanceDensityShow ? 'Substance density' : '');
-    this.variableMap.set(this.molarMassVar,
-                         this.molarMassShow && !this.molarMassRecip ? 'Molar mass' : '');
-    this.variableMap.set(this.molarMassRecipVar,
-                         this.molarMassShow && this.molarMassRecip ? 'Molar mass' : '');
-    this.variableMap.set(this.solutionDensityVar,
-                         this.solutionDensityShow && !this.solutionDensityRecip ? 'Solvent or media density' : '');
-    this.variableMap.set(this.solutionDensityRecipVar,
-                         this.solutionDensityShow && this.solutionDensityRecip ? 'Solvent or media density' : '');
-    this.equationSnippet = this.eqPrinter.dispatch(this.doseVar) + ' = ' + this.eqPrinter.dispatch(this.doseTerm);
+    this.variableMap.set(this.substanceDensity.var,
+                         this.substanceDensity.row.show ? 'Substance density' : '');
+    this.variableMap.set(this.molarMass.var,
+                         this.molarMass.row.show ? 'Molar mass' : '');
+    this.variableMap.set(this.molarMass.otherVar, '');
+    this.variableMap.set(this.solutionDensity.var,
+                         this.solutionDensity.row.show ? 'Solvent or media density' : '');
+    this.variableMap.set(this.solutionDensity.otherVar, '');
+    this.form.equationSnippet = this.dose.equationSnippet(this.eqPrinter);
   }
 
   changeUnits(): void {
@@ -381,11 +493,12 @@ export class TotaldosecalcComponent {
     // volume of solvent per mass.
     if (this.concenUnits.selectedGroupName == 'volume/volume' &&
         this.intakeUnits.selectedGroupName == 'mass/time') {
-      this.substanceDensityShow = false;
-      this.molarMassShow = false;
-      this.solutionDensityShow = false;
-      this.underConstructionShow = true;
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = false;
+      this.solutionDensity.row.show = false;
+      this.form.underConstructionShow = true;
       this.updateEquation();
+      this.form.formChange();
       return;
     }
 
@@ -395,263 +508,150 @@ export class TotaldosecalcComponent {
         this.intakeUnits.selectedGroupName == 'volume/time' &&
         (this.doseUnits.selectedName == 'mg/kg BW/day' ||
          this.doseUnits.selectedName == 'µg/kg BW/day')) {
-      this.substanceDensityShow = false;
-      this.molarMassShow = true;
-      this.molarMassRecip = false;
-      this.solutionDensityShow = true;
-      this.solutionDensityRecip = false;
-      this.underConstructionShow = false;
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = true;
+      this.molarMass.recip = false;
+      this.solutionDensity.row.show = true;
+      this.solutionDensity.recip = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
+      this.form.formChange();
       return;
     }
     if (this.concenUnits.selectedGroupName == 'mol/mass' &&
         this.intakeUnits.selectedGroupName == 'volume/time' &&
         (this.doseUnits.selectedName == 'mol/kg BW/day' ||
          this.doseUnits.selectedName == 'mmol/kg BW/day')) {
-      this.substanceDensityShow = false;
-      this.molarMassShow = false;
-      this.solutionDensityShow = true;
-      this.solutionDensityRecip = false;
-      this.underConstructionShow = false;
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = false;
+      this.solutionDensity.row.show = true;
+      this.solutionDensity.recip = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
+      this.form.formChange();
       return;
     }
     if (this.concenUnits.selectedGroupName == 'mass/mass' &&
         this.intakeUnits.selectedGroupName == 'volume/time') {
-      this.substanceDensityShow = false;
-      this.molarMassShow = false;
-      this.solutionDensityShow = true;
-      this.solutionDensityRecip = false;
-      this.underConstructionShow = false;
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = false;
+      this.solutionDensity.row.show = true;
+      this.solutionDensity.recip = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
+      this.form.formChange();
       return;
     }
 
     // Use dimensional analysis to determine which rows to show.
     let residual =
-        this.getConcenUnit().d
-            .mul(this.getIntakeUnit().d)
-            .div(this.getBodyWeightUnit().d)
-            .div(this.getDoseUnit().d)
+        this.concen.unit.d
+            .mul(this.intake.unit.d)
+            .div(this.bodyWeight.unit.d)
+            .div(this.dose.unit.d)
             .recip();
 
     if (residual.unit()) {
-      this.substanceDensityShow = false;
-      this.molarMassShow = false;
-      this.solutionDensityShow = false;
-      this.underConstructionShow = false;
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = false;
+      this.solutionDensity.row.show = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
+      this.form.formChange();
       return;
     }
 
-    if (residual.equal(this.getSubstanceDensityUnit().d)) {
-      this.substanceDensityShow = true;
-      this.molarMassShow = false;
-      this.solutionDensityShow = false;
-      this.underConstructionShow = false;
+    if (residual.equal(this.substanceDensity.unit.d)) {
+      this.substanceDensity.row.show = true;
+      this.molarMass.row.show = false;
+      this.solutionDensity.row.show = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
+      this.form.formChange();
       return;
     }
 
-    if (residual.equal(this.getMolarMassUnit().d)) {
-      this.substanceDensityShow = false;
-      this.molarMassShow = true;
-      this.molarMassRecip = false;
-      this.solutionDensityShow = false;
-      this.underConstructionShow = false;
+    if (residual.equal(this.molarMass.unit.d)) {
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = true;
+      this.molarMass.recip = false;
+      this.solutionDensity.row.show = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
+      this.form.formChange();
       return;
     }
-    if (residual.equal(this.getMolarMassUnit().d.recip())) {
-      this.substanceDensityShow = false;
-      this.molarMassShow = true;
-      this.molarMassRecip = true;
-      this.solutionDensityShow = false;
-      this.underConstructionShow = false;
+    if (residual.equal(this.molarMass.unit.d.recip())) {
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = true;
+      this.molarMass.recip = true;
+      this.solutionDensity.row.show = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
-      return;
-    }
-
-    if (residual.equal(this.getSolutionDensityUnit().d.recip())) {
-      this.substanceDensityShow = false;
-      this.molarMassShow = false;
-      this.solutionDensityShow = true;
-      this.solutionDensityRecip = true;
-      this.underConstructionShow = false;
-      this.updateEquation();
+      this.form.formChange();
       return;
     }
 
-    if (residual.equal(this.getSubstanceDensityUnit().d.mul(this.getMolarMassUnit().d))) {
-      this.substanceDensityShow = true;
-      this.molarMassShow = true;
-      this.molarMassRecip = false;
-      this.solutionDensityShow = false;
-      this.underConstructionShow = false;
+    if (residual.equal(this.solutionDensity.unit.d.recip())) {
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = false;
+      this.solutionDensity.row.show = true;
+      this.solutionDensity.recip = true;
+      this.form.underConstructionShow = false;
       this.updateEquation();
-      return;
-    }
-    if (residual.equal(this.getSubstanceDensityUnit().d.div(this.getMolarMassUnit().d))) {
-      this.substanceDensityShow = true;
-      this.molarMassShow = true;
-      this.molarMassRecip = true;
-      this.solutionDensityShow = false;
-      this.underConstructionShow = false;
-      this.updateEquation();
+      this.form.formChange();
       return;
     }
 
-    if (residual.equal(this.getSolutionDensityUnit().d.recip().mul(this.getMolarMassUnit().d))) {
-      this.substanceDensityShow = false
-      this.molarMassShow = true;
-      this.molarMassRecip = false;
-      this.solutionDensityShow = true;
-      this.solutionDensityRecip = true;
-      this.underConstructionShow = false;
+    if (residual.equal(this.substanceDensity.unit.d.mul(this.molarMass.unit.d))) {
+      this.substanceDensity.row.show = true;
+      this.molarMass.row.show = true;
+      this.molarMass.recip = false;
+      this.solutionDensity.row.show = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
+      this.form.formChange();
       return;
     }
-    if (residual.equal(this.getSolutionDensityUnit().d.recip().mul(this.getMolarMassUnit().d.recip()))) {
-      this.substanceDensityShow = false;
-      this.molarMassShow = true;
-      this.molarMassRecip = true;
-      this.solutionDensityShow = true;
-      this.solutionDensityRecip = true;
-      this.underConstructionShow = false;
+    if (residual.equal(this.substanceDensity.unit.d.div(this.molarMass.unit.d))) {
+      this.substanceDensity.row.show = true;
+      this.molarMass.row.show = true;
+      this.molarMass.recip = true;
+      this.solutionDensity.row.show = false;
+      this.form.underConstructionShow = false;
       this.updateEquation();
+      this.form.formChange();
+      return;
+    }
+
+    if (residual.equal(this.solutionDensity.unit.d.recip().mul(this.molarMass.unit.d))) {
+      this.substanceDensity.row.show = false
+      this.molarMass.row.show = true;
+      this.molarMass.recip = false;
+      this.solutionDensity.row.show = true;
+      this.solutionDensity.recip = true;
+      this.form.underConstructionShow = false;
+      this.updateEquation();
+      this.form.formChange();
+      return;
+    }
+    if (residual.equal(this.solutionDensity.unit.d.recip().mul(this.molarMass.unit.d.recip()))) {
+      this.substanceDensity.row.show = false;
+      this.molarMass.row.show = true;
+      this.molarMass.recip = true;
+      this.solutionDensity.row.show = true;
+      this.solutionDensity.recip = true;
+      this.form.underConstructionShow = false;
+      this.updateEquation();
+      this.form.formChange();
       return;
     }
 
     if (isDevMode())
       console.log(residual);
 
+    this.form.underConstructionShow = true;
     this.updateEquation();
-    this.underConstructionShow = true;
-  }
-
-  inputFocus(self: HTMLInputElement): void {
-    this.suppress_change = true;
-
-    // Clear the calculation result if there is one. It'll be the only
-    // HTMLInputElement marked readOnly=true.
-    let inout_controls: HTMLInputElement[] = [
-      this.concenInput.nativeElement,
-      this.intakeInput.nativeElement,
-      this.bodyWeightInput.nativeElement,
-      this.doseInput.nativeElement
-    ];
-    if (this.substanceDensityShow) { inout_controls.push(this.substanceDensityInput.nativeElement); }
-    if (this.molarMassShow) { inout_controls.push(this.molarMassInput.nativeElement); }
-    if (this.solutionDensityShow) { inout_controls.push(this.solutionDensityInput.nativeElement); }
-
-    for (let i = 0; i != inout_controls.length; ++i) {
-      if (inout_controls[i].readOnly) {
-        if (inout_controls[i] != self)
-          inout_controls[i].value = '';
-        return;
-      }
-    }
-  }
-
-  inputBlur(): void {
-    this.suppress_change = false;
-    this.calculate();
-  }
-
-  private numBlankOrReadonlyFields(): number {
-    function count(e: HTMLInputElement): number {
-      if (e.value == '')
-        return 1;
-      if (e.readOnly)
-        return 1;
-      return 0;
-    }
-    let total: number = count(this.concenInput.nativeElement) +
-                        count(this.intakeInput.nativeElement) +
-                        count(this.bodyWeightInput.nativeElement) +
-                        count(this.doseInput.nativeElement);
-    if (this.substanceDensityShow)
-      total += count(this.substanceDensityInput.nativeElement);
-    if (this.molarMassShow)
-      total += count(this.molarMassInput.nativeElement);
-    if (this.solutionDensityShow)
-      total += count(this.solutionDensityInput.nativeElement);
-    return total;
-  }
-
-  updateErrors(required: boolean): void {
-    function requiredAndValidNumber(e: HTMLInputElement): string {
-      if (e.readOnly) return '';
-      if (e.value == '')
-        return 'Please fill in a number.';
-      if (e.value.match(/.*\..*\..*/))
-        return 'One decimal point maximum.';
-      if (isNaN(parseFloat(e.value)))
-        return 'Must be a number.';
-      return '';
-    }
-    function validNumber(e: HTMLInputElement): string {
-      if (e.readOnly || e.value == '')
-        return '';
-      if (e.value.match(/.*\..*\..*/))
-        return 'One decimal point maximum.';
-      if (isNaN(parseFloat(e.value)))
-        return 'Must be a number.';
-      return '';
-    }
-    function pleaseRemoveValue(e: HTMLInputElement): string {
-      return 'Please remove a value.';
-    }
-
-    let checkFn;
-    if (this.numBlankOrReadonlyFields() == 0) checkFn = pleaseRemoveValue;
-    else if (required) checkFn = requiredAndValidNumber;
-    else checkFn = validNumber;
-
-    this.concen.errorText = checkFn(this.concenInput.nativeElement);
-    this.intake.errorText = checkFn(this.intakeInput.nativeElement);
-    if (this.substanceDensityShow)
-      this.substanceDensity.errorText = checkFn(this.substanceDensityInput.nativeElement);
-    if (this.molarMassShow)
-      this.molarMass.errorText = checkFn(this.molarMassInput.nativeElement);
-    if (this.solutionDensityShow)
-      this.solutionDensity.errorText = checkFn(this.solutionDensityInput.nativeElement);
-    this.bodyWeight.errorText = checkFn(this.bodyWeightInput.nativeElement);
-    this.dose.errorText = checkFn(this.doseInput.nativeElement);
-  }
-
-  // Whether the user input has any errors. Internal error is separate.
-  hasErrors(): boolean {
-    return this.concen.errorText != '' ||
-           this.intake.errorText != '' ||
-           (this.substanceDensityShow && this.substanceDensity.errorText != '') ||
-           (this.molarMassShow && this.molarMass.errorText != '') ||
-           (this.solutionDensityShow && this.solutionDensity.errorText != '') ||
-           this.bodyWeight.errorText != '' ||
-           this.dose.errorText != '';
-  }
-
-  clear(): void {
-    this.suppress_change = false;
-
-    this.internalError = '';
-
-    this.concen.errorText = '';
-    this.intake.errorText = '';
-    if (this.substanceDensityShow) this.substanceDensity.errorText = '';
-    if (this.molarMassShow) this.molarMass.errorText = '';
-    if (this.solutionDensityShow) this.solutionDensity.errorText = '';
-    this.bodyWeight.errorText = '';
-    this.dose.errorText = '';
-
-    this.concenInput.nativeElement.readOnly = false;
-    this.intakeInput.nativeElement.readOnly = false;
-    this.substanceDensityInput.nativeElement.readOnly = false;
-    this.molarMassInput.nativeElement.readOnly = false;
-    this.solutionDensityInput.nativeElement.readOnly = false;
-    this.bodyWeightInput.nativeElement.readOnly = false;
-    this.doseInput.nativeElement.readOnly = false;
-
-    this.updateEquation();
+    this.form.formChange();
   }
 }
