@@ -2,7 +2,7 @@
 <div class="container py-3">
   <p class="lead font-weight-bold">Total Dose Conversion Calculator</p>
   <p><b>This is a MULTIDIRECTIONAL calculator. Leave any One field blank and hit Calculate! It will calculate the missing field for you.</b></p>
-  <p>This calculator is designed to only be used for homogenous (i.e. uniform) chemical <a target="_blank" href="assets/terms.html#mixture">mixtures</a>. It should not be used for radionuclides.</p>
+  <p>This calculator is designed to only be used for homogenous (i.e. uniform) chemical <a target="_blank" href="definitions#mixture">mixtures</a>. It should not be used for radionuclides.</p>
   <form autocomplete="off" novalidate (change)="form.formChange()">
     <sd-calc-row #concenRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
@@ -35,7 +35,7 @@
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        <b>Concentration</b> is the amount of one substance present in another substance. In other words, it is the amount of a substance present in a <a target="_blank" href="assets/terms.html#mixture">mixture</a> that contains at least two substances. Commonly, these mixtures are <a target="_blank" href="assets/terms.html#solution">solutions</a>. Concentration can be used to express the amount of any substance in any media. Examples of media that are relevant to human or environmental health include food, soil, water, air, bodily fluids, tissues, pharmaceuticals and consumer products. <a target="_blank" href="assets/terms.html#concentration">Click here</a> for more information on concentration.
+        <b>Concentration</b> is the amount of one substance present in another substance. In other words, it is the amount of a substance present in a <a target="_blank" href="definitions#mixture">mixture</a> that contains at least two substances. Commonly, these mixtures are <a target="_blank" href="definitions#solution">solutions</a>. Concentration can be used to express the amount of any substance in any media. Examples of media that are relevant to human or environmental health include food, soil, water, air, bodily fluids, tissues, pharmaceuticals and consumer products. <a target="_blank" href="definitions#concentration">Click here</a> for more information on concentration.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #intakeRow>
