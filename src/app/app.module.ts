@@ -18,10 +18,12 @@ import { TotalDoseCalcComponent } from './totaldosecalc/totaldosecalc.component'
 import { SdInputPositiveNumber } from './shared/number-util';
 import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-internal-calc-error.component';
 import { SdKatexDirective } from './sd-katex.directive';
+import { DefinitionsComponent } from './definitions/definitions.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    DefinitionsComponent,
     InhaleCalcComponent,
     HumanCalcComponent,
     LandingComponent,
