@@ -220,11 +220,11 @@ class Form {
 }
 
 @Component({
-    selector: 'app-allometry-form',
-    templateUrl: './allometry-form.component.html',
-    styleUrls: ['./allometry-form.component.css']
+    selector: 'app-humancalc',
+    templateUrl: './humancalc.component.html',
+    styleUrls: ['./humancalc.component.css']
 })
-export class AllometryFormComponent implements AfterViewInit {
+export class HumanCalcComponent implements AfterViewInit {
   variableMap: Map<Variable, string> = new Map();
   eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
 

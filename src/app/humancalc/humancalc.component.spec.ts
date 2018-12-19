@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AllometryFormComponent } from './allometry-form.component';
+import { HumanCalcComponent } from './humancalc.component';
 
-describe('AllometryFormComponent', () => {
-  let component: AllometryFormComponent;
-  let fixture: ComponentFixture<AllometryFormComponent>;
+describe('HumanCalcComponent', () => {
+  let component: HumanCalcComponent;
+  let fixture: ComponentFixture<HumanCalcComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AllometryFormComponent ]
+      declarations: [ HumanCalcComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AllometryFormComponent);
+    fixture = TestBed.createComponent(HumanCalcComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
