@@ -1,5 +1,4 @@
 import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, Input, Output, QueryList, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Directive({selector: 'option'})
 export class SdSelectItem {
@@ -24,15 +23,8 @@ export class SdSelectGroup implements AfterContentInit {
   selector: 'sd-select',
   templateUrl: './sd-select.component.html',
   styleUrls: ['./sd-select.component.css'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SdSelectComponent),
-      multi: true
-    }
-  ],
 })
-export class SdSelectComponent implements AfterContentInit, ControlValueAccessor {
+export class SdSelectComponent implements AfterContentInit {
   selectedItem: SdSelectItem;
   selectedGroup: SdSelectGroup;
 
@@ -43,12 +35,10 @@ export class SdSelectComponent implements AfterContentInit, ControlValueAccessor
     this.selectedGroup = group;
     this.selectedItem = item;
     this.change.emit({group: group, item: item});
-    if (this.onChangedFn) this.onChangedFn(item.value);
   }
   onItemSelected(item: SdSelectItem): void {
     this.selectedItem = item;
     this.change.emit({item: item});
-    if (this.onChangedFn) this.onChangedFn(item.value);
   }
 
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
@@ -77,38 +67,6 @@ export class SdSelectComponent implements AfterContentInit, ControlValueAccessor
     }
     this.ready_ = true;
   }
-
-  // ControlValueAccessor implementation for @angular/forms integration.
-
-  writeValue(obj: any): void {
-    if (!this.ready_) return;
-    let onChangedSave = this.onChangedFn;
-    this.onChangedFn = null;
-    if (this.groups.length == 0) {
-      let item = this.items.find(function(item: SdSelectItem, index: number, array: SdSelectItem[]): boolean {
-        return item.value == obj;
-      });
-      if (!item) { this.onChangedFn = onChangedSave; return; }
-      this.onItemSelected(item);
-      this.onChangedFn = onChangedSave;
-      return;
-    } else {
-      for (let group of this.groups.toArray()) {
-        let item = group.items.find(function(item: SdSelectItem, index: number, array: SdSelectItem[]): boolean {
-          return item.value == obj;
-        });
-        if (!item) { this.onChangedFn = onChangedSave; return; }
-        this.onGroupItemSelected(group, item);
-        this.onChangedFn = onChangedSave;
-        return;
-      }
-    }
-  }
-
-  registerOnChange(fn: any): void { this.onChangedFn = fn; }
-  registerOnTouched(fn: any): void {}
-
-  private onChangedFn: any = null;
 
   get value(): any { return this.selectedItem.value; }
 }

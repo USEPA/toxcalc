@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -32,6 +31,8 @@ import { SdKatexDirective } from './sd-katex.directive';
     SdCalcRowInput,
     SdCalcRowLabel,
     SdInputPositiveNumber,
+    SdInternalCalcErrorComponent,
+    SdKatexDirective,
     SdProductListComponent,
     SdProductListItem,
     SdProductListItemDescription,
@@ -41,8 +42,6 @@ import { SdKatexDirective } from './sd-katex.directive';
     SdSelectItem,
     SdSelectGroup,
     TotalDoseCalcComponent,
-    SdInternalCalcErrorComponent,
-    SdKatexDirective
   ],
   imports: [
     AppRoutingModule,
@@ -51,7 +50,6 @@ import { SdKatexDirective } from './sd-katex.directive';
     FormsModule,
     HttpModule,
     NgbModule,
-    ReactiveFormsModule
   ],
   bootstrap: [AppComponent]
 })
