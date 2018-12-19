@@ -529,6 +529,15 @@ export class EquationPrinter {
   }
 
   visitExponentiate(e: Exponentiate): string {
+    // Print 1/x instead of x^-1.
+    if (e.getExponent().kind == TypeDiscriminator.Constant &&
+        (<Constant>e.getExponent()).getValue().n == -1) {
+      let p = this.enterGroup(20);
+      let result = p[1] + '\\frac{1}{';
+      result += this.dispatch(e.getBase());
+      return result + '}' + this.leaveGroup(p[0]);
+    }
+
     let p_enter = this.enterGroup(30);
     let base_str = this.dispatch(e.getBase());
     let p_close = this.leaveGroup(p_enter[0]);
