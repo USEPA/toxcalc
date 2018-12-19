@@ -368,7 +368,6 @@ export class Equation {
     newTerms = [];
     common_exp_bases.forEach(function(value: Array<number>, key: Term): void {
       if (value.length > 1) {
-        console.log("Found term to coalesce.");
         if (key.kind == TypeDiscriminator.Exponentiate) {
           key = (<Exponentiate>key).getBase();
         }
