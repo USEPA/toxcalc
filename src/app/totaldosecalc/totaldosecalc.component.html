@@ -144,6 +144,8 @@
   <p>
     If body weight of the animal or human is unknown, use defaults. Some defaults for rodents can be found here: <a rel="noopener" target="_blank" href="https://semspub.epa.gov/work/10/500017164.pdf">EPA Default Animal Body Weights</a> and here <a rel="noopener" target="_blank" href="https://www.tera.org/Tools/ratmousevalues.pdf">TERA Default Rat and Mouse Body Weights</a>.
   </p>
+  <ng-container *ngIf="!form.underConstructionShow">
   <p>The above calculations are based on the following equation:</p>
   <p [sdKatex]="form.equationSnippet"></p>
+  </ng-container>
 </div>
