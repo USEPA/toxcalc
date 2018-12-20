@@ -2,10 +2,9 @@
 <div class="container py-3">
   <p class="lead font-weight-bold mb-4">Inhalation Dose Calculators</p>
   <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
-  <p><b>Use this calculator to convert between air concentrations expressed as volume/volume ratios (ppm (v/v), ppb (v/v), % (v/v)) and air concentrations expressed in mass/volume quantities (mg/m3, μg/m3, mg/L and μg/L).</b></p>
+  <p>Use this calculator to convert between air concentrations in volume/volume to mass/volume.</p>
   <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
-  <p>Air concentrations for gases and vapours may be expressed in either ppm (v/v) or mg/m³ but for aerosols only mg/m³ should be used.</p>
-  <form autocomplete="off" novalidate (change)="conversionForm.formChange()">
+  <form class="mb-3" autocomplete="off" novalidate (change)="conversionForm.formChange()">
     <sd-calc-row #concenVolVolRow>
       <ng-template sdCalcRowLabel>
         Air concentration (v/v)
@@ -191,7 +190,8 @@
     <button class="btn btn-secondary" (click)="inhalationForm.clear()">Clear</button>
   </div>
 </form>
-  <p class="mt-3">To get the molar mass, add the atomic weights of all atoms in the substance. To find the atomic weights, you may use the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/File:Periodic_Table_Of_Elements.svg">Periodic Table</a> or look up the molar mass from a trusted source such as <a rel="noopener" target="_blank" href="https://chem.nlm.nih.gov/chemidplus/">ChemIDPlus</a>.</p>
+  <p>Air concentrations for gases and vapours may be expressed in either ppm (v/v) or mg/m³ but for aerosols only mg/m³ should be used.</p>
+  <p>To get the molar mass, add the atomic weights of all atoms in the substance. To find the atomic weights, you may use the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/File:Periodic_Table_Of_Elements.svg">Periodic Table</a> or look up the molar mass from a trusted source such as <a rel="noopener" target="_blank" href="https://chem.nlm.nih.gov/chemidplus/">ChemIDPlus</a>.</p>
   <p>The above calculations are based on the following equation:</p>
   <p [sdKatex]="inhalationForm.equationSnippet"></p>
 <hr />
