@@ -1,0 +1,10 @@
+.nav-item a {
+  color: #858585;
+}
+.nav-item a:hover {
+  color: #000000;
+  text-decoration: none;
+}
+.nav-item.active a {
+  color: #3B58B8;
+}
