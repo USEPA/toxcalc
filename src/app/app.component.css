@@ -1,5 +1,6 @@
 .nav-item a {
   color: #858585;
+  transition: color 0.4s ease 0s;
 }
 .nav-item a:hover {
   color: #000000;
