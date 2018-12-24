@@ -82,17 +82,17 @@
       <button class="btn btn-primary mr-3" (click)="conversionForm.updateErrors(true)">Convert!</button>
       <button class="btn btn-secondary" (click)="conversionForm.clear()">Clear</button>
     </div>
-</form>
-<p>The above calculations are based on the following equation:</p>
-<p [sdKatex]="conversionForm.equationSnippet"></p>
-<hr />
-<p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
-<form autocomplete="off" novalidate (change)="inhalationForm.formChange()">
-  <sd-calc-row #concenRow>
-    <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
-      Air concentration
-    </ng-template>
-    <ng-template sdCalcRowInput>
+  </form>
+  <p>The above calculations are based on the following equation:</p>
+  <p [sdKatex]="conversionForm.equationSnippet"></p>
+  <hr>
+  <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
+  <form autocomplete="off" novalidate (change)="inhalationForm.formChange()">
+    <sd-calc-row #concenRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
+        Air concentration
+      </ng-template>
+      <ng-template sdCalcRowInput>
         <input
           class="form-control"
           id="concen"
@@ -107,16 +107,16 @@
         <sd-select (click)="inhalationForm.formChange()" #concenUnits>
           <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
-    </ng-template>
-    <ng-template sdCalcRowHelp>
-      <b>Air concentration (mass/volume)</b> is the mass of the substance present in a specified volume of air.
-    </ng-template>
-  </sd-calc-row>
-  <sd-calc-row #intakeRow>
-    <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
-      Intake
-    </ng-template>
-    <ng-template sdCalcRowInput>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        <b>Air concentration (mass/volume)</b> is the mass of the substance present in a specified volume of air.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row #intakeRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
+        Intake
+      </ng-template>
+      <ng-template sdCalcRowInput>
         <input
           class="form-control"
           id="intake"
@@ -131,16 +131,16 @@
         <div class="input-group-append">
           <span class="input-group-text">m³/day</span>
         </div>
-    </ng-template>
-    <ng-template sdCalcRowHelp>
-      <b>Intake</b> is the amount of air inhaled in a day.
-    </ng-template>
-  </sd-calc-row>
-  <sd-calc-row #weightRow>
-    <ng-template sdCalcRowLabel sdCalcRowLabelFor="weight">
-      Body weight
-    </ng-template>
-    <ng-template sdCalcRowInput>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        <b>Intake</b> is the amount of air inhaled in a day.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row #weightRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="weight">
+        Body weight
+      </ng-template>
+      <ng-template sdCalcRowInput>
         <input
           class="form-control"
           id="weight"
@@ -155,16 +155,16 @@
         <sd-select (click)="inhalationForm.formChange()" #weightUnits>
           <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
-    </ng-template>
-    <ng-template sdCalcRowHelp>
-      The <b>body weight</b> of the animal or human consuming the substance.
-    </ng-template>
-  </sd-calc-row>
-  <sd-calc-row #doseRow>
-    <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
-      Dose
-    </ng-template>
-    <ng-template sdCalcRowInput>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        The <b>body weight</b> of the animal or human consuming the substance.
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row #doseRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
+        Dose
+      </ng-template>
+      <ng-template sdCalcRowInput>
         <input
           class="form-control"
           id="dose"
@@ -179,19 +179,20 @@
         <sd-select (click)="inhalationForm.formChange()" #doseUnits>
           <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
         </sd-select>
-    </ng-template>
-    <ng-template sdCalcRowHelp>
-      <b>Dose</b> is the quantity of a substance administered to or received by the animal or human in a day.
-    </ng-template>
-  </sd-calc-row>
-  <sd-internal-calc-error [errorText]="inhalationForm.internalError"></sd-internal-calc-error>
-  <div class="form-group form-row ml-0">
-    <button class="btn btn-primary mr-3" (click)="inhalationForm.updateErrors(true)">Calculate!</button>
-    <button class="btn btn-secondary" (click)="inhalationForm.clear()">Clear</button>
-  </div>
-</form>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        <b>Dose</b> is the quantity of a substance administered to or received by the animal or human in a day.
+      </ng-template>
+    </sd-calc-row>
+    <sd-internal-calc-error [errorText]="inhalationForm.internalError"></sd-internal-calc-error>
+    <div class="form-group form-row ml-0">
+      <button class="btn btn-primary mr-3" (click)="inhalationForm.updateErrors(true)">Calculate!</button>
+      <button class="btn btn-secondary" (click)="inhalationForm.clear()">Clear</button>
+    </div>
+  </form>
   <p>Air concentrations for gases and vapours may be expressed in either ppm (v/v) or mg/m³ but for aerosols only mg/m³ should be used.</p>
   <p>To get the molar mass, add the atomic weights of all atoms in the substance. To find the atomic weights, you may use the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/File:Periodic_Table_Of_Elements.svg">Periodic Table</a> or look up the molar mass from a trusted source such as <a rel="noopener" target="_blank" href="https://chem.nlm.nih.gov/chemidplus/">ChemIDPlus</a>.</p>
   <p>The above calculations are based on the following equation:</p>
   <p [sdKatex]="inhalationForm.equationSnippet"></p>
-<hr />
+  <hr>
+</div>
