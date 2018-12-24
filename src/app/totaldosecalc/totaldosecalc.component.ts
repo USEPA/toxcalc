@@ -1,5 +1,8 @@
 import { Component, ElementRef, ViewChild, isDevMode } from '@angular/core';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
@@ -194,6 +197,8 @@ export class TotalDoseCalcComponent {
   form: TotalDoseCalcForm = new TotalDoseCalcForm(this.eqPrinter, [this.concen, this.intake, this.substanceDensity, this.molarMass, this.solutionDensity, this.bodyWeight, this.dose]);
 
   constructor() {
+    library.add(faFilePdf);
+
     let calcEq = new Equation(Equation.div(Equation.mul(this.concen.var, this.intake.var, this.substanceDensity.var, this.molarMass.var, this.solutionDensity.var), Equation.mul(this.molarMass.recipVar, this.solutionDensity.recipVar, this.bodyWeight.var, this.dose.var)), Equation.constantFromNumber(1));
     this.concen.term = (<Equation>calcEq.solve(this.concen.var)).RHS;
     this.intake.term = (<Equation>calcEq.solve(this.intake.var)).RHS;
