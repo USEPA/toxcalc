@@ -78,7 +78,7 @@
       </ng-template>
     </sd-calc-row>
     <sd-internal-calc-error [errorText]="conversionForm.internalError"></sd-internal-calc-error>
-    <div class="form-group form-row">
+    <div class="form-group form-row ml-0">
       <button class="btn btn-primary mr-3" (click)="conversionForm.updateErrors(true)">Convert!</button>
       <button class="btn btn-secondary" (click)="conversionForm.clear()">Clear</button>
     </div>
@@ -185,7 +185,7 @@
     </ng-template>
   </sd-calc-row>
   <sd-internal-calc-error [errorText]="inhalationForm.internalError"></sd-internal-calc-error>
-  <div class="form-group form-row">
+  <div class="form-group form-row ml-0">
     <button class="btn btn-primary mr-3" (click)="inhalationForm.updateErrors(true)">Calculate!</button>
     <button class="btn btn-secondary" (click)="inhalationForm.clear()">Clear</button>
   </div>

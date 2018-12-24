@@ -128,11 +128,11 @@
       </ng-template>
     </sd-calc-row>
 
-    <div class="form-row">
+    <div class="form-group form-row ml-0">
       <ngb-alert *ngIf="form.underConstructionShow" [dismissible]="false" type="warning" class="w-100"><strong class="mr-2">Sorry!</strong>Calculation with these units is not supported.</ngb-alert>
     </div>
     <sd-internal-calc-error [errorText]="form.internalError"></sd-internal-calc-error>
-    <div class="form-row">
+    <div class="form-group form-row ml-0">
       <button type="button" class="btn btn-primary mr-3" (click)="form.updateErrors(true)" [disabled]="form.underConstructionShow || form.internalError">Calculate!</button>
       <button type="reset" class="btn btn-secondary" (click)="form.clear()">Clear</button>
     </div>
