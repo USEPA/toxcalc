@@ -19,6 +19,7 @@ import { SdInputPositiveNumber } from './shared/number-util';
 import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-internal-calc-error.component';
 import { SdKatexDirective } from './sd-katex.directive';
 import { DefinitionsComponent } from './definitions/definitions.component';
+import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { DefinitionsComponent } from './definitions/definitions.component';
     SdSelectItem,
     SdSelectGroup,
     TotalDoseCalcComponent,
+    DisclaimerComponent,
   ],
   imports: [
     AppRoutingModule,
