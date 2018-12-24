@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+
 import { SPECIES_CONVERSION } from '../toxicology/HED_FACTORS';
 
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
@@ -125,6 +128,8 @@ export class HumanCalcComponent implements AfterViewInit {
   ];
 
   constructor() {
+    library.add(faFilePdf);
+
     let fdaMethodEq = new Equation(Equation.div(this.animalDose.var, Equation.mul(this.animalSpecies.var, this.humanEquivalentDose.var)), Equation.constantFromNumber(1));
     // Skip animalSpecies, it's never an output.
     this.animalDose.term = (<Equation>fdaMethodEq.solve(this.animalDose.var)).RHS;
