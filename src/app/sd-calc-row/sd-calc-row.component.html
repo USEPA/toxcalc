@@ -10,7 +10,7 @@
           {{errorText}}
         </div>
       </div>
-      <button type="button" class="btn ml-3" (click)="showHelp = !showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp" *ngIf="help != null">
+      <button type="button" class="btn btn-light ml-3" (click)="showHelp = !showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp" *ngIf="help != null">
         <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
       </button>
     </div>
