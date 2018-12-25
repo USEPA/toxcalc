@@ -22,7 +22,7 @@ export class Form {
   }
 
   updateErrors(required: boolean): void {
-    this.fields.forEach(function(f: Field) {
+    this.fields.filter(f => f.row.show).forEach(function(f: Field) {
       f.updateErrorState();
       if (required && !f.hasError && f.value == '') {
         f.row.errorText = 'Please fill in a number.';
@@ -31,7 +31,7 @@ export class Form {
   }
 
   hasErrors(): boolean {
-    return this.fields.some(function (f: Field) { return f.hasError; } );
+    return this.fields.filter(f => f.row.show).some(function (f: Field) { return f.hasError; } );
   }
 
   internalError: string = '';
@@ -77,7 +77,7 @@ export class Form {
     this.updateErrors(false);
 
     let out_control: Field | null = null;
-    let fields = this.fields.filter(x => x.row.show);
+    let fields = this.fields.filter(f => f.row.show);
     for (let i = 0; i != fields.length; ++i) {
       if (fields[i].readOnly || fields[i].value == '') {
         if (out_control == null) {
