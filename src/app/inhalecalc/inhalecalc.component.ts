@@ -177,7 +177,7 @@ export class InhaleCalcComponent implements AfterViewInit {
     this.weight.term = (<Equation>inhalationEq.solve(this.weight.var)).RHS;
     this.dose.term = (<Equation>inhalationEq.solve(this.dose.var)).RHS;
 
-    this.variableMap.set(this.concen.var, 'Concentration');
+    this.variableMap.set(this.concen.var, 'Air concentration');
     this.variableMap.set(this.intake.var, 'Intake');
     this.variableMap.set(this.weight.var, 'Body weight');
     this.variableMap.set(this.dose.var, 'Dose');
