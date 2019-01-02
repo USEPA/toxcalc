@@ -5,7 +5,7 @@
   <form class="mb-3" autocomplete="off" novalidate (change)="form.formChange()">
     <sd-calc-row #concenRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
-        Concentration
+        {{concen.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="concen" id="concen" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="concen.readOnly" [(ngModel)]="concen.value" [ngModelOptions]="{standalone: true}" #concenInput>
@@ -39,7 +39,7 @@
     </sd-calc-row>
     <sd-calc-row #intakeRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
-        Intake
+        {{intake.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="intake" id="intake" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="intake.readOnly" [(ngModel)]="intake.value" [ngModelOptions]="{standalone: true}" #intakeInput>
@@ -58,7 +58,7 @@
     </sd-calc-row>
     <sd-calc-row [sdShow]="false" #substanceDensityRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="substanceDensity">
-        Substance density
+        {{substanceDensity.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="substanceDensity" id="substanceDensity" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="substanceDensity.readOnly" [(ngModel)]="substanceDensity.value" [ngModelOptions]="{standalone: true}" #substanceDensityInput>
@@ -72,7 +72,7 @@
     </sd-calc-row>
     <sd-calc-row [sdShow]="false" #molarMassRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
-        Molar mass of substance
+        {{molarMass.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="molarMass" id="molarMass" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="molarMass.readOnly" [(ngModel)]="molarMass.value" [ngModelOptions]="{standalone: true}" #molarMassInput>
@@ -86,7 +86,7 @@
     </sd-calc-row>
     <sd-calc-row [sdShow]="false" #solutionDensityRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="solutionDensity">
-        Solvent or media density
+        {{solutionDensity.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="solutionDensity" id="solutionDensity" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="solutionDensity.readOnly" [(ngModel)]="solutionDensity.value" [ngModelOptions]="{standalone: true}" #solutionDensityInput>
@@ -100,7 +100,7 @@
     </sd-calc-row>
     <sd-calc-row #bodyWeightRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
-        Body weight
+        {{bodyWeight.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="bodyWeight" id="bodyWeight" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="bodyWeight.readOnly" [(ngModel)]="bodyWeight.value" [ngModelOptions]="{standalone: true}" #bodyWeightInput>
@@ -115,7 +115,7 @@
     </sd-calc-row>
     <sd-calc-row #doseRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
-        Dose
+        {{dose.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input class="form-control" name="dose" id="dose" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="dose.readOnly" [(ngModel)]="dose.value" [ngModelOptions]="{standalone: true}" #doseInput>

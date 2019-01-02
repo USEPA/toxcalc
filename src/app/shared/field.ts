@@ -20,6 +20,10 @@ export abstract class Field {
   readOnly: boolean = false;
   value: string = '';
   get hasError(): boolean { return this.row.errorText != ''; }
+  abstract get label(): string;
+  get logColumnName(): string { return this.label; }
+  get equationVarName(): string { return this.logColumnName; }
+  get logValue(): string { return this.value; }
 
   // Only look for errors that are certainly wrong given the state of this field,
   // ignoring the state of the of the rest of the form.

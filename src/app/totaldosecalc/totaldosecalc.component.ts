@@ -14,6 +14,7 @@ import { Field } from '../shared/field';
 import { Form } from '../shared/form';
 
 class Concentration extends Field {
+  get label(): string { return 'Concentration'; }
   readonly VOLUME = Dimension.initLength().exp(3);
   readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
   readonly MOL_VOLUME = Dimension.initMolarMass().div(this.VOLUME);
@@ -46,6 +47,7 @@ class Concentration extends Field {
 }
 
 class Intake extends Field {
+  get label(): string { return 'Intake'; }
   readonly VOLUME = Dimension.initLength().exp(3);
   readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
   readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
@@ -61,6 +63,7 @@ class Intake extends Field {
 }
 
 class SubstanceDensity extends Field {
+  get label(): string { return 'Substance density'; }
   readonly VOLUME = Dimension.initLength().exp(3);
   readonly DENSITY_UNITS: {[index: string]: ScalarAndDimension} = {
     'g/mL': new ScalarAndDimension(1000, Dimension.initMass().div(this.VOLUME)),
@@ -74,6 +77,9 @@ class SubstanceDensity extends Field {
 }
 
 class MolarMass extends Field {
+  get label(): string { return 'Molar mass of substance'; }
+  get logColumnName(): string { return 'Molar mass'; }
+  get equationVarName(): string { return 'Molar mass'; }
   recip: boolean = false;
   recipVar: Variable = new Variable;
   recipTerm: Term;
@@ -97,6 +103,7 @@ class MolarMass extends Field {
 }
 
 class SolutionDensity extends Field {
+  get label(): string { return 'Solvent or media density'; }
   recip: boolean = false;
   recipVar: Variable = new Variable;
   recipTerm: Term;
@@ -125,6 +132,7 @@ class SolutionDensity extends Field {
 }
 
 class BodyWeight extends Field {
+  get label(): string { return 'Body weight'; }
   readonly KG_UNIT = new ScalarAndDimension(1000, Dimension.initMass());
   readonly G_UNIT = new ScalarAndDimension(1, Dimension.initMass());
   get unit(): ScalarAndDimension {
@@ -133,6 +141,7 @@ class BodyWeight extends Field {
 }
 
 class Dose extends Field {
+  get label(): string { return 'Dose'; }
   readonly DOSE_UNITS: {[index: string]: ScalarAndDimension} = {
     'mg/kg BW/day': new ScalarAndDimension(0.000001, Dimension.initTime().recip()),
     'µg/kg BW/day': new ScalarAndDimension(0.000000001, Dimension.initTime().recip()),
@@ -210,10 +219,10 @@ export class TotalDoseCalcComponent {
     this.bodyWeight.term = (<Equation>calcEq.solve(this.bodyWeight.var)).RHS;
     this.dose.term = (<Equation>calcEq.solve(this.dose.var)).RHS;
 
-    this.variableMap.set(this.concen.var, 'Concentration');
-    this.variableMap.set(this.intake.var, 'Intake');
-    this.variableMap.set(this.bodyWeight.var, 'Body weight');
-    this.variableMap.set(this.dose.var, 'Dose');
+    this.variableMap.set(this.concen.var, this.concen.equationVarName);
+    this.variableMap.set(this.intake.var, this.intake.equationVarName);
+    this.variableMap.set(this.bodyWeight.var, this.bodyWeight.equationVarName);
+    this.variableMap.set(this.dose.var, this.dose.equationVarName);
   }
 
   ngAfterViewInit() {
@@ -302,12 +311,12 @@ export class TotalDoseCalcComponent {
 
   updateEquation(): void {
     this.variableMap.set(this.substanceDensity.var,
-                         this.substanceDensity.row.show ? 'Substance density' : '');
+                         this.substanceDensity.row.show ? this.substanceDensity.equationVarName : '');
     this.variableMap.set(this.molarMass.var,
-                         this.molarMass.row.show ? 'Molar mass' : '');
+                         this.molarMass.row.show ? this.molarMass.equationVarName : '');
     this.variableMap.set(this.molarMass.otherVar, '');
     this.variableMap.set(this.solutionDensity.var,
-                         this.solutionDensity.row.show ? 'Solvent or media density' : '');
+                         this.solutionDensity.row.show ? this.solutionDensity.equationVarName : '');
     this.variableMap.set(this.solutionDensity.otherVar, '');
     this.form.equationSnippet = this.dose.equationSnippet(this.eqPrinter);
   }

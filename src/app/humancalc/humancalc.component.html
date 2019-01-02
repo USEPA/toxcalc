@@ -9,7 +9,7 @@
   <form class="mb-3" autocomplete="off" novalidate (change)="fdaMethodForm.formChange()">
     <sd-calc-row #animalSpeciesRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalSpecies">
-        Species of animal
+        {{animalSpecies.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <sd-select id="animalSpecies" (click)="changeSpecies()" #animalSpeciesSelect>
@@ -19,7 +19,7 @@
     </sd-calc-row>
     <sd-calc-row #animalDoseRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalDose">
-        Animal dose administered
+        {{animalDose.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
@@ -40,7 +40,7 @@
     </sd-calc-row>
     <sd-calc-row #humanDoseRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="humanDose">
-        Human equivalent dose
+        {{humanEquivalentDose.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
@@ -72,7 +72,7 @@
   <form class="mb-3" autocomplete="off" novalidate (change)="weightMethodForm.formChange()">
     <sd-calc-row #weightAnimalDoseRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="weightAnimalDose">
-        Animal dose administered
+        {{weightAnimalDose.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
@@ -93,7 +93,7 @@
     </sd-calc-row>
     <sd-calc-row #animalWeightRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalWeight">
-        Body weight of animal
+        {{animalWeight.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
@@ -114,7 +114,7 @@
     </sd-calc-row>
     <sd-calc-row #humanWeightRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="humanWeight">
-        Body weight of human
+        {{humanWeight.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
@@ -135,7 +135,7 @@
     </sd-calc-row>
     <sd-calc-row #conversionFactorRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="conversionFactor">
-        Use the conversion factor recommended by
+        {{conversionFactor.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <sd-select (click)="changeConversionFactor()" id="conversionFactor" #conversionFactorSelect>
@@ -145,7 +145,7 @@
     </sd-calc-row>
     <sd-calc-row #weightHumanDoseRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="weightHumanDose">
-        Human equivalent dose
+        {{weightHumanEquivalentDose.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input

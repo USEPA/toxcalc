@@ -15,6 +15,7 @@ import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 import { printNum } from '../shared/number-util';
 
 class Species extends Field {
+  get label(): string { return 'Species of animal'; }
   get value() { return this.select.value.species; }
   set value(unused) {}
   select: SdSelectComponent;
@@ -27,11 +28,13 @@ class Species extends Field {
 }
 
 class AnimalDose extends Field {
+  get label(): string { return 'Animal dose administered'; }
   private readonly PER_DAY = new ScalarAndDimension(1, Dimension.initTime().recip());
   get unit(): ScalarAndDimension { return this.PER_DAY; }
 }
 
 class HumanEquivalentDose extends Field {
+  get label(): string { return 'Human equivalent dose'; }
   private readonly PER_DAY = new ScalarAndDimension(1, Dimension.initTime().recip());
   get unit(): ScalarAndDimension { return this.PER_DAY; }
 }
@@ -39,11 +42,13 @@ class HumanEquivalentDose extends Field {
 //
 
 class AnimalWeight extends Field {
+  constructor(readonly label: string) { super(); }
   private readonly KG = new ScalarAndDimension(1000, Dimension.initMass());
   get unit(): ScalarAndDimension { return this.KG; }
 }
 
 class ConversionFactor extends Field {
+  get label(): string { return 'Use the conversion factor recommended by'; }
   get value() { return this.select.value.display; }
   set value(unused) {}
   select: SdSelectComponent;
@@ -84,11 +89,11 @@ export class HumanCalcComponent implements AfterViewInit {
 
   @ViewChild('animalWeightRow') animalWeightRow: SdCalcRowComponent;
   @ViewChild('animalWeightInput') animalWeightInput: ElementRef<HTMLInputElement>;
-  animalWeight: AnimalWeight = new AnimalWeight;
+  animalWeight: AnimalWeight = new AnimalWeight('Body weight of animal');
 
   @ViewChild('humanWeightRow') humanWeightRow: SdCalcRowComponent;
   @ViewChild('humanWeightInput') humanWeightInput: ElementRef<HTMLInputElement>;
-  humanWeight: AnimalWeight = new AnimalWeight;
+  humanWeight: AnimalWeight = new AnimalWeight('Body weight of human');
 
   @ViewChild('conversionFactorRow') conversionFactorRow: SdCalcRowComponent;
   @ViewChild('conversionFactorSelect') conversionFactorSelect: SdSelectComponent;

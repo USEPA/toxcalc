@@ -18,17 +18,20 @@ import { CONCEN_RATIOS_INHALATION, INTAKE_RATIOS_INHALATION, WEIGHT_RATIOS, DOSE
 // Conversion form fields.
 
 class ConcenVolVol extends Field {
+  get label(): string { return 'Air concentration (v/v)'; }
   get unit(): ScalarAndDimension {
     return new ScalarAndDimension(this.units!.value.value, Dimension.initUnit());
   }
 }
 
 class MolarMass extends Field {
+  get label(): string { return 'Molar mass'; }
   private readonly G_MOL = new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initMolarMass()));
   get unit(): ScalarAndDimension { return this.G_MOL; }
 }
 
 class ConcenMassVol extends Field {
+  get label(): string { return 'Air concentration (m/v)'; }
   private readonly VOLUME = Dimension.initLength().exp(3);
   private readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
   get unit(): ScalarAndDimension {
@@ -39,6 +42,7 @@ class ConcenMassVol extends Field {
 // Inhalation form fields.
 
 class Concen extends Field {
+  get label(): string { return 'Air concentration'; }
   private readonly VOLUME = Dimension.initLength().exp(3);
   private readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
   get unit(): ScalarAndDimension {
@@ -47,6 +51,7 @@ class Concen extends Field {
 }
 
 class Intake extends Field {
+  get label(): string { return 'Intake'; }
   private readonly VOLUME = Dimension.initLength().exp(3);
   private readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
   get unit(): ScalarAndDimension {
@@ -55,12 +60,14 @@ class Intake extends Field {
 }
 
 class Weight extends Field {
+  get label(): string { return 'Body weight'; }
   get unit(): ScalarAndDimension {
     return new ScalarAndDimension(this.units!.value.value, Dimension.initMass());
   }
 }
 
 class Dose extends Field {
+  get label(): string { return 'Dose'; }
   get unit(): ScalarAndDimension {
     return new ScalarAndDimension(this.units!.value.value, Dimension.initTime().recip());
   }
