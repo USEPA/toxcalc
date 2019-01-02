@@ -26,6 +26,7 @@ class ConcenVolVol extends Field {
 
 class MolarMass extends Field {
   get label(): string { return 'Molar mass'; }
+  get unitName(): string { return 'g/mol'; }
   private readonly G_MOL = new ScalarAndDimension(1, Dimension.initMass().div(Dimension.initMolarMass()));
   get unit(): ScalarAndDimension { return this.G_MOL; }
 }
@@ -52,6 +53,7 @@ class Concen extends Field {
 
 class Intake extends Field {
   get label(): string { return 'Intake'; }
+  get unitName(): string { return 'm³/day'; }
   private readonly VOLUME = Dimension.initLength().exp(3);
   private readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
   get unit(): ScalarAndDimension {

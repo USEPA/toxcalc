@@ -80,6 +80,7 @@ class MolarMass extends Field {
   get label(): string { return 'Molar mass of substance'; }
   get logColumnName(): string { return 'Molar mass'; }
   get equationVarName(): string { return 'Molar mass'; }
+  get unitName(): string { return 'g/mol'; }
   recip: boolean = false;
   recipVar: Variable = new Variable;
   recipTerm: Term;

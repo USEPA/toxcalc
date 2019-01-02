@@ -16,8 +16,10 @@ import { printNum } from '../shared/number-util';
 
 class Species extends Field {
   get label(): string { return 'Species of animal'; }
+  get unitName(): string { return ''; }
   get value() { return this.select.value.species; }
   set value(unused) {}
+  get logValue(): string { return this.select.value.species + ' (' + printNum(this.select.value.factor) + ')'; }
   select: SdSelectComponent;
   updateErrorState(): void {}
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
@@ -29,12 +31,14 @@ class Species extends Field {
 
 class AnimalDose extends Field {
   get label(): string { return 'Animal dose administered'; }
+  get unitName(): string { return 'mg/kg BW/day'; }
   private readonly PER_DAY = new ScalarAndDimension(1, Dimension.initTime().recip());
   get unit(): ScalarAndDimension { return this.PER_DAY; }
 }
 
 class HumanEquivalentDose extends Field {
   get label(): string { return 'Human equivalent dose'; }
+  get unitName(): string { return 'mg/kg BW/day'; }
   private readonly PER_DAY = new ScalarAndDimension(1, Dimension.initTime().recip());
   get unit(): ScalarAndDimension { return this.PER_DAY; }
 }
@@ -43,12 +47,14 @@ class HumanEquivalentDose extends Field {
 
 class AnimalWeight extends Field {
   constructor(readonly label: string) { super(); }
+  get unitName(): string { return 'kg'; }
   private readonly KG = new ScalarAndDimension(1000, Dimension.initMass());
   get unit(): ScalarAndDimension { return this.KG; }
 }
 
 class ConversionFactor extends Field {
   get label(): string { return 'Use the conversion factor recommended by'; }
+  get unitName(): string { return this.select.value.logunit; }
   get value() { return this.select.value.display; }
   set value(unused) {}
   select: SdSelectComponent;
@@ -128,8 +134,8 @@ export class HumanCalcComponent implements AfterViewInit {
   speciesOptions = SPECIES_CONVERSION;
 
   conversionFactorOptions = [
-    {display: 'FDA Standard (0.33)', value: (1/3)},
-    {display: 'EPA Standard (0.25)', value: (1/4)}
+    {display: 'FDA Standard (0.33)', value: (1/3), logvalue: '0.33', logunit: '(FDA standard)'},
+    {display: 'EPA Standard (0.25)', value: (1/4), logvalue: '0.25', logunit: '(EPA standard)'}
   ];
 
   constructor() {

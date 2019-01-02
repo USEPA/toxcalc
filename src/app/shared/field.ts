@@ -23,7 +23,8 @@ export abstract class Field {
   abstract get label(): string;
   get logColumnName(): string { return this.label; }
   get equationVarName(): string { return this.logColumnName; }
-  get logValue(): string { return this.value; }
+  get logValue(): string { return [this.value, this.unitName].filter(txt => txt.length > 0).join(' '); }
+  get unitName(): string { return this.units!.selectedName; }
 
   // Only look for errors that are certainly wrong given the state of this field,
   // ignoring the state of the of the rest of the form.
