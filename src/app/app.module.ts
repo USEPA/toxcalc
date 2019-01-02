@@ -20,6 +20,7 @@ import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-intern
 import { SdKatexDirective } from './sd-katex.directive';
 import { DefinitionsComponent } from './definitions/definitions.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
+import { SdCalculationLogComponent } from './sd-calculation-log/sd-calculation-log.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { DisclaimerComponent } from './disclaimer/disclaimer.component';
     SdSelectGroup,
     TotalDoseCalcComponent,
     DisclaimerComponent,
+    SdCalculationLogComponent,
   ],
   imports: [
     AppRoutingModule,

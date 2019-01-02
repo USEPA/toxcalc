@@ -54,7 +54,8 @@ class AnimalWeight extends Field {
 
 class ConversionFactor extends Field {
   get label(): string { return 'Use the conversion factor recommended by'; }
-  get unitName(): string { return this.select.value.logunit; }
+  get logColumnName(): string { return 'Conversion factor'; }
+  get logValue(): string { return this.select.value.logvalue; }
   get value() { return this.select.value.display; }
   set value(unused) {}
   select: SdSelectComponent;
@@ -134,8 +135,8 @@ export class HumanCalcComponent implements AfterViewInit {
   speciesOptions = SPECIES_CONVERSION;
 
   conversionFactorOptions = [
-    {display: 'FDA Standard (0.33)', value: (1/3), logvalue: '0.33', logunit: '(FDA standard)'},
-    {display: 'EPA Standard (0.25)', value: (1/4), logvalue: '0.25', logunit: '(EPA standard)'}
+    {display: 'FDA Standard (0.33)', value: (1/3), logvalue: '0.33 (FDA standard)'},
+    {display: 'EPA Standard (0.25)', value: (1/4), logvalue: '0.25 (EPA standard)'}
   ];
 
   constructor() {
