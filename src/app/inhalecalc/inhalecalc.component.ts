@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ToxRatio } from '../toxicology/tox-ratio';
 
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
+import { SdCalculationLogComponent } from '../sd-calculation-log/sd-calculation-log.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
@@ -81,6 +82,8 @@ class Dose extends Field {
   styleUrls: ['./inhalecalc.component.css'],
 })
 export class InhaleCalcComponent implements AfterViewInit {
+  @ViewChild('calculationLog') calculationLog: SdCalculationLogComponent;
+
   variableMap: Map<Variable, string> = new Map();
   eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
 

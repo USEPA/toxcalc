@@ -4,6 +4,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
+import { SdCalculationLogComponent } from '../sd-calculation-log/sd-calculation-log.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
@@ -171,6 +172,7 @@ class TotalDoseCalcForm extends Form {
   styleUrls: ['./totaldosecalc.component.css']
 })
 export class TotalDoseCalcComponent {
+  @ViewChild('calculationLog') calculationLog: SdCalculationLogComponent;
   @ViewChild('concenRow') concenRow: SdCalcRowComponent;
   @ViewChild('concenInput') concenInput: ElementRef<HTMLInputElement>;
   @ViewChild('concenUnits') concenUnits: SdSelectComponent;

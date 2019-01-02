@@ -79,7 +79,7 @@
     </sd-calc-row>
     <sd-internal-calc-error [errorText]="conversionForm.internalError"></sd-internal-calc-error>
     <div class="form-group form-row ml-0">
-      <button class="btn btn-primary mr-3" (click)="conversionForm.updateErrors(true)" [disabled]="conversionForm.internalError">Convert!</button>
+      <button class="btn btn-primary mr-3" (click)="conversionForm.calculateAndLog(calculationLog)" [disabled]="conversionForm.internalError">Convert!</button>
       <button class="btn btn-secondary" (click)="conversionForm.clear()">Clear</button>
     </div>
   </form>
@@ -186,7 +186,7 @@
     </sd-calc-row>
     <sd-internal-calc-error [errorText]="inhalationForm.internalError"></sd-internal-calc-error>
     <div class="form-group form-row ml-0">
-      <button class="btn btn-primary mr-3" (click)="inhalationForm.updateErrors(true)" [disabled]="inhalationForm.internalError">Calculate!</button>
+      <button class="btn btn-primary mr-3" (click)="inhalationForm.calculateAndLog(calculationLog)" [disabled]="inhalationForm.internalError">Calculate!</button>
       <button class="btn btn-secondary" (click)="inhalationForm.clear()">Clear</button>
     </div>
   </form>
@@ -194,5 +194,5 @@
   <p>To get the molar mass, add the atomic weights of all atoms in the substance. To find the atomic weights, you may use the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/File:Periodic_Table_Of_Elements.svg">Periodic Table</a> or look up the molar mass from a trusted source such as <a rel="noopener" target="_blank" href="https://chem.nlm.nih.gov/chemidplus/">ChemIDPlus</a>.</p>
   <p>The above calculations are based on the following equation:</p>
   <p [sdKatex]="inhalationForm.equationSnippet"></p>
-  <hr>
+  <sd-calculation-log #calculationLog></sd-calculation-log>
 </div>

@@ -133,7 +133,7 @@
     </div>
     <sd-internal-calc-error [errorText]="form.internalError"></sd-internal-calc-error>
     <div class="form-group form-row ml-0">
-      <button type="button" class="btn btn-primary mr-3" (click)="form.updateErrors(true)" [disabled]="form.underConstructionShow || form.internalError">Calculate!</button>
+      <button type="button" class="btn btn-primary mr-3" (click)="form.calculateAndLog(calculationLog)" [disabled]="form.underConstructionShow || form.internalError">Calculate!</button>
       <button type="reset" class="btn btn-secondary" (click)="form.clear()">Clear</button>
     </div>
   </form>
@@ -149,4 +149,5 @@
   <p [sdKatex]="form.equationSnippet"></p>
   </ng-container>
   <p><a rel="noopener" target="_blank" href="/assets/totaldosecalc-tutorial.a82014b103e4d9e8f05a.pdf">Tutorial: How do changes in body weight, intake rate and concentration impact dose? <fa-icon [icon]="['fas', 'file-pdf']"></fa-icon></a></p>
+  <sd-calculation-log #calculationLog></sd-calculation-log>
 </div>

@@ -1,5 +1,7 @@
 import { isDevMode } from '@angular/core';
 
+import { SdCalculationLogComponent } from '../sd-calculation-log/sd-calculation-log.component';
+
 import { Field } from './field';
 import { isCalculateError } from './dimension';
 import { EquationPrinter } from './equation';
@@ -132,5 +134,14 @@ export class Form {
     }
 
     out_control.value = printNum(result.n / out_control.unit.n);
+  }
+
+  calculateAndLog(calculationLog: SdCalculationLogComponent): void {
+    this.updateErrors(true);
+    if (!this.hasErrors()) {
+      calculationLog.append(
+          this.fields.filter(f => f.row.show).map(f => f.logColumnName),
+          this.fields.filter(f => f.row.show).map(f => f.logValue));
+    }
   }
 }
