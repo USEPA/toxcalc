@@ -11,6 +11,7 @@ import { faFileDownload, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 })
 export class SdCalculationLogComponent {
   private uri: SafeUrl | null = null;
+  private unsafeuri: string | null = null;
 
   private static global_groups: Array<{'columns': Array<string>, 'rows': Array<Array<string>>}> = [];
   private get groups(): Array<{'columns': Array<string>, 'rows': Array<Array<string>>}> { return SdCalculationLogComponent.global_groups; }
@@ -76,7 +77,9 @@ export class SdCalculationLogComponent {
     });
 
     let blob = new Blob([result], {type: 'text/csv'});
-    let url = URL.createObjectURL(blob);
-    this.uri = this.sanitizer.bypassSecurityTrustUrl(url);
+    if (this.unsafeuri)
+      URL.revokeObjectURL(this.unsafeuri);
+    this.unsafeuri = URL.createObjectURL(blob);
+    this.uri = this.sanitizer.bypassSecurityTrustUrl(this.unsafeuri);
   }
 }
