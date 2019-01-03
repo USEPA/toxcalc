@@ -14,7 +14,7 @@ export class SdCalculationLogComponent {
   private unsafeuri: string | null = null;
 
   private static global_groups: Array<{'columns': Array<string>, 'rows': Array<Array<string>>}> = [];
-  private get groups(): Array<{'columns': Array<string>, 'rows': Array<Array<string>>}> { return SdCalculationLogComponent.global_groups; }
+  get groups(): Array<{'columns': Array<string>, 'rows': Array<Array<string>>}> { return SdCalculationLogComponent.global_groups; }
 
   constructor(private sanitizer: DomSanitizer) {
     library.add(faFileDownload);
