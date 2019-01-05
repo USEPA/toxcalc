@@ -21,11 +21,13 @@
       </div>
     </ng-container>
     <ng-container *ngFor="let group of log.groups; let group_index=index">
-      <table class="table w-100 my-0 py-0">
-        <tr class="bg-light">
-          <th class="bg-light" *ngFor="let column of group.columns">{{column}}</th>
-          <th class="bg-light"></th>
-        </tr>
+      <table class="table table-bordered table-sm w-100">
+        <thead class="bg-light">
+          <tr>
+            <th scope="col" *ngFor="let column of group.columns">{{column}}</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
         <tr *ngFor="let row of group.rows; let row_index=index">
           <td *ngFor="let cell of row">{{cell}}</td>
           <td align="right"><button type="button" class="btn btn-light" aria-label="Delete" (click)="log.deleteRow(group_index, row_index);"><fa-icon [icon]="['fas', 'trash-alt']"></fa-icon></button></td>
