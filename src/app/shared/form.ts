@@ -140,8 +140,8 @@ export class Form {
     this.updateErrors(true);
     if (!this.hasErrors()) {
       calculationLog.append(
-          this.fields.filter(f => f.row.show).map(f => f.logColumnName),
-          this.fields.filter(f => f.row.show).map(f => f.logValue));
+          this.fields.map(f => f.logColumnName),
+          this.fields.map(f => f.row.show ? f.logValue : ''));
     }
   }
 }
