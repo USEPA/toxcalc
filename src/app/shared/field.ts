@@ -37,8 +37,13 @@ export abstract class Field {
       this.row.errorText = 'One decimal point maximum.';
       return;
     }
-    if (isNaN(parseFloat(this.value))) {
+    let value = parseFloat(this.value);
+    if (isNaN(value)) {
       this.row.errorText = 'Must be a number.';
+      return;
+    }
+    if (value <= 0) {
+      this.row.errorText = 'Must be greater than zero.';
       return;
     }
     this.row.errorText = '';
