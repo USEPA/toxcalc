@@ -8,6 +8,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppComponent } from './app.component';
 import { InhaleCalcComponent } from './inhalecalc/inhalecalc.component';
 import { HumanCalcComponent } from './humancalc/humancalc.component';
+import { HbelCalcComponent } from './hbelcalc/hbelcalc.component';
 import { FormsModule } from '@angular/forms';
 import { SdProductListComponent, SdProductListItem, SdProductListItemDescription, SdProductListItemTitle } from './sd-product-list/sd-product-list.component';
 import { LandingComponent } from './landing/landing.component';
@@ -28,6 +29,7 @@ import { SdCalculationLogComponent } from './sd-calculation-log/sd-calculation-l
     DefinitionsComponent,
     InhaleCalcComponent,
     HumanCalcComponent,
+    HbelCalcComponent,
     LandingComponent,
     SdCalcRowComponent,
     SdCalcRowHelp,
