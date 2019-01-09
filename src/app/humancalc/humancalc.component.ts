@@ -47,9 +47,12 @@ class HumanEquivalentDose extends Field {
 
 class AnimalWeight extends Field {
   constructor(readonly label: string) { super(); }
-  get unitName(): string { return 'kg'; }
+  get unitName(): string { return this.units!.selectedName; }
+  private readonly G = new ScalarAndDimension(1, Dimension.initMass());
   private readonly KG = new ScalarAndDimension(1000, Dimension.initMass());
-  get unit(): ScalarAndDimension { return this.KG; }
+  get unit(): ScalarAndDimension {
+    return this.units!.selectedName == 'g' ? this.G : this.KG;
+  }
 }
 
 class ConversionFactor extends Field {
@@ -95,10 +98,12 @@ export class HumanCalcComponent implements AfterViewInit {
   weightAnimalDose: AnimalDose = new AnimalDose;
 
   @ViewChild('animalWeightRow') animalWeightRow: SdCalcRowComponent;
+  @ViewChild('animalWeightUnits') animalWeightUnits: SdSelectComponent;
   @ViewChild('animalWeightInput') animalWeightInput: ElementRef<HTMLInputElement>;
   animalWeight: AnimalWeight = new AnimalWeight('Body weight of animal');
 
   @ViewChild('humanWeightRow') humanWeightRow: SdCalcRowComponent;
+  @ViewChild('humanWeightUnits') humanWeightUnits: SdSelectComponent;
   @ViewChild('humanWeightInput') humanWeightInput: ElementRef<HTMLInputElement>;
   humanWeight: AnimalWeight = new AnimalWeight('Body weight of human');
 
@@ -123,8 +128,10 @@ export class HumanCalcComponent implements AfterViewInit {
     this.weightAnimalDose.input = this.weightAnimalDoseInput;
     this.weightAnimalDose.row = this.weightAnimalDoseRow;
     this.animalWeight.input = this.animalWeightInput;
+    this.animalWeight.units = this.animalWeightUnits;
     this.animalWeight.row = this.animalWeightRow;
     this.humanWeight.input = this.humanWeightInput;
+    this.humanWeight.units = this.humanWeightUnits;
     this.humanWeight.row = this.humanWeightRow;
     this.conversionFactor.select = this.conversionFactorSelect;
     this.conversionFactor.row = this.conversionFactorRow;
@@ -176,6 +183,14 @@ export class HumanCalcComponent implements AfterViewInit {
 
   changeConversionFactor(): void {
     this.variableMap.set(this.conversionFactor.var, this.conversionFactor.select.value === this.conversionFactorOptions[0] ? '0.33' : '0.25');
+    this.weightMethodForm.formChange();
+  }
+
+  changeAnimalWeightUnits(): void {
+    this.weightMethodForm.formChange();
+  }
+
+  changeHumanWeightUnits(): void {
     this.weightMethodForm.formChange();
   }
 }

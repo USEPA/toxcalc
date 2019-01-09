@@ -107,9 +107,10 @@
           [ngModelOptions]="{standalone: true}"
           #animalWeightInput
           />
-        <div class="input-group-append">
-          <span class="input-group-text">kg</span>
-        </div>
+        <sd-select name="animalWeightUnits" #animalWeightUnits (change)="changeAnimalWeightUnits()">
+          <option label="kg"></option>
+          <option label="g"></option>
+        </sd-select>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #humanWeightRow>
@@ -128,9 +129,10 @@
           [ngModelOptions]="{standalone: true}"
           #humanWeightInput
           />
-        <div class="input-group-append">
-          <span class="input-group-text">kg</span>
-        </div>
+        <sd-select name="humanWeightUnits" #humanWeightUnits (change)="changeHumanWeightUnits()">
+          <option label="kg"></option>
+          <option label="g"></option>
+        </sd-select>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #conversionFactorRow>
