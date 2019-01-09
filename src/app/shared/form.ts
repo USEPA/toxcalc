@@ -141,7 +141,7 @@ export class Form {
     if (!this.hasErrors()) {
       calculationLog.append(
           this.fields.map(f => f.logColumnName),
-          this.fields.map(f => f.row.show ? f.logValue : ''));
+          this.fields.map(f => f.row.show ? f.logValue : 'n/a'));
     }
   }
 }
