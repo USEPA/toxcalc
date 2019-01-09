@@ -73,9 +73,10 @@ export class SdCalculationLogService {
     });
 
     let blob = new Blob([result], {type: 'text/csv'});
-    if (this.unsafeuri)
-      URL.revokeObjectURL(this.unsafeuri);
+    let oldunsafeuri = this.unsafeuri;
     this.unsafeuri = URL.createObjectURL(blob);
     this.uri_ = this.sanitizer.bypassSecurityTrustUrl(this.unsafeuri);
+    if (oldunsafeuri)
+      URL.revokeObjectURL(oldunsafeuri);
   }
 }
