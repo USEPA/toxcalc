@@ -7,6 +7,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 export class SdCalculationLogService {
   constructor(private sanitizer: DomSanitizer) {}
 
+  private blob: Blob | null = null;
+
   private uri_: SafeUrl | null = null;
   get uri(): SafeUrl | null { return this.uri_; }
 
@@ -72,10 +74,20 @@ export class SdCalculationLogService {
       });
     });
 
-    let blob = new Blob([result], {type: 'text/csv'});
-    if (this.unsafeuri)
-      URL.revokeObjectURL(this.unsafeuri);
-    this.unsafeuri = URL.createObjectURL(blob);
+    this.blob = new Blob([result], {type: 'text/csv'});
+    let oldunsafeuri = this.unsafeuri;
+    this.unsafeuri = URL.createObjectURL(this.blob);
     this.uri_ = this.sanitizer.bypassSecurityTrustUrl(this.unsafeuri);
+    if (oldunsafeuri)
+      URL.revokeObjectURL(oldunsafeuri);
+  }
+
+  // Hacks for IE browsers that don't support blob URIs.
+  downloadclick(): boolean {
+    if (window.navigator && navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(this.blob, 'Calculator Log.csv');
+      return false;
+    }
+    return true;
   }
 }

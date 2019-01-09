@@ -16,6 +16,6 @@ export class SdInputPositiveNumber {
 
 export function printNum(n: number): string {
   // Never use scientific notation, round to 6 decimal places or fewer.
-  return Number(n).toLocaleString('fullwide', { useGrouping: false, maximumFractionDigits: 6 });
+  return Number(n).toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 6 });
 }
 
