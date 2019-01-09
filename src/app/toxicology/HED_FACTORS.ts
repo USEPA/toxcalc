@@ -6,7 +6,7 @@ export const SPECIES_CONVERSION = [
     {species: 'guinea pig', factor: 4.6},
     {species: 'rabbit', factor: 3.1},
     {species: 'dog', factor: 1.8},
-    {species: 'monkeys', factor: 3.1},
+    {species: 'monkey', factor: 3.1},
     {species: 'marmoset', factor: 6.2},
     {species: 'squirrel monkey', factor: 5.3},
     {species: 'baboon', factor: 1.8},
