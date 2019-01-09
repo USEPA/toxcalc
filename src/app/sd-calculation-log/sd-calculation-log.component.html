@@ -8,7 +8,7 @@
       </div>
       <div class="d-flex ml-auto">
         <ng-container *ngIf="log.groups.length != 0; else notEmpty">
-          <a rel="noopener" target="_blank" download="Calculator Log.csv" [attr.href]="log.uri" style="text-decoration: none">Download <fa-icon [icon]="['fas', 'file-download']"></fa-icon></a>
+          <a rel="noopener" target="_blank" download="Calculator Log.csv" [attr.href]="log.uri" (click)="log.downloadclick()" style="text-decoration: none">Download <fa-icon [icon]="['fas', 'file-download']"></fa-icon></a>
         </ng-container>
         <ng-template #notEmpty>
           <span class="text-muted">Download <fa-icon [icon]="['fas', 'file-download']"></fa-icon></span>
