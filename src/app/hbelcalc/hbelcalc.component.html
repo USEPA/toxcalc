@@ -83,10 +83,8 @@
       <ng-template sdCalcRowInput>
         <sd-select id="studyDurationFactor" (change)="changeStudyDurationFactor()" #studyDurationFactorSelect>
           <option label="whole period of organogenesis in a reproductive study" value="1"></option>
-          <option label="a 6-month study" value="2" *ngIf="isMouseOrRat"></option>
-          <option label="a 3-month study" value="5" *ngIf="isMouseOrRat"></option>
-          <option label="a 3.5-year study" value="2" *ngIf="!isMouseOrRat"></option>
-          <option label="a 2-year study" value="5" *ngIf="!isMouseOrRat"></option>
+          <option [label]="isMouseOrRat ? 'a 6-month study' : 'a 3.5-year study'" value="2"></option>
+          <option [label]="isMouseOrRat ? 'a 3-month study' : 'a 2-year study'" value="5"></option>
           <option label="shorter duration studies" value="10"></option>
         </sd-select>
       </ng-template>

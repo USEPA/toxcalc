@@ -168,7 +168,9 @@ export class HbelCalcComponent {
   isMouseOrRat: boolean = true;
 
   changeSpecies(): void {
-    // TODO: update isMouseOrRat
+    this.isMouseOrRat =
+        (this.speciesSelect.selectedName == 'rat' ||
+         this.speciesSelect.selectedName == 'mouse');
   }
 
   changeStudyDurationFactor(): void {}
