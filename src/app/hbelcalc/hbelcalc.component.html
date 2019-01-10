@@ -62,10 +62,10 @@
         {{safetyFactor.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
-        <!-- TODO: allow negative values! -->
         <input
           class="form-control"
           id="safetyFactor"
+          sdInputPosNum
           (blur)="form.inputBlur()"
           (focus)="form.inputFocus($event.target)"
           [readonly]="safetyFactor.readOnly"
@@ -136,6 +136,9 @@
           [ngModelOptions]="{standalone: true}"
           #pdeInput
           />
+        <div class="input-group-append">
+          <span class="input-group-text">mg/day</span>
+        </div>
       </ng-template>
     </sd-calc-row>
     <sd-internal-calc-error [errorText]="form.internalError"></sd-internal-calc-error>
