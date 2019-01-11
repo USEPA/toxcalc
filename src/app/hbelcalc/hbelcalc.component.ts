@@ -12,7 +12,7 @@ import { printNum } from '../shared/number-util';
 class EffectLimit extends Field {
   get label(): string { return 'No/low effect limit'; }
   get unitName(): string { return 'mg/kg BW/day'; }
-  private readonly PER_DAY = new ScalarAndDimension(1, Dimension.initTime().recip());
+  private readonly PER_DAY = new ScalarAndDimension(0.000001, Dimension.initTime().recip());
   get unit(): ScalarAndDimension { return this.PER_DAY; }
 }
 
@@ -171,11 +171,16 @@ export class HbelCalcComponent {
     this.isMouseOrRat =
         (this.speciesSelect.selectedName == 'rat' ||
          this.speciesSelect.selectedName == 'mouse');
+    this.form.formChange();
   }
 
-  changeStudyDurationFactor(): void {}
+  changeStudyDurationFactor(): void {
+    this.form.formChange();
+  }
 
-  changeSevereToxicityFactor(): void {}
+  changeSevereToxicityFactor(): void {
+    this.form.formChange();
+  }
 
   readonly speciesOptions = [
     {species: 'rat', factor: 5},
