@@ -32,14 +32,14 @@ class Species extends Field {
 class AnimalDose extends Field {
   get label(): string { return 'Animal dose administered'; }
   get unitName(): string { return 'mg/kg BW/day'; }
-  private readonly PER_DAY = new ScalarAndDimension(1, Dimension.initTime().recip());
+  private readonly PER_DAY = new ScalarAndDimension(0.000001, Dimension.initTime().recip());
   get unit(): ScalarAndDimension { return this.PER_DAY; }
 }
 
 class HumanEquivalentDose extends Field {
   get label(): string { return 'Human equivalent dose'; }
   get unitName(): string { return 'mg/kg BW/day'; }
-  private readonly PER_DAY = new ScalarAndDimension(1, Dimension.initTime().recip());
+  private readonly PER_DAY = new ScalarAndDimension(0.000001, Dimension.initTime().recip());
   get unit(): ScalarAndDimension { return this.PER_DAY; }
 }
 
