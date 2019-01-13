@@ -10,10 +10,16 @@ import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 import { printNum } from '../shared/number-util';
 
 class EffectLimit extends Field {
+  private readonly PER_DAY = Dimension.initTime().recip();
+  readonly UNITS: {[index: string]: ScalarAndDimension} = {
+    'mg/kg BW/day': new ScalarAndDimension(0.000001, this.PER_DAY),
+    'g/kg BW/day': new ScalarAndDimension(0.001, this.PER_DAY),
+    'µg/kg BW/day': new ScalarAndDimension(0.000000001, this.PER_DAY),
+  };
+
   get label(): string { return 'No/low effect limit'; }
-  get unitName(): string { return 'mg/kg BW/day'; }
-  private readonly PER_DAY = new ScalarAndDimension(0.000001, Dimension.initTime().recip());
-  get unit(): ScalarAndDimension { return this.PER_DAY; }
+  get unitName(): string { return this.units!.selectedName; }
+  get unit(): ScalarAndDimension { return this.units!.value; }
 }
 
 class BodyWeight extends Field {
@@ -91,6 +97,7 @@ export class HbelCalcComponent {
 
   @ViewChild('effectLimitRow') effectLimitRow: SdCalcRowComponent;
   @ViewChild('effectLimitInput') effectLimitInput: ElementRef<HTMLInputElement>;
+  @ViewChild('effectLimitUnits') effectLimitUnits: SdSelectComponent;
   effectLimit: EffectLimit = new EffectLimit;
 
   @ViewChild('bodyWeightRow') bodyWeightRow: SdCalcRowComponent;
@@ -149,6 +156,7 @@ export class HbelCalcComponent {
   ngAfterViewInit() {
     this.effectLimit.row = this.effectLimitRow;
     this.effectLimit.input = this.effectLimitInput;
+    this.effectLimit.units = this.effectLimitUnits;
     this.bodyWeight.row = this.bodyWeightRow;
     this.bodyWeight.input = this.bodyWeightInput;
     this.species.row = this.speciesRow;
@@ -166,6 +174,10 @@ export class HbelCalcComponent {
   }
 
   isMouseOrRat: boolean = true;
+
+  changeUnits(): void {
+    this.form.formChange();
+  }
 
   changeSpecies(): void {
     this.isMouseOrRat =
@@ -190,4 +202,14 @@ export class HbelCalcComponent {
     {species: 'monkey', factor: 3},
     {species: 'other', factor: 10},
   ];
+
+  // Allow the template to iterate over unit labels filtered by dimension.
+  iterUnits(table: {[index: string]: ScalarAndDimension}, d: Dimension | null): string[] {
+    let results: string[] = [];
+    Object.keys(table).forEach(function(key) {
+      if (d == null || table[key].d.equal(d))
+        results.push(key);
+    });
+    return results;
+  }
 }

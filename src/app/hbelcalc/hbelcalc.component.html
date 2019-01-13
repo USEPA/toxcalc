@@ -22,7 +22,9 @@
           #effectLimitInput
           />
         <div class="input-group-append">
-          <span class="input-group-text">mg/kg BW/day</span>
+          <sd-select name="effectLimitUnits" #effectLimitUnits (change)="changeUnits();">
+            <option *ngFor="let unit of iterUnits(effectLimit.UNITS)" [label]="unit" [value]="effectLimit.UNITS[unit]">
+          </sd-select>
         </div>
       </ng-template>
     </sd-calc-row>
