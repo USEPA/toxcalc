@@ -17,20 +17,20 @@ class EffectLimit extends Field {
     'µg/kg BW/day': new ScalarAndDimension(0.000000001, this.PER_DAY),
   };
 
-  get label(): string { return 'No/low effect limit'; }
+  get label(): string { return 'Point of departure (i.e. NO(A)EL or LO(A)EL) from the critical study'; }
   get unitName(): string { return this.units!.selectedName; }
   get unit(): ScalarAndDimension { return this.units!.value; }
 }
 
 class BodyWeight extends Field {
-  get label(): string { return 'Body weight'; }
+  get label(): string { return 'Assumed human body weight'; }
   get unitName(): string { return 'kg'; }
   private readonly KG = new ScalarAndDimension(1000, Dimension.initMass());
   get unit(): ScalarAndDimension { return this.KG; }
 }
 
 class Species extends Field {
-  get label(): string { return 'Species'; }
+  get label(): string { return 'F1: Interspecies Extrapolation'; }
   get unitName(): string { return ''; }
   get value() { return this.select.value.factor; }
   set value(unused) {}
@@ -42,14 +42,14 @@ class Species extends Field {
 }
 
 class SafetyFactor extends Field {
-  get label(): string { return 'Safety factor'; }
+  get label(): string { return 'F2: Interindividual variability'; }
   get unitName(): string { return ''; }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
 }
 
 class StudyDurationFactor extends Field {
-  get label(): string { return 'Study duration factor'; }
+  get label(): string { return 'F3: Exposure duration adjustment'; }
   get unitName(): string { return ''; }
   get value() { return this.select.value; }
   set value(unused) {}
@@ -61,7 +61,7 @@ class StudyDurationFactor extends Field {
 }
 
 class SevereToxicityFactor extends Field {
-  get label(): string { return 'Severe toxicity factor'; }
+  get label(): string { return 'F4: Severe of toxicity'; }
   get unitName(): string { return ''; }
   get value() { return this.select.value; }
   set value(unused) {}
@@ -73,14 +73,14 @@ class SevereToxicityFactor extends Field {
 }
 
 class NoNoelFactor extends Field {
-  get label(): string { return 'No-NOEL Factor'; }
+  get label(): string { return 'F5: LO(A)EL to NO(A)EL extrapolation'; }
   get unitName(): string { return ''; }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
 }
 
 class PDE extends Field {
-  get label(): string { return 'Permissible Daily Exposure'; }
+  get label(): string { return 'Permissible daily exposure'; }
   get unitName(): string { return 'mg/day'; }
   private readonly MG_DAY = new ScalarAndDimension(0.001, Dimension.initMass().div(Dimension.initTime()));
   get unit(): ScalarAndDimension { return this.MG_DAY; }
