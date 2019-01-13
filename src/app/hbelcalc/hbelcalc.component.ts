@@ -81,9 +81,14 @@ class NoNoelFactor extends Field {
 
 class PDE extends Field {
   get label(): string { return 'Permissible daily exposure'; }
-  get unitName(): string { return 'mg/day'; }
-  private readonly MG_DAY = new ScalarAndDimension(0.001, Dimension.initMass().div(Dimension.initTime()));
-  get unit(): ScalarAndDimension { return this.MG_DAY; }
+  private readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
+  readonly UNITS: {[index: string]: ScalarAndDimension} = {
+    'mg/day': new ScalarAndDimension(0.001, this.MASS_TIME),
+    'g/day': new ScalarAndDimension(0.1, this.MASS_TIME),
+    'µg/day': new ScalarAndDimension(0.000001, this.MASS_TIME),
+  };
+  get unitName(): string { return this.units!.selectedName; }
+  get unit(): ScalarAndDimension { return this.units!.value; }
 }
 
 @Component({
@@ -126,6 +131,7 @@ export class HbelCalcComponent {
 
   @ViewChild('pdeRow') pdeRow: SdCalcRowComponent;
   @ViewChild('pdeInput') pdeInput: ElementRef<HTMLInputElement>;
+  @ViewChild('pdeUnits') pdeUnits: SdSelectComponent;
   pde: PDE = new PDE;
 
   form = new Form(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pde]);
@@ -171,6 +177,7 @@ export class HbelCalcComponent {
     this.noNoelFactor.input = this.noNoelFactorInput;
     this.pde.row = this.pdeRow;
     this.pde.input = this.pdeInput;
+    this.pde.units = this.pdeUnits;
   }
 
   isMouseOrRat: boolean = true;

@@ -147,9 +147,9 @@
           [ngModelOptions]="{standalone: true}"
           #pdeInput
           />
-        <div class="input-group-append">
-          <span class="input-group-text">mg/day</span>
-        </div>
+        <sd-select name="pdeUnits" #pdeUnits (change)="changeUnits();">
+          <option *ngFor="let unit of iterUnits(pde.UNITS)" [label]="unit" [value]="pde.UNITS[unit]">
+        </sd-select>
       </ng-template>
     </sd-calc-row>
     <sd-internal-calc-error [errorText]="form.internalError"></sd-internal-calc-error>
