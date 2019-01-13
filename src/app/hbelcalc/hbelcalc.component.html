@@ -5,123 +5,132 @@
   </p>
   <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
   <form class="mb-3" autocomplete="off" novalidate (change)="form.formChange()">
-    <sd-calc-row #effectLimitRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="effectLimit">
-        {{effectLimit.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="effectLimit"
-          sdInputPosNum
-          (blur)="form.inputBlur()"
-          (focus)="form.inputFocus($event.target)"
-          [readonly]="effectLimit.readOnly"
-          [(ngModel)]="effectLimit.value"
-          [ngModelOptions]="{standalone: true}"
-          #effectLimitInput
-          />
-        <div class="input-group-append">
-          <sd-select name="effectLimitUnits" #effectLimitUnits (change)="changeUnits();">
-            <option *ngFor="let unit of iterUnits(effectLimit.UNITS)" [label]="unit" [value]="effectLimit.UNITS[unit]">
+    <fieldset>
+      <legend>Step 1</legend>
+      <sd-calc-row #effectLimitRow>
+        <ng-template sdCalcRowLabel sdCalcRowLabelFor="effectLimit">
+          {{effectLimit.label}}
+        </ng-template>
+        <ng-template sdCalcRowInput>
+          <input
+            class="form-control"
+            id="effectLimit"
+            sdInputPosNum
+            (blur)="form.inputBlur()"
+            (focus)="form.inputFocus($event.target)"
+            [readonly]="effectLimit.readOnly"
+            [(ngModel)]="effectLimit.value"
+            [ngModelOptions]="{standalone: true}"
+            #effectLimitInput
+            />
+          <div class="input-group-append">
+            <sd-select name="effectLimitUnits" #effectLimitUnits (change)="changeUnits();">
+              <option *ngFor="let unit of iterUnits(effectLimit.UNITS)" [label]="unit" [value]="effectLimit.UNITS[unit]">
+            </sd-select>
+          </div>
+        </ng-template>
+      </sd-calc-row>
+    </fieldset>
+    <fieldset>
+      <legend>Step 2</legend>
+      <sd-calc-row #bodyWeightRow>
+        <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
+          {{bodyWeight.label}}
+        </ng-template>
+        <ng-template sdCalcRowInput>
+          <input
+            class="form-control"
+            id="bodyWeight"
+            sdInputPosNum
+            (blur)="form.inputBlur()"
+            (focus)="form.inputFocus($event.target)"
+            [readonly]="bodyWeight.readOnly"
+            [(ngModel)]="bodyWeight.value"
+            [ngModelOptions]="{standalone: true}"
+            #bodyWeightInput
+            />
+          <div class="input-group-append">
+            <span class="input-group-text">kg</span>
+          </div>
+        </ng-template>
+      </sd-calc-row>
+    </fieldset>
+    <fieldset>
+      <legend>Modifying factors</legend>
+      <sd-calc-row #speciesRow>
+        <ng-template sdCalcRowLabel sdCalcRowLabelFor="species">
+          {{species.label}}
+        </ng-template>
+        <ng-template sdCalcRowInput>
+          <sd-select id="species" (change)="changeSpecies()" #speciesSelect>
+            <option *ngFor="let species of speciesOptions" [label]="species.species" [value]="species"></option>
           </sd-select>
-        </div>
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #bodyWeightRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
-        {{bodyWeight.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="bodyWeight"
-          sdInputPosNum
-          (blur)="form.inputBlur()"
-          (focus)="form.inputFocus($event.target)"
-          [readonly]="bodyWeight.readOnly"
-          [(ngModel)]="bodyWeight.value"
-          [ngModelOptions]="{standalone: true}"
-          #bodyWeightInput
-          />
-        <div class="input-group-append">
-          <span class="input-group-text">kg</span>
-        </div>
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #speciesRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="species">
-        {{species.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <sd-select id="species" (change)="changeSpecies()" #speciesSelect>
-          <option *ngFor="let species of speciesOptions" [label]="species.species" [value]="species"></option>
-        </sd-select>
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #safetyFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="safetyFactor">
-        {{safetyFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="safetyFactor"
-          sdInputPosNum
-          (blur)="form.inputBlur()"
-          (focus)="form.inputFocus($event.target)"
-          [readonly]="safetyFactor.readOnly"
-          [(ngModel)]="safetyFactor.value"
-          [ngModelOptions]="{standalone: true}"
-          value="10"
-          #safetyFactorInput
-          />
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #studyDurationFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="studyDurationFactor">
-        {{studyDurationFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <sd-select id="studyDurationFactor" (change)="changeStudyDurationFactor()" #studyDurationFactorSelect>
-          <option label="whole period of organogenesis in a reproductive study" value="1"></option>
-          <option [label]="isMouseOrRat ? 'a 6-month study' : 'a 3.5-year study'" value="2"></option>
-          <option [label]="isMouseOrRat ? 'a 3-month study' : 'a 2-year study'" value="5"></option>
-          <option label="shorter duration studies" value="10"></option>
-        </sd-select>
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #severeToxicityFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="severeToxicityFactor">
-        {{severeToxicityFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <sd-select id="severeToxicityFactor" (change)="changeSevereToxicityFactor()" #severeToxicityFactorSelect>
-          <option label="fetal toxicity associated with maternal toxicity" value="1"></option>
-          <option label="fetal toxicity without maternal toxicity" value="5"></option>
-          <option label="teratogenic effect with maternal toxicity" value="5"></option>
-          <option label="teratogenic effect without maternal toxicity" value="10"></option>
-        </sd-select>
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #noNoelFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="noNoelFactor">
-        {{noNoelFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="noNoelFactor"
-          sdInputPosNum
-          (blur)="form.inputBlur()"
-          (focus)="form.inputFocus($event.target)"
-          [readonly]="noNoelFactor.readOnly"
-          [(ngModel)]="noNoelFactor.value"
-          [ngModelOptions]="{standalone: true}"
-          #noNoelFactorInput
-          />
-      </ng-template>
-    </sd-calc-row>
+        </ng-template>
+      </sd-calc-row>
+      <sd-calc-row #safetyFactorRow>
+        <ng-template sdCalcRowLabel sdCalcRowLabelFor="safetyFactor">
+          {{safetyFactor.label}}
+        </ng-template>
+        <ng-template sdCalcRowInput>
+          <input
+            class="form-control"
+            id="safetyFactor"
+            sdInputPosNum
+            (blur)="form.inputBlur()"
+            (focus)="form.inputFocus($event.target)"
+            [readonly]="safetyFactor.readOnly"
+            [(ngModel)]="safetyFactor.value"
+            [ngModelOptions]="{standalone: true}"
+            value="10"
+            #safetyFactorInput
+            />
+        </ng-template>
+      </sd-calc-row>
+      <sd-calc-row #studyDurationFactorRow>
+        <ng-template sdCalcRowLabel sdCalcRowLabelFor="studyDurationFactor">
+          {{studyDurationFactor.label}}
+        </ng-template>
+        <ng-template sdCalcRowInput>
+          <sd-select id="studyDurationFactor" (change)="changeStudyDurationFactor()" #studyDurationFactorSelect>
+            <option label="whole period of organogenesis in a reproductive study" value="1"></option>
+            <option [label]="isMouseOrRat ? 'a 6-month study' : 'a 3.5-year study'" value="2"></option>
+            <option [label]="isMouseOrRat ? 'a 3-month study' : 'a 2-year study'" value="5"></option>
+            <option label="shorter duration studies" value="10"></option>
+          </sd-select>
+        </ng-template>
+      </sd-calc-row>
+      <sd-calc-row #severeToxicityFactorRow>
+        <ng-template sdCalcRowLabel sdCalcRowLabelFor="severeToxicityFactor">
+          {{severeToxicityFactor.label}}
+        </ng-template>
+        <ng-template sdCalcRowInput>
+          <sd-select id="severeToxicityFactor" (change)="changeSevereToxicityFactor()" #severeToxicityFactorSelect>
+            <option label="fetal toxicity associated with maternal toxicity" value="1"></option>
+            <option label="fetal toxicity without maternal toxicity" value="5"></option>
+            <option label="teratogenic effect with maternal toxicity" value="5"></option>
+            <option label="teratogenic effect without maternal toxicity" value="10"></option>
+          </sd-select>
+        </ng-template>
+      </sd-calc-row>
+      <sd-calc-row #noNoelFactorRow>
+        <ng-template sdCalcRowLabel sdCalcRowLabelFor="noNoelFactor">
+          {{noNoelFactor.label}}
+        </ng-template>
+        <ng-template sdCalcRowInput>
+          <input
+            class="form-control"
+            id="noNoelFactor"
+            sdInputPosNum
+            (blur)="form.inputBlur()"
+            (focus)="form.inputFocus($event.target)"
+            [readonly]="noNoelFactor.readOnly"
+            [(ngModel)]="noNoelFactor.value"
+            [ngModelOptions]="{standalone: true}"
+            #noNoelFactorInput
+            />
+        </ng-template>
+      </sd-calc-row>
+    </fieldset>
     <sd-calc-row #pdeRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="pde">
         {{pde.label}}
