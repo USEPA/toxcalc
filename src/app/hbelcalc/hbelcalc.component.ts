@@ -17,7 +17,7 @@ class EffectLimit extends Field {
     'µg/kg BW/day': new ScalarAndDimension(0.000000001, this.PER_DAY),
   };
 
-  get label(): string { return 'Point of departure (i.e. NO(A)EL or LO(A)EL) from the critical study'; }
+  get label(): string { return 'No/low effect level'; }
   get unitName(): string { return this.units!.selectedName; }
   get unit(): ScalarAndDimension { return this.units!.value; }
 }
@@ -31,6 +31,7 @@ class BodyWeight extends Field {
 
 class Species extends Field {
   get label(): string { return 'F1: Interspecies Extrapolation'; }
+  get logColumnName(): string { return 'F1'; }
   get unitName(): string { return ''; }
   get value() { return this.select.value.factor; }
   set value(unused) {}
@@ -43,6 +44,7 @@ class Species extends Field {
 
 class SafetyFactor extends Field {
   get label(): string { return 'F2: Interindividual variability'; }
+  get logColumnName(): string { return 'F2'; }
   get unitName(): string { return ''; }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
@@ -50,6 +52,7 @@ class SafetyFactor extends Field {
 
 class StudyDurationFactor extends Field {
   get label(): string { return 'F3: Exposure duration adjustment'; }
+  get logColumnName(): string { return 'F3'; }
   get unitName(): string { return ''; }
   get value() { return this.select.value; }
   set value(unused) {}
@@ -61,7 +64,8 @@ class StudyDurationFactor extends Field {
 }
 
 class SevereToxicityFactor extends Field {
-  get label(): string { return 'F4: Severe of toxicity'; }
+  get label(): string { return 'F4: Severe toxicity adjustment'; }
+  get logColumnName(): string { return 'F4'; }
   get unitName(): string { return ''; }
   get value() { return this.select.value; }
   set value(unused) {}
@@ -74,6 +78,7 @@ class SevereToxicityFactor extends Field {
 
 class NoNoelFactor extends Field {
   get label(): string { return 'F5: LO(A)EL to NO(A)EL extrapolation'; }
+  get logColumnName(): string { return 'F5'; }
   get unitName(): string { return ''; }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
@@ -147,14 +152,14 @@ export class HbelCalcComponent {
     this.noNoelFactor.term = (<Equation>eq.solve(this.noNoelFactor.var)).RHS;
     this.pde.term = (<Equation>eq.solve(this.pde.var)).RHS;
 
-    this.variableMap.set(this.effectLimit.var, this.effectLimit.label);
-    this.variableMap.set(this.bodyWeight.var, this.bodyWeight.label);
-    this.variableMap.set(this.species.var, this.species.label);
-    this.variableMap.set(this.safetyFactor.var, this.safetyFactor.label);
-    this.variableMap.set(this.studyDurationFactor.var, this.studyDurationFactor.label);
-    this.variableMap.set(this.severeToxicityFactor.var, this.severeToxicityFactor.label);
-    this.variableMap.set(this.noNoelFactor.var, this.noNoelFactor.label);
-    this.variableMap.set(this.pde.var, this.pde.label);
+    this.variableMap.set(this.effectLimit.var, this.effectLimit.equationVarName);
+    this.variableMap.set(this.bodyWeight.var, this.bodyWeight.equationVarName);
+    this.variableMap.set(this.species.var, this.species.equationVarName);
+    this.variableMap.set(this.safetyFactor.var, this.safetyFactor.equationVarName);
+    this.variableMap.set(this.studyDurationFactor.var, this.studyDurationFactor.equationVarName);
+    this.variableMap.set(this.severeToxicityFactor.var, this.severeToxicityFactor.equationVarName);
+    this.variableMap.set(this.noNoelFactor.var, this.noNoelFactor.equationVarName);
+    this.variableMap.set(this.pde.var, this.pde.equationVarName);
 
     this.form.equationSnippet = this.pde.equationSnippet(this.eqPrinter);
   }
