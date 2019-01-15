@@ -9,6 +9,33 @@ import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 
 import { printNum } from '../shared/number-util';
 
+// bcfForm
+
+class BioavailabilityPDE extends Field {
+  get label(): string { return '% bioavailability for PDE route'; }
+  get equationVarName(): string { return '\\% bioavailability for PDE route'; }
+  get unitName(): string { return ''; }
+  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
+  get unit(): ScalarAndDimension { return this.UNIT; }
+}
+
+class BioavailabilityCriticalStudy extends Field {
+  get label(): string { return '% bioavailability for critical study route'; }
+  get equationVarName(): string { return '\\% bioavailability for critical study route'; }
+  get unitName(): string { return ''; }
+  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
+  get unit(): ScalarAndDimension { return this.UNIT; }
+}
+
+class Alpha extends Field {
+  get label(): string { return 'Alpha or BCF'; }
+  get unitName(): string { return ''; }
+  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
+  get unit(): ScalarAndDimension { return this.UNIT; }
+}
+
+// pdeForm
+
 class EffectLimit extends Field {
   private readonly PER_DAY = Dimension.initTime().recip();
   readonly UNITS: {[index: string]: ScalarAndDimension} = {
@@ -139,9 +166,34 @@ export class HbelCalcComponent {
   @ViewChild('pdeUnits') pdeUnits: SdSelectComponent;
   pde: PDE = new PDE;
 
-  form = new Form(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pde]);
+  pdeForm = new Form(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pde]);
+
+  @ViewChild('bioavailabilityPDERow') bioavailabilityPDERow: SdCalcRowComponent;
+  @ViewChild('bioavailabilityPDEInput') bioavailabilityPDEInput: ElementRef<HTMLInputElement>;
+  bioavailabilityPDE: BioavailabilityPDE = new BioavailabilityPDE;
+
+  @ViewChild('bioavailabilityCriticalStudyRow') bioavailabilityCriticalStudyRow: SdCalcRowComponent;
+  @ViewChild('bioavailabilityCriticalStudyInput') bioavailabilityCriticalStudyInput: ElementRef<HTMLInputElement>;
+  bioavailabilityCriticalStudy: BioavailabilityCriticalStudy = new BioavailabilityCriticalStudy;
+
+  @ViewChild('alphaRow') alphaRow: SdCalcRowComponent;
+  @ViewChild('alphaInput') alphaInput: ElementRef<HTMLInputElement>;
+  alpha: Alpha = new Alpha;
+
+  bcfForm = new Form(this.eqPrinter, [this.bioavailabilityPDE, this.bioavailabilityCriticalStudy, this.alpha]);
 
   constructor() {
+    let bcfeq = new Equation(Equation.div(this.bioavailabilityPDE.var, Equation.mul(this.bioavailabilityCriticalStudy.var, this.alpha.var)), Equation.constantFromNumber(1));
+    this.bioavailabilityPDE.term = (<Equation>bcfeq.solve(this.bioavailabilityPDE.var)).RHS;
+    this.bioavailabilityCriticalStudy.term = (<Equation>bcfeq.solve(this.bioavailabilityCriticalStudy.var)).RHS;
+    this.alpha.term = (<Equation>bcfeq.solve(this.alpha.var)).RHS;
+    this.variableMap.set(this.bioavailabilityPDE.var, this.bioavailabilityPDE.equationVarName);
+    this.variableMap.set(this.bioavailabilityCriticalStudy.var, this.bioavailabilityCriticalStudy.equationVarName);
+    this.variableMap.set(this.alpha.var, this.alpha.equationVarName);
+    console.log(this.alpha.equationSnippet(this.eqPrinter));
+    this.bcfForm.equationSnippet = this.alpha.equationSnippet(this.eqPrinter);
+
+    // pdeForm
     let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.pde.var)), Equation.constantFromNumber(1));
     this.effectLimit.term = (<Equation>eq.solve(this.effectLimit.var)).RHS;
     this.bodyWeight.term = (<Equation>eq.solve(this.bodyWeight.var)).RHS;
@@ -161,10 +213,17 @@ export class HbelCalcComponent {
     this.variableMap.set(this.noNoelFactor.var, this.noNoelFactor.equationVarName);
     this.variableMap.set(this.pde.var, this.pde.equationVarName);
 
-    this.form.equationSnippet = this.pde.equationSnippet(this.eqPrinter);
+    this.pdeForm.equationSnippet = this.pde.equationSnippet(this.eqPrinter);
   }
 
   ngAfterViewInit() {
+    this.bioavailabilityPDE.row = this.bioavailabilityPDERow;
+    this.bioavailabilityPDE.input = this.bioavailabilityPDEInput;
+    this.bioavailabilityCriticalStudy.row = this.bioavailabilityCriticalStudyRow;
+    this.bioavailabilityCriticalStudy.input = this.bioavailabilityCriticalStudyInput;
+    this.alpha.row = this.alphaRow;
+    this.alpha.input = this.alphaInput;
+
     this.effectLimit.row = this.effectLimitRow;
     this.effectLimit.input = this.effectLimitInput;
     this.effectLimit.units = this.effectLimitUnits;
@@ -188,22 +247,22 @@ export class HbelCalcComponent {
   isMouseOrRat: boolean = true;
 
   changeUnits(): void {
-    this.form.formChange();
+    this.pdeForm.formChange();
   }
 
   changeSpecies(): void {
     this.isMouseOrRat =
         (this.speciesSelect.selectedName == 'rat' ||
          this.speciesSelect.selectedName == 'mouse');
-    this.form.formChange();
+    this.pdeForm.formChange();
   }
 
   changeStudyDurationFactor(): void {
-    this.form.formChange();
+    this.pdeForm.formChange();
   }
 
   changeSevereToxicityFactor(): void {
-    this.form.formChange();
+    this.pdeForm.formChange();
   }
 
   readonly speciesOptions = [
