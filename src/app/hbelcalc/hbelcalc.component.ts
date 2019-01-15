@@ -161,12 +161,16 @@ export class HbelCalcComponent {
   @ViewChild('noNoelFactorInput') noNoelFactorInput: ElementRef<HTMLInputElement>;
   noNoelFactor: NoNoelFactor = new NoNoelFactor;
 
+  @ViewChild('pdeAlphaRow') pdeAlphaRow: SdCalcRowComponent;
+  @ViewChild('pdeAlphaInput') pdeAlphaInput: ElementRef<HTMLInputElement>;
+  pdeAlpha: Alpha = new Alpha;
+
   @ViewChild('pdeRow') pdeRow: SdCalcRowComponent;
   @ViewChild('pdeInput') pdeInput: ElementRef<HTMLInputElement>;
   @ViewChild('pdeUnits') pdeUnits: SdSelectComponent;
   pde: PDE = new PDE;
 
-  pdeForm = new Form(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pde]);
+  pdeForm = new Form(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha, this.pde]);
 
   @ViewChild('bioavailabilityPDERow') bioavailabilityPDERow: SdCalcRowComponent;
   @ViewChild('bioavailabilityPDEInput') bioavailabilityPDEInput: ElementRef<HTMLInputElement>;
@@ -190,11 +194,10 @@ export class HbelCalcComponent {
     this.variableMap.set(this.bioavailabilityPDE.var, this.bioavailabilityPDE.equationVarName);
     this.variableMap.set(this.bioavailabilityCriticalStudy.var, this.bioavailabilityCriticalStudy.equationVarName);
     this.variableMap.set(this.alpha.var, this.alpha.equationVarName);
-    console.log(this.alpha.equationSnippet(this.eqPrinter));
     this.bcfForm.equationSnippet = this.alpha.equationSnippet(this.eqPrinter);
 
     // pdeForm
-    let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.pde.var)), Equation.constantFromNumber(1));
+    let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.pdeAlpha.var, this.pde.var)), Equation.constantFromNumber(1));
     this.effectLimit.term = (<Equation>eq.solve(this.effectLimit.var)).RHS;
     this.bodyWeight.term = (<Equation>eq.solve(this.bodyWeight.var)).RHS;
     // this.species.term = (<Equation>eq.solve(this.species.var)).RHS;
@@ -202,6 +205,7 @@ export class HbelCalcComponent {
     this.studyDurationFactor.term = (<Equation>eq.solve(this.studyDurationFactor.var)).RHS;
     this.severeToxicityFactor.term = (<Equation>eq.solve(this.severeToxicityFactor.var)).RHS;
     this.noNoelFactor.term = (<Equation>eq.solve(this.noNoelFactor.var)).RHS;
+    this.pdeAlpha.term = (<Equation>eq.solve(this.pdeAlpha.var)).RHS;
     this.pde.term = (<Equation>eq.solve(this.pde.var)).RHS;
 
     this.variableMap.set(this.effectLimit.var, this.effectLimit.equationVarName);
@@ -211,6 +215,7 @@ export class HbelCalcComponent {
     this.variableMap.set(this.studyDurationFactor.var, this.studyDurationFactor.equationVarName);
     this.variableMap.set(this.severeToxicityFactor.var, this.severeToxicityFactor.equationVarName);
     this.variableMap.set(this.noNoelFactor.var, this.noNoelFactor.equationVarName);
+    this.variableMap.set(this.pdeAlpha.var, this.pdeAlpha.equationVarName);
     this.variableMap.set(this.pde.var, this.pde.equationVarName);
 
     this.pdeForm.equationSnippet = this.pde.equationSnippet(this.eqPrinter);
@@ -239,6 +244,8 @@ export class HbelCalcComponent {
     this.severeToxicityFactor.select = this.severeToxicityFactorSelect;
     this.noNoelFactor.row = this.noNoelFactorRow;
     this.noNoelFactor.input = this.noNoelFactorInput;
+    this.pdeAlpha.row = this.pdeAlphaRow;
+    this.pdeAlpha.input = this.pdeAlphaInput;
     this.pde.row = this.pdeRow;
     this.pde.input = this.pdeInput;
     this.pde.units = this.pdeUnits;

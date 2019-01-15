@@ -195,6 +195,24 @@
           />
       </ng-template>
     </sd-calc-row>
+    <sd-calc-row #pdeAlphaRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="pdeAlpha">
+        {{pdeAlpha.label}}
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input
+          class="form-control"
+          id="pdeAlpha"
+          sdInputPosNum
+          (blur)="pdeForm.inputBlur()"
+          (focus)="pdeForm.inputFocus($event.target)"
+          [readonly]="pdeAlpha.readOnly"
+          [(ngModel)]="pdeAlpha.value"
+          [ngModelOptions]="{standalone: true}"
+          #pdeAlphaInput
+          />
+      </ng-template>
+    </sd-calc-row>
     <sd-calc-row #pdeRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="pde">
         {{pde.label}}
