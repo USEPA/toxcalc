@@ -3,17 +3,22 @@
     <ng-template [ngTemplateOutlet]="label.templateRef"></ng-template>
   </label>
   <div class="col-12 col-md-10 d-flex align-items-center">
-    <div class="form-inline">
-      <div class="input-group">
-        <ng-template [ngTemplateOutlet]="input.templateRef"></ng-template>
-        <div class="invalid-tooltip d-block" id="error" *ngIf="errorText">
-          {{errorText}}
+    <ng-container *ngIf="input.custom">
+      <ng-template [ngTemplateOutlet]="input.templateRef"></ng-template>
+    </ng-container>
+    <ng-container *ngIf="!input.custom">
+      <div class="form-inline">
+        <div class="input-group">
+          <ng-template [ngTemplateOutlet]="input.templateRef"></ng-template>
+          <div class="invalid-tooltip d-block" id="error" *ngIf="errorText">
+            {{errorText}}
+          </div>
         </div>
+        <button type="button" class="btn btn-light ml-3" (click)="showHelp = !showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp" *ngIf="help != null">
+          <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+        </button>
       </div>
-      <button type="button" class="btn btn-light ml-3" (click)="showHelp = !showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp" *ngIf="help != null">
-        <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-      </button>
-    </div>
+    </ng-container>
   </div>
 </div>
 <div class="form-row" id="help" *ngIf="showHelp">

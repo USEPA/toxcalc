@@ -11,6 +11,7 @@ export class SdCalcRowLabel {
 
 @Directive({selector: 'ng-template[sdCalcRowInput]'})
 export class SdCalcRowInput {
+  @Input('sdCustomRowInput') custom: boolean = false;
   constructor(public templateRef: TemplateRef<any>) {}
 }
 
