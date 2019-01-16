@@ -17,7 +17,12 @@ export abstract class Field {
   public get term(): Term { return this.mTerm; }
   public set term(t: Term) { this.mTerm = t; }
   readonly unit: ScalarAndDimension;
+
   readOnly: boolean = false;
+  markAsOutput(): void { this.readOnly = true; }
+  unmarkAsOutput(): void { this.readOnly = false; }
+  isMarkedAsOutput(): boolean { return this.readOnly; }
+
   value: string = '';
   get hasError(): boolean { return this.row.errorText != ''; }
   abstract get label(): string;

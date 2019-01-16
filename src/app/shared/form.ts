@@ -45,7 +45,7 @@ export class Form {
     this.internalError = '';
     this.fields.forEach(function(f: Field) {
       f.row.errorText = '';
-      f.readOnly = false;
+      f.unmarkAsOutput();
       f.value = '';
     });
     this.equationSnippet = this.fields[this.fields.length - 1].equationSnippet(this.eqPrinter);
@@ -61,7 +61,7 @@ export class Form {
   inputFocus(self: HTMLInputElement): void {
     this.suppressChange = true;
     for (let i = 0; i != this.fields.length; ++i) {
-      if (this.fields[i].readOnly &&
+      if (this.fields[i].isMarkedAsOutput() &&
           this.fields[i].input &&
           this.fields[i].input!.nativeElement != self) {
         this.fields[i].value = '';
@@ -81,7 +81,7 @@ export class Form {
     let out_control: Field | null = null;
     let fields = this.fields.filter(f => f.row.show);
     for (let i = 0; i != fields.length; ++i) {
-      if (fields[i].readOnly || fields[i].value == '') {
+      if (fields[i].isMarkedAsOutput() || fields[i].value == '') {
         if (out_control == null) {
           out_control = fields[i];
         } else {
@@ -95,8 +95,8 @@ export class Form {
       // We might be here if there were multiple possible outputs found.
       // Wipe values and readonly state for all of them.
       for (let i = 0; i != fields.length; ++i) {
-        if (fields[i].readOnly) {
-          fields[i].readOnly = false;
+        if (fields[i].isMarkedAsOutput()) {
+          fields[i].unmarkAsOutput();
           fields[i].value = '';
         }
       }
@@ -104,7 +104,7 @@ export class Form {
       return;
     }
 
-    out_control.readOnly = true;
+    out_control.markAsOutput();
     out_control.value = '';
 
     if (this.hasErrors())
