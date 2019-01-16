@@ -155,13 +155,36 @@
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="studyDurationFactor">
         {{studyDurationFactor.label}}
       </ng-template>
-      <ng-template sdCalcRowInput>
-        <sd-select id="studyDurationFactor" (change)="changeStudyDurationFactor()" #studyDurationFactorSelect>
-          <option label="whole period of organogenesis in a reproductive study" value="1"></option>
-          <option [label]="isMouseOrRat ? 'a 6-month study' : 'a 3.5-year study'" value="2"></option>
-          <option [label]="isMouseOrRat ? 'a 3-month study' : 'a 2-year study'" value="5"></option>
-          <option label="shorter duration studies" value="10"></option>
-        </sd-select>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <div>
+          <div class="form-check" *ngFor="let item of (isMouseOrRat ? studyDurationFactor.mouseOrRatOptions : studyDurationFactor.notMouseOrRatOptions); index as i">
+            <input type="radio" name="studyDurationFactorGroup" class="form-check-input" [id]="'studyDurationFactorGroup' + i" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClick(item.value)">
+            <label class="form-check-label" [for]="'studyDurationFactorGroup' + i">{{item.value}}: {{item.label}}</label>
+          </div>
+          <div class="form-check">
+            <input type="radio" name="studyDurationFactorGroup" class="form-check-input" id="studyDurationFactorGroupCustom" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClickCustom()">
+            <label class="form-check-label" for="studyDurationFactorGroupCustom">custom value:</label>
+            <div class="form-inline">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="studyDurationFactorCustom"
+                  sdInputPosNum
+                  (blur)="studyDurationFactor.inputBlur(); pdeForm.inputBlur()"
+                  (focus)="pdeForm.inputFocus($event.target)"
+                  [readonly]="studyDurationFactor.output"
+                  [disabled]="!studyDurationFactor.custom"
+                  [(ngModel)]="studyDurationFactor.customValue"
+                  [ngModelOptions]="{standalone: true}"
+                  #studyDurationFactorInput
+                  />
+                <div class="invalid-tooltip d-block" *ngIf="studyDurationFactorRow.errorText">
+                  {{studyDurationFactorRow.errorText}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #severeToxicityFactorRow>

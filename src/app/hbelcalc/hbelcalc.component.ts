@@ -81,13 +81,53 @@ class StudyDurationFactor extends Field {
   get label(): string { return 'F3: Exposure duration adjustment'; }
   get logColumnName(): string { return 'F3'; }
   get unitName(): string { return ''; }
-  get value() { return this.select.value; }
-  set value(unused) {}
-  get logValue(): string { return this.select.selectedName + ' (' + printNum(this.select.value) + ')'; }
-  updateErrorState(): void {}
-  select: SdSelectComponent;
+  get logValue(): string {
+    if (this.custom) {
+      return this.customValue;
+    }
+    return (this.isMouseOrRat ? this.mouseOrRatOptions : this.notMouseOrRatOptions)[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
+  }
+  updateErrorState(): void {
+    if (!this.custom) return;
+    super.updateErrorState();
+  }
+  isMouseOrRat: boolean = true;
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
+  // The value shown in the custom box.
+  customValue: string = '';
+  // Whether 'custom value' is the currently selected radio button.
+  custom: boolean = true;
+  inputBlur(): void {
+    if (this.custom) {
+      this.value = this.customValue;
+    }
+  }
+  // The value, if custom is not active.
+  selectedValue: string = '';
+  get value() { return this.custom ? this.customValue : this.selectedValue; }
+  set value(new_value) { /* assert (this.custom) */ this.customValue = new_value; }
+
+  // TODO: this should be in field, and its readOnly property should be removed
+  // or replaced with this 'output'.
+  output: boolean = false;
+  markAsOutput(): void { this.output = true; }
+  unmarkAsOutput(): void { this.output = false; }
+  isMarkedAsOutput(): boolean { return this.output; }
+
+  // Preserve which radio button is selected across changes to species.
+  selected: string = 'custom';
+
+  readonly mouseOrRatOptions = [
+    {label: 'whole period of organogenesis in a reproductive study', value: 1},
+    {label: 'a 6-month study', value: 2},
+    {label: 'a 3-month study', value: 5},
+    {label: 'shorter duration studies', value: 10}];
+  readonly notMouseOrRatOptions = [
+    {label: 'whole period of organogenesis in a reproductive study', value: 1},
+    {label: 'a 3.5-year study', value: 2},
+    {label: 'a 2-year study', value: 5},
+    {label: 'shorter duration studies', value: 10}];
 }
 
 class SevereToxicityFactor extends Field {
@@ -150,7 +190,7 @@ export class HbelCalcComponent {
   safetyFactor: SafetyFactor = new SafetyFactor;
 
   @ViewChild('studyDurationFactorRow') studyDurationFactorRow: SdCalcRowComponent;
-  @ViewChild('studyDurationFactorSelect') studyDurationFactorSelect: SdSelectComponent;
+  @ViewChild('studyDurationFactorInput') studyDurationFactorInput: ElementRef<HTMLInputElement>;
   studyDurationFactor: StudyDurationFactor = new StudyDurationFactor;
 
   @ViewChild('severeToxicityFactorRow') severeToxicityFactorRow: SdCalcRowComponent;
@@ -239,7 +279,7 @@ export class HbelCalcComponent {
     this.safetyFactor.row = this.safetyFactorRow;
     this.safetyFactor.input = this.safetyFactorInput;
     this.studyDurationFactor.row = this.studyDurationFactorRow;
-    this.studyDurationFactor.select = this.studyDurationFactorSelect;
+    this.studyDurationFactor.input = this.studyDurationFactorInput;
     this.severeToxicityFactor.row = this.severeToxicityFactorRow;
     this.severeToxicityFactor.select = this.severeToxicityFactorSelect;
     this.noNoelFactor.row = this.noNoelFactorRow;
@@ -261,10 +301,7 @@ export class HbelCalcComponent {
     this.isMouseOrRat =
         (this.speciesSelect.selectedName == 'rat' ||
          this.speciesSelect.selectedName == 'mouse');
-    this.pdeForm.formChange();
-  }
-
-  changeStudyDurationFactor(): void {
+    this.studyDurationFactor.isMouseOrRat = this.isMouseOrRat;
     this.pdeForm.formChange();
   }
 
@@ -280,6 +317,18 @@ export class HbelCalcComponent {
     {species: 'monkey', factor: 3},
     {species: 'other', factor: 10},
   ];
+
+  studyDurationFactorClick(value: number): void {
+    this.studyDurationFactor.selectedValue = printNum(value);
+    this.studyDurationFactor.custom = false;
+    this.studyDurationFactor.customValue = '';
+    this.pdeForm.formChange();
+  }
+
+  studyDurationFactorClickCustom(): void {
+    this.studyDurationFactor.custom = true;
+    this.pdeForm.formChange();
+  }
 
   // Allow the template to iterate over unit labels filtered by dimension.
   iterUnits(table: {[index: string]: ScalarAndDimension}, d: Dimension | null): string[] {
