@@ -22,6 +22,7 @@ import { SdKatexDirective } from './sd-katex.directive';
 import { DefinitionsComponent } from './definitions/definitions.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { SdCalculationLogComponent } from './sd-calculation-log/sd-calculation-log.component';
+import { SdJustificationComponent } from './sd-justification/sd-justification.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { SdCalculationLogComponent } from './sd-calculation-log/sd-calculation-l
     TotalDoseCalcComponent,
     DisclaimerComponent,
     SdCalculationLogComponent,
+    SdJustificationComponent,
   ],
   imports: [
     AppRoutingModule,

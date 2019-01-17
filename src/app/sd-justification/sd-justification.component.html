@@ -1,0 +1,17 @@
+<div class="py-1 w-100">
+  <button class="btn btn-link p-0 border-0 m-0" style="text-decoration: none" (click)="openJustificationEditor()" *ngIf="!showJustification && justification.trim() == ''">Include a justification</button>
+  <div class="d-flex w-100" *ngIf="!showJustification && justification.trim() != ''">
+    <div class="d-flex w-100" style="min-width: 0">
+      <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{justification}}</span>
+    </div>
+    <div class="d-flex ml-1">
+      <button class="btn btn-link p-0 border-0 m-0" style="text-decoration: none" (click)="openJustificationEditor()">edit</button>
+    </div>
+  </div>
+  <div class="w-100" *ngIf="showJustification">
+    Justification:<br>
+    <textarea class="w-100 mb-3" rows="3" [(ngModel)]="justification" [ngModelOptions]="{standalone: true}"></textarea>
+    <button type="button" class="btn btn-primary mr-3" (click)="saveJustification()">Save!</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelJustification()">Cancel</button>
+  </div>
+</div>
