@@ -126,10 +126,48 @@
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="species">
         {{species.label}}
       </ng-template>
-      <ng-template sdCalcRowInput>
-        <sd-select id="species" (change)="changeSpecies()" #speciesSelect>
-          <option *ngFor="let species of speciesOptions" [label]="species.species" [value]="species"></option>
-        </sd-select>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <div>
+          <div class="form-check" *ngFor="let item of species.options; index as i">
+            <input type="radio" name="speciesGroup" class="form-check-input" [id]="'speciesGroup' + i" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="species.output" (click)="speciesClick(i)">
+            <label class="form-check-label" [for]="'speciesGroup' + i">{{item.value}}: {{item.label}}</label>
+          </div>
+          <div class="form-check">
+            <input type="radio" name="speciesGroup" class="form-check-input" id="speciesCustom" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="species.output" (click)="speciesClickCustom()">
+            <label class="form-check-label" for="speciesCustomName">custom species name:</label>
+            <div class="form-inline">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="speciesCustomName"
+                  [disabled]="!species.custom"
+                  [(ngModel)]="species.customSpeciesName"
+                  [ngModelOptions]="{standalone: true}"
+                  />
+              </div>
+            </div>
+            <label class="form-check-label" for="speciesCustom">with factor:</label>
+            <div class="form-inline">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="speciesCustom"
+                  sdInputPosNum
+                  (blur)="pdeForm.inputBlur()"
+                  (focus)="pdeForm.inputFocus($event.target)"
+                  [readonly]="species.output"
+                  [disabled]="!species.custom"
+                  [(ngModel)]="species.customValue"
+                  [ngModelOptions]="{standalone: true}"
+                  #speciesInput
+                  />
+                <div class="invalid-tooltip d-block" *ngIf="speciesRow.errorText">
+                  {{speciesRow.errorText}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #safetyFactorRow>
@@ -170,7 +208,7 @@
                   class="form-control"
                   id="studyDurationFactorCustom"
                   sdInputPosNum
-                  (blur)="studyDurationFactor.inputBlur(); pdeForm.inputBlur()"
+                  (blur)="pdeForm.inputBlur()"
                   (focus)="pdeForm.inputFocus($event.target)"
                   [readonly]="studyDurationFactor.output"
                   [disabled]="!studyDurationFactor.custom"
@@ -191,13 +229,36 @@
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="severeToxicityFactor">
         {{severeToxicityFactor.label}}
       </ng-template>
-      <ng-template sdCalcRowInput>
-        <sd-select id="severeToxicityFactor" (change)="changeSevereToxicityFactor()" #severeToxicityFactorSelect>
-          <option label="fetal toxicity associated with maternal toxicity" value="1"></option>
-          <option label="fetal toxicity without maternal toxicity" value="5"></option>
-          <option label="teratogenic effect with maternal toxicity" value="5"></option>
-          <option label="teratogenic effect without maternal toxicity" value="10"></option>
-        </sd-select>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <div>
+          <div class="form-check" *ngFor="let item of severeToxicityFactor.options; index as i">
+            <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" [id]="'severeToxicityFactorGroup' + i" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" checked [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClick(item.value)">
+            <label class="form-check-label" [for]="'severeToxicityFactorGroup' + i">{{item.value}}: {{item.label}}</label>
+          </div>
+          <div class="form-check">
+            <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" id="severeToxicityGroupCustom" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" value="custom" [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClickCustom()">
+            <label class="form-check-label" for="severeToxicityGroupCustom">custom value:</label>
+            <div class="form-inline">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="severeToxicityFactorCustom"
+                  sdInputPosNum
+                  (blur)="pdeForm.inputBlur()"
+                  (focus)="pdeForm.inputFocus($event.target)"
+                  [readonly]="severeToxicityFactor.output"
+                  [disabled]="!severeToxicityFactor.custom"
+                  [(ngModel)]="severeToxicityFactor.customValue"
+                  [ngModelOptions]="{standalone: true}"
+                  #severeToxicityInput
+                  />
+                <div class="invalid-tooltip d-block" *ngIf="severeToxicityFactorRow.errorText">
+                  {{severeToxicityFactorRow.errorText}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #noNoelFactorRow>

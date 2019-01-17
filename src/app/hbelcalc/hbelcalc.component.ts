@@ -60,13 +60,49 @@ class Species extends Field {
   get label(): string { return 'F1: Interspecies Extrapolation'; }
   get logColumnName(): string { return 'F1'; }
   get unitName(): string { return ''; }
-  get value() { return this.select.value.factor; }
-  set value(unused) {}
-  get logValue(): string { return this.select.value.species + ' (' + printNum(this.select.value.factor) + ')'; }
-  updateErrorState(): void {}
-  select: SdSelectComponent;
+  get logValue(): string {
+    if (this.custom) {
+      if (this.customSpeciesName == '') {
+        return `custom (${this.customValue})`;
+      }
+      return `${this.customSpeciesName} (${this.customValue})`;
+    }
+    return `${this.selectedName} (${this.selectedValue})`;
+  }
+  updateErrorState(): void {
+    if (!this.custom) return;
+    super.updateErrorState();
+  }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
+  customValue: string = '';
+  customSpeciesName: string = '';
+  custom: boolean = true;
+  selectedValue: string = '';
+  get selectedName() {
+    if (this.selected == 'custom') { return 'custom'; }
+    return this.options[parseInt(this.selected)].label;
+  }
+  get value() { return this.custom ? this.customValue : this.selectedValue; }
+  set value(new_value) { this.customValue = new_value; }
+
+  // TODO: this should be in field, and its readOnly property should be removed
+  // or replaced with this 'output'.
+  output: boolean = false;
+  markAsOutput(): void { this.output = true; }
+  unmarkAsOutput(): void { this.output = false; }
+  isMarkedAsOutput(): boolean { return this.output; }
+
+  selected: string = 'custom';
+
+  readonly options = [
+    {label: 'rat', value: 5},
+    {label: 'mouse', value: 12},
+    {label: 'dog', value: 2},
+    {label: 'rabbit', value: 2.5},
+    {label: 'monkey', value: 3},
+    {label: 'other', value: 10},
+  ];
 }
 
 class SafetyFactor extends Field {
@@ -91,18 +127,13 @@ class StudyDurationFactor extends Field {
     if (!this.custom) return;
     super.updateErrorState();
   }
-  isMouseOrRat: boolean = true;
+  isMouseOrRat: boolean = false;
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
   // The value shown in the custom box.
   customValue: string = '';
   // Whether 'custom value' is the currently selected radio button.
   custom: boolean = true;
-  inputBlur(): void {
-    if (this.custom) {
-      this.value = this.customValue;
-    }
-  }
   // The value, if custom is not active.
   selectedValue: string = '';
   get value() { return this.custom ? this.customValue : this.selectedValue; }
@@ -115,7 +146,6 @@ class StudyDurationFactor extends Field {
   unmarkAsOutput(): void { this.output = false; }
   isMarkedAsOutput(): boolean { return this.output; }
 
-  // Preserve which radio button is selected across changes to species.
   selected: string = 'custom';
 
   readonly mouseOrRatOptions = [
@@ -134,13 +164,43 @@ class SevereToxicityFactor extends Field {
   get label(): string { return 'F4: Severe toxicity adjustment'; }
   get logColumnName(): string { return 'F4'; }
   get unitName(): string { return ''; }
-  get value() { return this.select.value; }
-  set value(unused) {}
-  get logValue(): string { return this.select.selectedName + ' (' + printNum(this.select.value) + ')'; }
-  updateErrorState(): void {}
-  select: SdSelectComponent;
+  get logValue(): string {
+    if (this.custom) {
+      return this.customValue;
+    }
+    return this.options[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
+  }
+  updateErrorState(): void {
+    if (!this.custom) return;
+    super.updateErrorState();
+  }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
+
+  // The value shown in the custom box.
+  customValue: string = '';
+  // Whether 'custom value' is the currently selected radio button.
+  custom: boolean = true;
+  // The value, if custom is not active.
+  selectedValue: string = '';
+  get value() { return this.custom ? this.customValue : this.selectedValue; }
+  set value(new_value) { /* assert (this.custom) */ this.customValue = new_value; }
+
+  // TODO: this should be in field, and its readOnly property should be removed
+  // or replaced with this 'output'.
+  output: boolean = false;
+  markAsOutput(): void { this.output = true; }
+  unmarkAsOutput(): void { this.output = false; }
+  isMarkedAsOutput(): boolean { return this.output; }
+
+  selected: string = 'custom';
+
+  readonly options = [
+    {label: 'fetal toxicity associated with maternal toxicity', value: 1},
+    {label: 'fetal toxicity without maternal toxicity', value: 5},
+    {label: 'teratogenic effect with maternal toxicity', value: 5},
+    {label: 'teratogenic effect without maternal toxicity', value: 10},
+  ];
 }
 
 class NoNoelFactor extends Field {
@@ -182,7 +242,7 @@ export class HbelCalcComponent {
   bodyWeight: BodyWeight = new BodyWeight;
 
   @ViewChild('speciesRow') speciesRow: SdCalcRowComponent;
-  @ViewChild('speciesSelect') speciesSelect: SdSelectComponent;
+  @ViewChild('speciesInput') speciesInput: ElementRef<HTMLInputElement>;
   species: Species = new Species;
 
   @ViewChild('safetyFactorRow') safetyFactorRow: SdCalcRowComponent;
@@ -194,7 +254,7 @@ export class HbelCalcComponent {
   studyDurationFactor: StudyDurationFactor = new StudyDurationFactor;
 
   @ViewChild('severeToxicityFactorRow') severeToxicityFactorRow: SdCalcRowComponent;
-  @ViewChild('severeToxicityFactorSelect') severeToxicityFactorSelect: SdSelectComponent;
+  @ViewChild('severeToxicityFactorInput') severeToxicityFactorInput: ElementRef<HTMLInputElement>;
   severeToxicityFactor: SevereToxicityFactor = new SevereToxicityFactor;
 
   @ViewChild('noNoelFactorRow') noNoelFactorRow: SdCalcRowComponent;
@@ -240,7 +300,7 @@ export class HbelCalcComponent {
     let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.pdeAlpha.var, this.pde.var)), Equation.constantFromNumber(1));
     this.effectLimit.term = (<Equation>eq.solve(this.effectLimit.var)).RHS;
     this.bodyWeight.term = (<Equation>eq.solve(this.bodyWeight.var)).RHS;
-    // this.species.term = (<Equation>eq.solve(this.species.var)).RHS;
+    this.species.term = (<Equation>eq.solve(this.species.var)).RHS;
     this.safetyFactor.term = (<Equation>eq.solve(this.safetyFactor.var)).RHS;
     this.studyDurationFactor.term = (<Equation>eq.solve(this.studyDurationFactor.var)).RHS;
     this.severeToxicityFactor.term = (<Equation>eq.solve(this.severeToxicityFactor.var)).RHS;
@@ -275,13 +335,13 @@ export class HbelCalcComponent {
     this.bodyWeight.row = this.bodyWeightRow;
     this.bodyWeight.input = this.bodyWeightInput;
     this.species.row = this.speciesRow;
-    this.species.select = this.speciesSelect;
+    this.species.input = this.speciesInput;
     this.safetyFactor.row = this.safetyFactorRow;
     this.safetyFactor.input = this.safetyFactorInput;
     this.studyDurationFactor.row = this.studyDurationFactorRow;
     this.studyDurationFactor.input = this.studyDurationFactorInput;
     this.severeToxicityFactor.row = this.severeToxicityFactorRow;
-    this.severeToxicityFactor.select = this.severeToxicityFactorSelect;
+    this.severeToxicityFactor.input = this.severeToxicityFactorInput;
     this.noNoelFactor.row = this.noNoelFactorRow;
     this.noNoelFactor.input = this.noNoelFactorInput;
     this.pdeAlpha.row = this.pdeAlphaRow;
@@ -291,42 +351,61 @@ export class HbelCalcComponent {
     this.pde.units = this.pdeUnits;
   }
 
-  isMouseOrRat: boolean = true;
+  isMouseOrRat: boolean = false;
 
   changeUnits(): void {
     this.pdeForm.formChange();
   }
 
-  changeSpecies(): void {
+  speciesClick(i: number): void {
+    this.species.custom = false;
+    this.species.customValue = '';
+    this.species.customSpeciesName = '';
+    this.species.row.errorText = '';
+
+    this.species.selectedValue = printNum(this.species.options[i].value);
     this.isMouseOrRat =
-        (this.speciesSelect.selectedName == 'rat' ||
-         this.speciesSelect.selectedName == 'mouse');
+        (this.species.options[i].label == 'rat' ||
+         this.species.options[i].label == 'mouse');
     this.studyDurationFactor.isMouseOrRat = this.isMouseOrRat;
+
     this.pdeForm.formChange();
   }
 
-  changeSevereToxicityFactor(): void {
+  speciesClickCustom(): void {
+    this.species.custom = true;
+    this.isMouseOrRat = false;
+    this.studyDurationFactor.isMouseOrRat = false;
     this.pdeForm.formChange();
   }
-
-  readonly speciesOptions = [
-    {species: 'rat', factor: 5},
-    {species: 'mouse', factor: 12},
-    {species: 'dog', factor: 2},
-    {species: 'rabbit', factor: 2.5},
-    {species: 'monkey', factor: 3},
-    {species: 'other', factor: 10},
-  ];
 
   studyDurationFactorClick(value: number): void {
-    this.studyDurationFactor.selectedValue = printNum(value);
     this.studyDurationFactor.custom = false;
     this.studyDurationFactor.customValue = '';
+    this.studyDurationFactor.row.errorText = '';
+
+    this.studyDurationFactor.selectedValue = printNum(value);
+
     this.pdeForm.formChange();
   }
 
   studyDurationFactorClickCustom(): void {
     this.studyDurationFactor.custom = true;
+    this.pdeForm.formChange();
+  }
+
+  severeToxicityFactorClick(value: number): void {
+    this.severeToxicityFactor.custom = false;
+    this.severeToxicityFactor.customValue = '';
+    this.severeToxicityFactor.row.errorText = '';
+
+    this.severeToxicityFactor.selectedValue = printNum(value);
+
+    this.pdeForm.formChange();
+  }
+
+  severeToxicityFactorClickCustom(): void {
+    this.severeToxicityFactor.custom = true;
     this.pdeForm.formChange();
   }
 
