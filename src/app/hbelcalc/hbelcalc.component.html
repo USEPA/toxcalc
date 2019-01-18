@@ -94,6 +94,9 @@
           </sd-select>
         </div>
       </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #effectLimitJustification></sd-justification>
+      </ng-template>
     </sd-calc-row>
     <div class="form-group form-row m-0">
       <legend class="p-0">Step 2</legend>
@@ -117,6 +120,9 @@
         <div class="input-group-append">
           <span class="input-group-text">kg</span>
         </div>
+      </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #bodyWeightJustification></sd-justification>
       </ng-template>
     </sd-calc-row>
     <div class="form-group form-row m-0">
@@ -146,12 +152,12 @@
                   />
               </div>
             </div>
-            <label class="form-check-label" for="speciesCustom">with factor:</label>
+            <label class="form-check-label" for="speciesCustomFactor">with factor:</label>
             <div class="form-inline">
               <div class="input-group">
                 <input
                   class="form-control"
-                  id="speciesCustom"
+                  id="speciesCustomFactor"
                   sdInputPosNum
                   (blur)="pdeForm.inputBlur()"
                   (focus)="pdeForm.inputFocus($event.target)"
@@ -168,6 +174,9 @@
             </div>
           </div>
         </div>
+      </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #speciesJustification></sd-justification>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #safetyFactorRow>
@@ -187,6 +196,9 @@
           value="10"
           #safetyFactorInput
           />
+      </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #safetyFactorJustification></sd-justification>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #studyDurationFactorRow>
@@ -224,6 +236,9 @@
           </div>
         </div>
       </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #studyDurationFactorJustification></sd-justification>
+      </ng-template>
     </sd-calc-row>
     <sd-calc-row #severeToxicityFactorRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="severeToxicityFactor">
@@ -260,6 +275,9 @@
           </div>
         </div>
       </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #severeToxicityFactorJustification></sd-justification>
+      </ng-template>
     </sd-calc-row>
     <sd-calc-row #noNoelFactorRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="noNoelFactor">
@@ -278,6 +296,9 @@
           #noNoelFactorInput
           />
       </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #noNoelFactorJustification></sd-justification>
+      </ng-template>
     </sd-calc-row>
     <sd-calc-row #pdeAlphaRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="pdeAlpha">
@@ -295,6 +316,9 @@
           [ngModelOptions]="{standalone: true}"
           #pdeAlphaInput
           />
+      </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #pdeAlphaJustification></sd-justification>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #pdeRow>
@@ -316,6 +340,9 @@
         <sd-select name="pdeUnits" #pdeUnits (change)="changeUnits();">
           <option *ngFor="let unit of iterUnits(pde.UNITS)" [label]="unit" [value]="pde.UNITS[unit]">
         </sd-select>
+      </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <sd-justification #pdeJustification></sd-justification>
       </ng-template>
     </sd-calc-row>
     <sd-internal-calc-error [errorText]="pdeForm.internalError"></sd-internal-calc-error>
