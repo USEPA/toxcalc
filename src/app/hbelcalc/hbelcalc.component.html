@@ -89,7 +89,7 @@
           #effectLimitInput
           />
         <div class="input-group-append">
-          <sd-select name="effectLimitUnits" #effectLimitUnits (change)="changeUnits();">
+          <sd-select name="effectLimitUnits" #effectLimitUnits (change)="pdeForm.formChange();">
             <option *ngFor="let unit of iterUnits(effectLimit.UNITS)" [label]="unit" [value]="effectLimit.UNITS[unit]">
           </sd-select>
         </div>
@@ -138,6 +138,9 @@
       </ng-template>
       <ng-template sdCalcRowInput sdCustomRowInput="true">
         <sd-justification #bodyWeightJustification></sd-justification>
+      </ng-template>
+      <ng-template sdCalcRowInput *ngIf="!bodyWeight.enabled">
+        <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected on “{{pde.label}}”.</ngb-alert>
       </ng-template>
     </sd-calc-row>
     <div class="form-group form-row m-0">
@@ -352,7 +355,7 @@
           [ngModelOptions]="{standalone: true}"
           #pdeInput
           />
-        <sd-select name="pdeUnits" #pdeUnits (change)="changeUnits();">
+        <sd-select name="pdeUnits" #pdeUnits (change)="changePdeUnits();">
           <option *ngFor="let unit of iterUnits(pde.UNITS)" [label]="unit" [value]="pde.UNITS[unit]">
         </sd-select>
       </ng-template>

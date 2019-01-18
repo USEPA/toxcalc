@@ -52,9 +52,20 @@ class EffectLimit extends Field {
 
 class BodyWeight extends Field {
   get label(): string { return 'Assumed human body weight'; }
-  get unitName(): string { return 'kg'; }
+  get unitName(): string {
+    return this.enabled ? 'kg' : '';
+  }
   private readonly KG = new ScalarAndDimension(1000, Dimension.initMass());
-  get unit(): ScalarAndDimension { return this.KG; }
+  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
+  get unit(): ScalarAndDimension {
+    return this.enabled ? this.KG : this.UNIT;
+  }
+
+  get logValue(): string {
+    // super.logValue is inlined here, see:
+    // https://github.com/Microsoft/TypeScript/issues/338
+    return this.enabled ? [this.value, this.unitName].filter(txt => txt.length > 0).join(' ') : 'n/a';
+  }
 
   customValue: string = '';
   customSpeciesName: string = '';
@@ -64,7 +75,13 @@ class BodyWeight extends Field {
     if (this.selected == 'custom') { return 'custom'; }
     return this.options[parseInt(this.selected)].label;
   }
-  get value() { return this.custom ? this.customValue : this.selectedValue; }
+  get value() {
+    if (!this.enabled)
+      return '1';
+    if (this.custom)
+      return this.customValue;
+    return this.selectedValue;
+  }
   set value(new_value) { this.customValue = new_value; }
 
   // TODO: this should be in field, and its readOnly property should be removed
@@ -82,6 +99,16 @@ class BodyWeight extends Field {
     {label: '70kg', value: 70},
     {label: '80kg (EPA default)', value: 80},
   ];
+
+  enabled: boolean = true;
+  disable(variableMap: Map<Variable, string>): void {
+    this.enabled = false;
+    variableMap.set(this.var, '');
+  }
+  enable(variableMap: Map<Variable, string>): void {
+    this.enabled = true;
+    variableMap.set(this.var, this.equationVarName);
+  }
 }
 
 class Species extends Field {
@@ -242,10 +269,14 @@ class NoNoelFactor extends Field {
 class PDE extends Field {
   get label(): string { return 'Permissible daily exposure'; }
   private readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
+  private readonly PER_TIME = Dimension.initUnit().div(Dimension.initTime());
   readonly UNITS: {[index: string]: ScalarAndDimension} = {
     'mg/day': new ScalarAndDimension(0.001, this.MASS_TIME),
     'g/day': new ScalarAndDimension(0.1, this.MASS_TIME),
     'µg/day': new ScalarAndDimension(0.000001, this.MASS_TIME),
+    'mg/kg BW/day': new ScalarAndDimension(0.000001, this.PER_TIME),
+    'g/kg BW/day': new ScalarAndDimension(0.001, this.PER_TIME),
+    'µg/kg BW/day': new ScalarAndDimension(0.000000001, this.PER_TIME),
   };
   get unitName(): string { return this.units!.selectedName; }
   get unit(): ScalarAndDimension { return this.units!.value; }
@@ -399,7 +430,13 @@ export class HbelCalcComponent {
 
   isMouseOrRat: boolean = false;
 
-  changeUnits(): void {
+  changePdeUnits(): void {
+    const PER_TIME = Dimension.initUnit().div(Dimension.initTime());
+    if (this.pde.units!.value.d.equal(PER_TIME)) {
+      this.bodyWeight.disable(this.variableMap);
+    } else {
+      this.bodyWeight.enable(this.variableMap);
+    }
     this.pdeForm.formChange();
   }
 
