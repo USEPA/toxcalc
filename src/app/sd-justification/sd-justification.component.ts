@@ -6,16 +6,23 @@ import { Component } from '@angular/core';
   styleUrls: ['./sd-justification.component.css']
 })
 export class SdJustificationComponent {
-  backupJustification: string = '';
+  // Justification to return to when the user clicks cancel.
+  private backupJustification: string = '';
+
+  // Whether we're showing the textarea to edit the justification.
+  private showJustification: boolean = false;
+
   justification: string = '';
-  showJustification: boolean = false;
+
   openJustificationEditor(): void {
     this.backupJustification = this.justification;
     this.showJustification = true;
   }
+
   saveJustification(): void {
     this.showJustification = false;
   }
+
   cancelJustification(): void {
     this.justification = this.backupJustification;
     this.showJustification = false;
