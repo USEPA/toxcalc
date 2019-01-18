@@ -156,6 +156,7 @@ class Species extends Field {
     {label: 'dog', value: 2},
     {label: 'rabbit', value: 2.5},
     {label: 'monkey', value: 3},
+    {label: 'human', value: 1},
     {label: 'other', value: 10},
   ];
 }
