@@ -113,12 +113,12 @@
           </div>
           <div class="form-check">
             <input type="radio" name="bodyWeightGroup" class="form-check-input" id="bodyWeightCustom" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="bodyWeight.output" (click)="bodyWeightClickCustom()">
-            <label class="form-check-label" for="bodyWeightCustomValue">custom body weight:</label>
+            <label class="form-check-label" for="bodyWeightCustom">custom body weight:</label>
             <div class="form-inline">
               <div class="input-group">
                 <input
                   class="form-control"
-                  id="bodyWeight"
+                  id="bodyWeightCustomValue"
                   sdInputPosNum
                   (blur)="pdeForm.inputBlur()"
                   (focus)="pdeForm.inputFocus($event.target)"
@@ -158,7 +158,7 @@
           </div>
           <div class="form-check">
             <input type="radio" name="speciesGroup" class="form-check-input" id="speciesCustom" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="species.output" (click)="speciesClickCustom()">
-            <label class="form-check-label" for="speciesCustomName">custom species name:</label>
+            <label class="form-check-label" for="speciesCustom">custom species name:</label>
             <div class="form-inline">
               <div class="input-group">
                 <input
@@ -337,6 +337,28 @@
       </ng-template>
       <ng-template sdCalcRowInput sdCustomRowInput="true">
         <sd-justification #pdeAlphaJustification></sd-justification>
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row>
+      <ng-template sdCalcRowLabel>
+        Composite modifying factors
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input
+          class="form-control text-right"
+          readonly
+          [value]="getCompositeFactorsValue()"
+          #compositeFactorsOutput
+          />
+      </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <div>
+          <p>This field is calculated based on the following equation:</p>
+          <p sdKatexInline="true" sdKatex="\textrm{F1} \times \textrm{F2} \times \textrm{F3} \times \textrm{F4} \times \textrm{F5} \times \textrm{Alpha or BCF}"></p>
+        </div>
+      </ng-template>
+      <ng-template sdCalcRowInput sdCustomRowInput="true" *ngIf="getCompositeFactorsTooHigh()">
+        <ngb-alert [dismissible]="false">Composite Uncertainty associated with this “{{pde.label}}” is high.</ngb-alert>
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #pdeRow>

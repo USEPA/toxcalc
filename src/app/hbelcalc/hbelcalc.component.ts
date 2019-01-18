@@ -366,7 +366,8 @@ export class HbelCalcComponent {
     this.bcfForm.equationSnippet = this.alpha.equationSnippet(this.eqPrinter);
 
     // pdeForm
-    let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.pdeAlpha.var, this.pde.var)), Equation.constantFromNumber(1));
+    this.compositeFactorsTerm = Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.pdeAlpha.var);
+    let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.compositeFactorsTerm, this.pde.var)), Equation.constantFromNumber(1));
     this.effectLimit.term = (<Equation>eq.solve(this.effectLimit.var)).RHS;
     this.bodyWeight.term = (<Equation>eq.solve(this.bodyWeight.var)).RHS;
     this.species.term = (<Equation>eq.solve(this.species.var)).RHS;
@@ -427,6 +428,8 @@ export class HbelCalcComponent {
     this.pde.input = this.pdeInput;
     this.pde.units = this.pdeUnits;
     this.pde.justification = this.pdeJustification;
+
+    this.ready = true;
   }
 
   isMouseOrRat: boolean = false;
@@ -516,5 +519,24 @@ export class HbelCalcComponent {
         results.push(key);
     });
     return results;
+  }
+
+  ready: boolean = false;
+  compositeFactorsTerm: Term;
+  getCompositeFactorsValue(): string {
+    if (!this.ready) return '';
+    this.pdeForm.updateVars();
+    let result = this.compositeFactorsTerm.getValue();
+    if (result == null) return '';
+    if (isCalculateError(result)) return '';
+    return printNum(result.n);
+  }
+  getCompositeFactorsTooHigh(): boolean {
+    if (!this.ready) return false;
+    this.pdeForm.updateVars();
+    let result = this.compositeFactorsTerm.getValue();
+    if (result == null) return false;
+    if (isCalculateError(result)) return false;
+    return result.n > 5000;
   }
 }
