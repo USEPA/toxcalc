@@ -140,8 +140,8 @@ export class Form {
     this.updateErrors(true);
     if (!this.hasErrors()) {
       calculationLog.append(
-          this.fields.map(f => f.logColumnName),
-          this.fields.map(f => f.row.show ? f.logValue : 'n/a'));
+          this.fields.map(f => f.justification ? [f.logColumnName, 'Justification'] : [f.logColumnName]).reduce((accumulator, currentValue) => accumulator.concat(currentValue)),
+          this.fields.map(f => f.justification ? [f.row.show ? f.logValue : 'n/a', f.justification.justification] : [f.row.show ? f.logValue : 'n/a']).reduce((accumulator, currentValue) => accumulator.concat(currentValue)));
     }
   }
 }

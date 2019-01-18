@@ -1,6 +1,7 @@
 import { ElementRef } from '@angular/core';
 
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
+import { SdJustificationComponent } from '../sd-justification/sd-justification.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 
 import { ScalarAndDimension } from './dimension';
@@ -11,6 +12,8 @@ export abstract class Field {
   input: ElementRef<HTMLInputElement> | null = null;
   units: SdSelectComponent | null = null;
   row: SdCalcRowComponent;
+  justification: SdJustificationComponent | null = null;
+
   protected mVar: Variable = new Variable;
   public get var(): Variable { return this.mVar; }
   protected mTerm: Term;

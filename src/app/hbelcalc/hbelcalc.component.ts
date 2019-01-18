@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
+import { SdJustificationComponent } from '../sd-justification/sd-justification.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
 import { Dimension, ScalarAndDimension, isCalculateError } from '../shared/dimension';
 import { Field } from '../shared/field';
@@ -235,39 +236,48 @@ export class HbelCalcComponent {
   @ViewChild('effectLimitRow') effectLimitRow: SdCalcRowComponent;
   @ViewChild('effectLimitInput') effectLimitInput: ElementRef<HTMLInputElement>;
   @ViewChild('effectLimitUnits') effectLimitUnits: SdSelectComponent;
+  @ViewChild('effectLimitJustification') effectLimitJustification: SdJustificationComponent;
   effectLimit: EffectLimit = new EffectLimit;
 
   @ViewChild('bodyWeightRow') bodyWeightRow: SdCalcRowComponent;
   @ViewChild('bodyWeightInput') bodyWeightInput: ElementRef<HTMLInputElement>;
+  @ViewChild('bodyWeightJustification') bodyWeightJustification: SdJustificationComponent;
   bodyWeight: BodyWeight = new BodyWeight;
 
   @ViewChild('speciesRow') speciesRow: SdCalcRowComponent;
   @ViewChild('speciesInput') speciesInput: ElementRef<HTMLInputElement>;
+  @ViewChild('speciesJustification') speciesJustification: SdJustificationComponent;
   species: Species = new Species;
 
   @ViewChild('safetyFactorRow') safetyFactorRow: SdCalcRowComponent;
   @ViewChild('safetyFactorInput') safetyFactorInput: ElementRef<HTMLInputElement>;
+  @ViewChild('safetyFactorJustification') safetyFactorJustification: SdJustificationComponent;
   safetyFactor: SafetyFactor = new SafetyFactor;
 
   @ViewChild('studyDurationFactorRow') studyDurationFactorRow: SdCalcRowComponent;
   @ViewChild('studyDurationFactorInput') studyDurationFactorInput: ElementRef<HTMLInputElement>;
+  @ViewChild('studyDurationFactorJustification') studyDurationFactorJustification: SdJustificationComponent;
   studyDurationFactor: StudyDurationFactor = new StudyDurationFactor;
 
   @ViewChild('severeToxicityFactorRow') severeToxicityFactorRow: SdCalcRowComponent;
   @ViewChild('severeToxicityFactorInput') severeToxicityFactorInput: ElementRef<HTMLInputElement>;
+  @ViewChild('severeToxicityFactorJustification') severeToxicityFactorJustification: SdJustificationComponent;
   severeToxicityFactor: SevereToxicityFactor = new SevereToxicityFactor;
 
   @ViewChild('noNoelFactorRow') noNoelFactorRow: SdCalcRowComponent;
   @ViewChild('noNoelFactorInput') noNoelFactorInput: ElementRef<HTMLInputElement>;
+  @ViewChild('noNoelFactorJustification') noNoelFactorJustification: SdJustificationComponent;
   noNoelFactor: NoNoelFactor = new NoNoelFactor;
 
   @ViewChild('pdeAlphaRow') pdeAlphaRow: SdCalcRowComponent;
   @ViewChild('pdeAlphaInput') pdeAlphaInput: ElementRef<HTMLInputElement>;
+  @ViewChild('pdeAlphaJustification') pdeAlphaJustification: SdJustificationComponent;
   pdeAlpha: Alpha = new Alpha;
 
   @ViewChild('pdeRow') pdeRow: SdCalcRowComponent;
   @ViewChild('pdeInput') pdeInput: ElementRef<HTMLInputElement>;
   @ViewChild('pdeUnits') pdeUnits: SdSelectComponent;
+  @ViewChild('pdeJustification') pdeJustification: SdJustificationComponent;
   pde: PDE = new PDE;
 
   pdeForm = new Form(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha, this.pde]);
@@ -332,23 +342,32 @@ export class HbelCalcComponent {
     this.effectLimit.row = this.effectLimitRow;
     this.effectLimit.input = this.effectLimitInput;
     this.effectLimit.units = this.effectLimitUnits;
+    this.effectLimit.justification = this.effectLimitJustification;
     this.bodyWeight.row = this.bodyWeightRow;
     this.bodyWeight.input = this.bodyWeightInput;
+    this.bodyWeight.justification = this.bodyWeightJustification;
     this.species.row = this.speciesRow;
     this.species.input = this.speciesInput;
+    this.species.justification = this.speciesJustification;
     this.safetyFactor.row = this.safetyFactorRow;
     this.safetyFactor.input = this.safetyFactorInput;
+    this.safetyFactor.justification = this.safetyFactorJustification;
     this.studyDurationFactor.row = this.studyDurationFactorRow;
     this.studyDurationFactor.input = this.studyDurationFactorInput;
+    this.studyDurationFactor.justification = this.studyDurationFactorJustification;
     this.severeToxicityFactor.row = this.severeToxicityFactorRow;
     this.severeToxicityFactor.input = this.severeToxicityFactorInput;
+    this.severeToxicityFactor.justification = this.severeToxicityFactorJustification;
     this.noNoelFactor.row = this.noNoelFactorRow;
     this.noNoelFactor.input = this.noNoelFactorInput;
+    this.noNoelFactor.justification = this.noNoelFactorJustification;
     this.pdeAlpha.row = this.pdeAlphaRow;
     this.pdeAlpha.input = this.pdeAlphaInput;
+    this.pdeAlpha.justification = this.pdeAlphaJustification;
     this.pde.row = this.pdeRow;
     this.pde.input = this.pdeInput;
     this.pde.units = this.pdeUnits;
+    this.pde.justification = this.pdeJustification;
   }
 
   isMouseOrRat: boolean = false;
