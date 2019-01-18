@@ -1,4 +1,4 @@
-import { Component, ContentChild, Directive, Input, TemplateRef } from '@angular/core';
+import { Component, ContentChild, ContentChildren, Directive, Input, QueryList, TemplateRef } from '@angular/core';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +31,7 @@ export class SdCalcRowComponent {
   errorText: string = '';
 
   @ContentChild(SdCalcRowLabel) label: SdCalcRowLabel;
-  @ContentChild(SdCalcRowInput) input: SdCalcRowInput;
+  @ContentChildren(SdCalcRowInput) inputs: QueryList<SdCalcRowInput>;
   @ContentChild(SdCalcRowHelp) help?: SdCalcRowHelp;
 
   constructor() {
