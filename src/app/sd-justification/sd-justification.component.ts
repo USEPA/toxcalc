@@ -10,7 +10,7 @@ export class SdJustificationComponent {
   private backupJustification: string = '';
 
   // Whether we're showing the textarea to edit the justification.
-  private showJustification: boolean = false;
+  showJustification: boolean = false;
 
   justification: string = '';
 
