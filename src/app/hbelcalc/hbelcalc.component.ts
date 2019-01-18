@@ -151,13 +151,13 @@ class Species extends Field {
   selected: string = 'custom';
 
   readonly options = [
-    {label: 'rat', value: 5},
-    {label: 'mouse', value: 12},
+    {label: 'human', value: 1},
     {label: 'dog', value: 2},
     {label: 'rabbit', value: 2.5},
     {label: 'monkey', value: 3},
-    {label: 'human', value: 1},
-    {label: 'other', value: 10},
+    {label: 'rat', value: 5},
+    {label: 'mouse', value: 12},
+    {label: 'other species', value: 10},
   ];
 }
 
