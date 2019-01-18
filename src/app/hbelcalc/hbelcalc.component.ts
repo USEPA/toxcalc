@@ -55,6 +55,33 @@ class BodyWeight extends Field {
   get unitName(): string { return 'kg'; }
   private readonly KG = new ScalarAndDimension(1000, Dimension.initMass());
   get unit(): ScalarAndDimension { return this.KG; }
+
+  customValue: string = '';
+  customSpeciesName: string = '';
+  custom: boolean = true;
+  selectedValue: string = '';
+  get selectedName() {
+    if (this.selected == 'custom') { return 'custom'; }
+    return this.options[parseInt(this.selected)].label;
+  }
+  get value() { return this.custom ? this.customValue : this.selectedValue; }
+  set value(new_value) { this.customValue = new_value; }
+
+  // TODO: this should be in field, and its readOnly property should be removed
+  // or replaced with this 'output'.
+  output: boolean = false;
+  markAsOutput(): void { this.output = true; }
+  unmarkAsOutput(): void { this.output = false; }
+  isMarkedAsOutput(): boolean { return this.output; }
+
+  selected: string = 'custom';
+
+  readonly options = [
+    {label: '50kg (ICH Q3C default)', value: 50},
+    {label: '60kg', value: 60},
+    {label: '70kg', value: 70},
+    {label: '80kg (EPA default)', value: 80},
+  ];
 }
 
 class Species extends Field {
@@ -373,6 +400,21 @@ export class HbelCalcComponent {
   isMouseOrRat: boolean = false;
 
   changeUnits(): void {
+    this.pdeForm.formChange();
+  }
+
+  bodyWeightClick(i: number): void {
+    this.bodyWeight.custom = false;
+    this.bodyWeight.customValue = '';
+    this.bodyWeight.row.errorText = '';
+
+    this.bodyWeight.selectedValue = printNum(this.bodyWeight.options[i].value);
+
+    this.pdeForm.formChange();
+  }
+
+  bodyWeightClickCustom(): void {
+    this.bodyWeight.custom = true;
     this.pdeForm.formChange();
   }
 

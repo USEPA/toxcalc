@@ -105,20 +105,35 @@
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
         {{bodyWeight.label}}
       </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="bodyWeight"
-          sdInputPosNum
-          (blur)="pdeForm.inputBlur()"
-          (focus)="pdeForm.inputFocus($event.target)"
-          [readonly]="bodyWeight.readOnly"
-          [(ngModel)]="bodyWeight.value"
-          [ngModelOptions]="{standalone: true}"
-          #bodyWeightInput
-          />
-        <div class="input-group-append">
-          <span class="input-group-text">kg</span>
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <div>
+          <div class="form-check" *ngFor="let item of bodyWeight.options; index as i">
+            <input type="radio" name="bodyWeightGroup" class="form-check-input" [id]="'bodyWeightGroup' + i" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="bodyWeight.output" (click)="bodyWeightClick(i)">
+            <label class="form-check-label" [for]="'bodyWeightGroup' + i">{{item.label}}</label>
+          </div>
+          <div class="form-check">
+            <input type="radio" name="bodyWeightGroup" class="form-check-input" id="bodyWeightCustom" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="bodyWeight.output" (click)="bodyWeightClickCustom()">
+            <label class="form-check-label" for="bodyWeightCustomValue">custom body weight:</label>
+            <div class="form-inline">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="bodyWeight"
+                  sdInputPosNum
+                  (blur)="pdeForm.inputBlur()"
+                  (focus)="pdeForm.inputFocus($event.target)"
+                  [readonly]="bodyWeight.output"
+                  [disabled]="!bodyWeight.custom"
+                  [(ngModel)]="bodyWeight.customValue"
+                  [ngModelOptions]="{standalone: true}"
+                  #bodyWeightInput
+                  />
+                <div class="input-group-append">
+                  <span class="input-group-text">kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </ng-template>
       <ng-template sdCalcRowInput sdCustomRowInput="true">
