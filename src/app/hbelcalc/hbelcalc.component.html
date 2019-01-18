@@ -5,6 +5,9 @@
   </p>
   <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
   <form class="mb-3" autocomplete="off" novalidate (change)="bcfForm.formChange()">
+    <div class="form-group form-row m-0">
+      <legend class="p-0">Step 4</legend>
+    </div>
     <sd-calc-row #bioavailabilityPDERow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="bioavailabilityPDE">
         {{bioavailabilityPDE.label}}
@@ -144,7 +147,7 @@
       </ng-template>
     </sd-calc-row>
     <div class="form-group form-row m-0">
-      <legend class="p-0">Modifying factors</legend>
+      <legend class="p-0">Step 3</legend>
     </div>
     <sd-calc-row #speciesRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="species">
@@ -361,6 +364,9 @@
         <ngb-alert [dismissible]="false">Composite Uncertainty associated with this “{{pde.label}}” is high.</ngb-alert>
       </ng-template>
     </sd-calc-row>
+    <div class="form-group form-row m-0">
+      <legend class="p-0">Step 5</legend>
+    </div>
     <sd-calc-row #pdeRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="pde">
         {{pde.label}}
