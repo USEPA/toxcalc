@@ -57,20 +57,26 @@ export class SdCalculationLogService {
     this.updateDownload();
   }
 
+  // Escaping as described in RFC 4180. Appears to work with Excel.
+  private static csvEscape(escape: string): string {
+    if (!escape.includes(',') && !escape.includes('"') &&
+        !escape.includes('\n'))
+      return escape;
+
+    return '"' + escape.replace(/"/g, '""') + '"';
+  }
+
   private updateDownload(): void {
     if (this.groups_.length == 0) {
       this.uri_ = null;
       return;
     }
 
-    // TODO: we don't escape the values at all. If we ever want to emit quotes,
-    // commas or newlines, that will become a problem.
-
     let result = '';
     this.groups_.forEach(function(group: {'columns': Array<string>, 'rows': Array<Array<string>>}) {
-      result += group.columns.join(',') + '\n';
+      result += group.columns.map(SdCalculationLogService.csvEscape).join(',') + '\r\n';
       group.rows.forEach(function(row: Array<string>){
-        result += row.join(',') + '\n';
+        result += row.map(SdCalculationLogService.csvEscape).join(',') + '\r\n';
       });
     });
 
