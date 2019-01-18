@@ -10,7 +10,7 @@
   </div>
   <div class="w-100" *ngIf="showJustification">
     Justification:<br>
-    <textarea class="w-100 mb-3" rows="3" [(ngModel)]="justification" [ngModelOptions]="{standalone: true}"></textarea>
+    <textarea class="form-control w-100 mb-3" rows="3" [(ngModel)]="justification" [ngModelOptions]="{standalone: true}"></textarea>
     <button type="button" class="btn btn-primary mr-3" (click)="saveJustification()">Save!</button>
     <button type="button" class="btn btn-secondary" (click)="cancelJustification()">Cancel</button>
   </div>
