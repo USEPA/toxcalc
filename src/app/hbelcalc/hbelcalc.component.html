@@ -385,7 +385,12 @@
           #pdeInput
           />
         <sd-select name="pdeUnits" #pdeUnits (change)="changePdeUnits();">
-          <option *ngFor="let unit of iterUnits(pde.UNITS)" [label]="unit" [value]="pde.UNITS[unit]">
+          <optgroup label="mass/time">
+            <option *ngFor="let unit of iterUnits(pde.UNITS, pde.MASS_TIME)" [label]="unit" [value]="pde.UNITS[unit]">
+          </optgroup>
+          <optgroup label="mass/body weight/time">
+            <option *ngFor="let unit of iterUnits(pde.UNITS, pde.PER_TIME)" [label]="unit" [value]="pde.UNITS[unit]">
+          </optgroup>
         </sd-select>
       </ng-template>
       <ng-template sdCalcRowInput sdCustomRowInput="true">

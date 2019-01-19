@@ -269,8 +269,8 @@ class NoNoelFactor extends Field {
 
 class PDE extends Field {
   get label(): string { return 'Permissible daily exposure'; }
-  private readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
-  private readonly PER_TIME = Dimension.initUnit().div(Dimension.initTime());
+  readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
+  readonly PER_TIME = Dimension.initUnit().div(Dimension.initTime());
   readonly UNITS: {[index: string]: ScalarAndDimension} = {
     'mg/day': new ScalarAndDimension(0.001, this.MASS_TIME),
     'g/day': new ScalarAndDimension(0.1, this.MASS_TIME),
