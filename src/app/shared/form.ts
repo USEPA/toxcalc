@@ -8,14 +8,7 @@ import { EquationPrinter } from './equation';
 import { printNum } from './number-util';
 
 export class Form {
-  constructor(eqPrinter: EquationPrinter, fields: Field[]) {
-    this.fields = fields;
-    this.eqPrinter = eqPrinter;
-  }
-
-  eqPrinter: EquationPrinter;
-
-  fields: Field[];
+  constructor(public eqPrinter: EquationPrinter, public fields: Field[]) {}
 
   updateVars(): void {
     this.fields.forEach(function(f: Field) {
@@ -75,7 +68,7 @@ export class Form {
       this.calculate();
   }
 
-  calculate() {
+  calculate(): void {
     this.updateErrors(false);
 
     let out_control: Field | null = null;
