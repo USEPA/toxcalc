@@ -260,7 +260,7 @@ class SevereToxicityFactor extends Field {
 }
 
 class NoNoelFactor extends Field {
-  get label(): string { return 'F5: LO(A)EL to NO(A)EL extrapolation'; }
+  get label(): string { return 'F5: LOEL to NOEL extrapolation'; }
   get logColumnName(): string { return 'F5'; }
   get unitName(): string { return ''; }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
