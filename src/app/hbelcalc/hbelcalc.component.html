@@ -101,6 +101,9 @@
       <ng-template sdCalcRowInput sdCustomRowInput="true">
         <sd-justification #effectLimitJustification></sd-justification>
       </ng-template>
+      <ng-template sdCalcRowHelp>
+        No/Low Effect levels are Points of Departure (PoD) obtained from the critical study used for PDE derivation. Other PoDs (e.g. benchmark dose limits) may also be used.
+      </ng-template>
     </sd-calc-row>
     <div class="form-group form-row m-0">
       <legend class="p-0">Step 2</legend>
@@ -110,33 +113,40 @@
         {{bodyWeight.label}}
       </ng-template>
       <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <div>
-          <div class="form-check" *ngFor="let item of bodyWeight.options; index as i">
-            <input type="radio" name="bodyWeightGroup" class="form-check-input" [id]="'bodyWeightGroup' + i" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="bodyWeight.output" (click)="bodyWeightClick(i)">
-            <label class="form-check-label" [for]="'bodyWeightGroup' + i">{{item.label}}</label>
-          </div>
-          <div class="form-check">
-            <input type="radio" name="bodyWeightGroup" class="form-check-input" id="bodyWeightCustom" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="bodyWeight.output" (click)="bodyWeightClickCustom()">
-            <label class="form-check-label" for="bodyWeightCustom">custom body weight:</label>
-            <div class="form-inline">
-              <div class="input-group">
-                <input
-                  class="form-control"
-                  id="bodyWeightCustomValue"
-                  sdInputPosNum
-                  (blur)="pdeForm.inputBlur()"
-                  (focus)="pdeForm.inputFocus($event.target)"
-                  [readonly]="bodyWeight.output"
-                  [disabled]="!bodyWeight.custom"
-                  [(ngModel)]="bodyWeight.customValue"
-                  [ngModelOptions]="{standalone: true}"
-                  #bodyWeightInput
-                  />
-                <div class="input-group-append">
-                  <span class="input-group-text">kg</span>
+        <div class="d-flex">
+          <div>
+            <div class="form-check" *ngFor="let item of bodyWeight.options; index as i">
+              <input type="radio" name="bodyWeightGroup" class="form-check-input" [id]="'bodyWeightGroup' + i" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="bodyWeight.output" (click)="bodyWeightClick(i)">
+              <label class="form-check-label" [for]="'bodyWeightGroup' + i">{{item.label}}</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" name="bodyWeightGroup" class="form-check-input" id="bodyWeightCustom" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="bodyWeight.output" (click)="bodyWeightClickCustom()">
+              <label class="form-check-label" for="bodyWeightCustom">custom body weight:</label>
+              <div class="form-inline">
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    id="bodyWeightCustomValue"
+                    sdInputPosNum
+                    (blur)="pdeForm.inputBlur()"
+                    (focus)="pdeForm.inputFocus($event.target)"
+                    [readonly]="bodyWeight.output"
+                    [disabled]="!bodyWeight.custom"
+                    [(ngModel)]="bodyWeight.customValue"
+                    [ngModelOptions]="{standalone: true}"
+                    #bodyWeightInput
+                    />
+                  <div class="input-group-append">
+                    <span class="input-group-text">kg</span>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div>
+            <button type="button" class="btn btn-light ml-3" (click)="bodyWeightRow.showHelp = !bodyWeightRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+            </button>
           </div>
         </div>
       </ng-template>
@@ -145,6 +155,9 @@
       </ng-template>
       <ng-template sdCalcRowInput *ngIf="!bodyWeight.enabled">
         <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected on “{{pde.label}}”.</ngb-alert>
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        This is the assumed body weight for the human to which the PDE applies. This  is needed to convert the No/Low Effect Level expressed in mg/kg bw/day to a PDE expressed in mg/day. For example, for a PDE being set based on NOEL of 100 mg/kg bw/day, and applying a modifying factor of 100, the PDE is 1 mg/kg bw/day (100 mg/kg bw/day ÷ 100=1 mg/kg bw/day). If the assumed human body weight is 50 kg, this PDE is equivalent to 50 mg/day (PDE of 1 mg/kg bw/day &times; 50 kg = 50 mg/day).
       </ng-template>
     </sd-calc-row>
     <div class="form-group form-row m-0">
