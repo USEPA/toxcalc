@@ -283,6 +283,37 @@ class PDE extends Field {
   get unit(): ScalarAndDimension { return this.units!.value; }
 }
 
+class PDEForm extends Form {
+  constructor(eqPrinter: EquationPrinter, fields: Field[], public factorFields: Field[]) {
+    super(eqPrinter, fields);
+  }
+
+  updateFactorVars(): void {
+    this.factorFields.forEach(function(f: Field) {
+      f.updateVar();
+    });
+  }
+
+  updateFactorErrors(): void {
+    this.factorFields.filter(f => f.row.show).forEach(function(f: Field) {
+      f.updateErrorState();
+    });
+  }
+
+  hasFactorErrors(): boolean {
+    return this.factorFields.filter(f => f.row.show).some(function (f: Field) { return f.hasError; } );
+  }
+
+  calculate(): void {
+    this.updateFactorErrors();
+    if (!this.hasFactorErrors()) {
+      this.updateFactorVars();
+    }
+
+    super.calculate();
+  }
+}
+
 @Component({
   selector: 'app-hbelcalc',
   templateUrl: './hbelcalc.component.html',
@@ -339,7 +370,7 @@ export class HbelCalcComponent {
   @ViewChild('pdeJustification') pdeJustification: SdJustificationComponent;
   pde: PDE = new PDE;
 
-  pdeForm = new Form(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha, this.pde]);
+  pdeForm = new PDEForm(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha, this.pde], [this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha]);
 
   @ViewChild('bioavailabilityPDERow') bioavailabilityPDERow: SdCalcRowComponent;
   @ViewChild('bioavailabilityPDEInput') bioavailabilityPDEInput: ElementRef<HTMLInputElement>;
@@ -525,7 +556,6 @@ export class HbelCalcComponent {
   compositeFactorsTerm: Term;
   getCompositeFactorsValue(): string {
     if (!this.ready) return '';
-    this.pdeForm.updateVars();
     let result = this.compositeFactorsTerm.getValue();
     if (result == null) return '';
     if (isCalculateError(result)) return '';
@@ -533,7 +563,6 @@ export class HbelCalcComponent {
   }
   getCompositeFactorsTooHigh(): boolean {
     if (!this.ready) return false;
-    this.pdeForm.updateVars();
     let result = this.compositeFactorsTerm.getValue();
     if (result == null) return false;
     if (isCalculateError(result)) return false;
