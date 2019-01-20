@@ -21,7 +21,7 @@
       </div>
     </ng-container>
     <ng-container *ngFor="let group of log.groups; let group_index=index">
-      <table class="table table-bordered table-sm w-100">
+      <table class="table table-bordered table-sm table-responsive w-100">
         <thead class="bg-light">
           <tr>
             <th scope="col" *ngFor="let column of group.columns">{{column}}</th>
