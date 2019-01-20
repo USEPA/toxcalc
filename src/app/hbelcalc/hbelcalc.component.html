@@ -117,7 +117,7 @@
           <div>
             <div class="form-check" *ngFor="let item of bodyWeight.options; index as i">
               <input type="radio" name="bodyWeightGroup" class="form-check-input" [id]="'bodyWeightGroup' + i" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="bodyWeight.output" (click)="bodyWeightClick(i)">
-              <label class="form-check-label" [for]="'bodyWeightGroup' + i">{{item.label}}</label>
+              <label [ngClass]="{'form-check-label': true, 'font-weight-bold': item.bold}" [for]="'bodyWeightGroup' + i">{{item.label}}</label>
             </div>
             <div class="form-check">
               <input type="radio" name="bodyWeightGroup" class="form-check-input" id="bodyWeightCustom" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="bodyWeight.output" (click)="bodyWeightClickCustom()">

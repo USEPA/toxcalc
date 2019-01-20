@@ -94,10 +94,10 @@ class BodyWeight extends Field {
   selected: string = 'custom';
 
   readonly options = [
-    {label: '50 kg (ICH Q3C default)', value: 50},
-    {label: '60 kg', value: 60},
-    {label: '70 kg', value: 70},
-    {label: '80 kg', value: 80},
+    {label: '50 kg (ICH Q3C default)', value: 50, bold: true},
+    {label: '60 kg', value: 60, bold: false},
+    {label: '70 kg', value: 70, bold: false},
+    {label: '80 kg', value: 80, bold: false},
   ];
 
   enabled: boolean = true;
