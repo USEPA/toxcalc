@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+
 import { SdCalcRowComponent } from '../sd-calc-row/sd-calc-row.component';
 import { SdJustificationComponent } from '../sd-justification/sd-justification.component';
 import { SdSelectComponent } from '../sd-select/sd-select.component';
@@ -387,6 +390,8 @@ export class HbelCalcComponent {
   bcfForm = new Form(this.eqPrinter, [this.bioavailabilityPDE, this.bioavailabilityCriticalStudy, this.alpha]);
 
   constructor() {
+    library.add(faFilePdf);
+
     let bcfeq = new Equation(Equation.div(this.bioavailabilityPDE.var, Equation.mul(this.bioavailabilityCriticalStudy.var, this.alpha.var)), Equation.constantFromNumber(1));
     this.bioavailabilityPDE.term = (<Equation>bcfeq.solve(this.bioavailabilityPDE.var)).RHS;
     this.bioavailabilityCriticalStudy.term = (<Equation>bcfeq.solve(this.bioavailabilityCriticalStudy.var)).RHS;
