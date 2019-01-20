@@ -304,25 +304,25 @@
         The absence of a NOEL with use of a LOEL creates some uncertainty. The use of the modifying factor is expected to drop the LOEL into the range of the NOEL. Note that if a benchmark dose limit is used as the point of departure, F5 does not need to be used.
       </ng-template>
     </sd-calc-row>
-    <sd-calc-row #pdeAlphaRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="pdeAlpha">
-        {{pdeAlpha.label}}
+    <sd-calc-row #alphaRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="alpha">
+        {{alpha.label}}
       </ng-template>
       <ng-template sdCalcRowInput>
         <input
           class="form-control"
-          id="pdeAlpha"
+          id="alpha"
           sdInputPosNum
           (blur)="pdeForm.inputBlur()"
           (focus)="pdeForm.inputFocus($event.target)"
-          [readonly]="pdeAlpha.readOnly"
-          [(ngModel)]="pdeAlpha.value"
+          [readonly]="alpha.readOnly"
+          [(ngModel)]="alpha.value"
           [ngModelOptions]="{standalone: true}"
-          #pdeAlphaInput
+          #alphaInput
           />
       </ng-template>
       <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #pdeAlphaJustification></sd-justification>
+        <sd-justification #alphaJustification></sd-justification>
       </ng-template>
       <ng-template sdCalcRowHelp>
         Alpha or BCF is the bioavailability correction factor. This factor is applied when the route of administration of the critical study is different from the route of exposure to which the PDE applies. To calculate BCF use BCFCalc. Note that application of BCF is not considered appropriate if the critical effect may be different between the route of exposure to which the PDE applies as compared to the route of exposure from the critical study. For example, a site-of-contact critical effect may be more concentration dependent rather than total dose dependent, and a BCF would not account for this.

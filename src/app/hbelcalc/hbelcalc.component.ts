@@ -344,10 +344,10 @@ export class HbelCalcComponent {
   @ViewChild('noNoelFactorJustification') noNoelFactorJustification: SdJustificationComponent;
   noNoelFactor: NoNoelFactor = new NoNoelFactor;
 
-  @ViewChild('pdeAlphaRow') pdeAlphaRow: SdCalcRowComponent;
-  @ViewChild('pdeAlphaInput') pdeAlphaInput: ElementRef<HTMLInputElement>;
-  @ViewChild('pdeAlphaJustification') pdeAlphaJustification: SdJustificationComponent;
-  pdeAlpha: Alpha = new Alpha;
+  @ViewChild('alphaRow') alphaRow: SdCalcRowComponent;
+  @ViewChild('alphaInput') alphaInput: ElementRef<HTMLInputElement>;
+  @ViewChild('alphaJustification') alphaJustification: SdJustificationComponent;
+  alpha: Alpha = new Alpha;
 
   @ViewChild('pdeRow') pdeRow: SdCalcRowComponent;
   @ViewChild('pdeInput') pdeInput: ElementRef<HTMLInputElement>;
@@ -355,13 +355,13 @@ export class HbelCalcComponent {
   @ViewChild('pdeJustification') pdeJustification: SdJustificationComponent;
   pde: PDE = new PDE;
 
-  pdeForm = new PDEForm(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha, this.pde], [this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha]);
+  pdeForm = new PDEForm(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.alpha, this.pde], [this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.alpha]);
 
   constructor() {
     library.add(faFilePdf);
 
     // pdeForm
-    this.compositeFactorsTerm = Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.pdeAlpha.var);
+    this.compositeFactorsTerm = Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.alpha.var);
     let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.compositeFactorsTerm, this.pde.var)), Equation.constantFromNumber(1));
     this.effectLimit.term = (<Equation>eq.solve(this.effectLimit.var)).RHS;
     this.bodyWeight.term = (<Equation>eq.solve(this.bodyWeight.var)).RHS;
@@ -370,7 +370,7 @@ export class HbelCalcComponent {
     this.studyDurationFactor.term = (<Equation>eq.solve(this.studyDurationFactor.var)).RHS;
     this.severeToxicityFactor.term = (<Equation>eq.solve(this.severeToxicityFactor.var)).RHS;
     this.noNoelFactor.term = (<Equation>eq.solve(this.noNoelFactor.var)).RHS;
-    this.pdeAlpha.term = (<Equation>eq.solve(this.pdeAlpha.var)).RHS;
+    this.alpha.term = (<Equation>eq.solve(this.alpha.var)).RHS;
     this.pde.term = (<Equation>eq.solve(this.pde.var)).RHS;
 
     this.variableMap.set(this.effectLimit.var, this.effectLimit.equationVarName);
@@ -380,7 +380,7 @@ export class HbelCalcComponent {
     this.variableMap.set(this.studyDurationFactor.var, this.studyDurationFactor.equationVarName);
     this.variableMap.set(this.severeToxicityFactor.var, this.severeToxicityFactor.equationVarName);
     this.variableMap.set(this.noNoelFactor.var, this.noNoelFactor.equationVarName);
-    this.variableMap.set(this.pdeAlpha.var, this.pdeAlpha.equationVarName);
+    this.variableMap.set(this.alpha.var, this.alpha.equationVarName);
     this.variableMap.set(this.pde.var, this.pde.equationVarName);
 
     this.pdeForm.equationSnippet = this.pde.equationSnippet(this.eqPrinter);
@@ -409,9 +409,9 @@ export class HbelCalcComponent {
     this.noNoelFactor.row = this.noNoelFactorRow;
     this.noNoelFactor.input = this.noNoelFactorInput;
     this.noNoelFactor.justification = this.noNoelFactorJustification;
-    this.pdeAlpha.row = this.pdeAlphaRow;
-    this.pdeAlpha.input = this.pdeAlphaInput;
-    this.pdeAlpha.justification = this.pdeAlphaJustification;
+    this.alpha.row = this.alphaRow;
+    this.alpha.input = this.alphaInput;
+    this.alpha.justification = this.alphaJustification;
     this.pde.row = this.pdeRow;
     this.pde.input = this.pdeInput;
     this.pde.units = this.pdeUnits;
