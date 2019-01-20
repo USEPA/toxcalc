@@ -154,7 +154,7 @@
         <sd-justification #bodyWeightJustification></sd-justification>
       </ng-template>
       <ng-template sdCalcRowInput *ngIf="!bodyWeight.enabled">
-        <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected on “{{pde.label}}”.</ngb-alert>
+        <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected on PDE.</ngb-alert>
       </ng-template>
       <ng-template sdCalcRowHelp>
         This is the assumed body weight for the human to which the PDE applies. This  is needed to convert the No/Low Effect Level expressed in mg/kg bw/day to a PDE expressed in mg/day. For example, for a PDE being set based on NOEL of 100 mg/kg bw/day, and applying a modifying factor of 100, the PDE is 1 mg/kg bw/day (100 mg/kg bw/day ÷ 100=1 mg/kg bw/day). If the assumed human body weight is 50 kg, this PDE is equivalent to 50 mg/day (PDE of 1 mg/kg bw/day &times; 50 kg = 50 mg/day).
