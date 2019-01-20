@@ -1,0 +1,72 @@
+<sd-return-to-calculators></sd-return-to-calculators>
+<div class="container py-3">
+  <ngb-alert [dismissible]="false">This is a prototype for testing purposes only.</ngb-alert>
+  <p class="lead font-weight-bold">
+    Relative Bioavailability Correction
+  </p>
+  <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
+  <form class="mb-3" autocomplete="off" novalidate (change)="bcfForm.formChange()">
+    <sd-calc-row #bioavailabilityPDERow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="bioavailabilityPDE">
+        {{bioavailabilityPDE.label}}
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input
+          class="form-control"
+          id="bioavailabilityPDE"
+          sdInputPosNum
+          (blur)="bcfForm.inputBlur()"
+          (focus)="bcfForm.inputFocus($event.target)"
+          [readonly]="bioavailabilityPDE.readOnly"
+          [(ngModel)]="bioavailabilityPDE.value"
+          [ngModelOptions]="{standalone: true}"
+          #bioavailabilityPDEInput
+          />
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row #bioavailabilityCriticalStudyRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="bioavailabilityCriticalStudy">
+        {{bioavailabilityCriticalStudy.label}}
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input
+          class="form-control"
+          id="bioavailabilityCriticalStudy"
+          sdInputPosNum
+          (blur)="bcfForm.inputBlur()"
+          (focus)="bcfForm.inputFocus($event.target)"
+          [readonly]="bioavailabilityCriticalStudy.readOnly"
+          [(ngModel)]="bioavailabilityCriticalStudy.value"
+          [ngModelOptions]="{standalone: true}"
+          #bioavailabilityCriticalStudyInput
+          />
+      </ng-template>
+    </sd-calc-row>
+    <sd-calc-row #alphaRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="alpha">
+        {{alpha.label}}
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input
+          class="form-control"
+          id="alpha"
+          sdInputPosNum
+          (blur)="bcfForm.inputBlur()"
+          (focus)="bcfForm.inputFocus($event.target)"
+          [readonly]="alpha.readOnly"
+          [(ngModel)]="alpha.value"
+          [ngModelOptions]="{standalone: true}"
+          #alphaInput
+          />
+      </ng-template>
+    </sd-calc-row>
+    <sd-internal-calc-error [errorText]="bcfForm.internalError"></sd-internal-calc-error>
+    <div class="form-group form-row ml-0">
+      <button class="btn btn-primary mr-3" (click)="bcfForm.calculateAndLog(calculationLog)" [disabled]="bcfForm.internalError">Convert!</button>
+      <button class="btn btn-secondary" (click)="bcfForm.clear()">Clear</button>
+    </div>
+  </form>
+  <p>The above calculations are based on the following equation:</p>
+  <p [sdKatex]="bcfForm.equationSnippet"></p>
+  <sd-calculation-log #calculationLog></sd-calculation-log>
+</div>

@@ -13,31 +13,6 @@ import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 
 import { printNum } from '../shared/number-util';
 
-// bcfForm
-
-class BioavailabilityPDE extends Field {
-  get label(): string { return '% bioavailability for PDE route'; }
-  get equationVarName(): string { return '\\% bioavailability for PDE route'; }
-  get unitName(): string { return ''; }
-  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
-  get unit(): ScalarAndDimension { return this.UNIT; }
-}
-
-class BioavailabilityCriticalStudy extends Field {
-  get label(): string { return '% bioavailability for critical study route'; }
-  get equationVarName(): string { return '\\% bioavailability for critical study route'; }
-  get unitName(): string { return ''; }
-  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
-  get unit(): ScalarAndDimension { return this.UNIT; }
-}
-
-class Alpha extends Field {
-  get label(): string { return 'Alpha or BCF'; }
-  get unitName(): string { return ''; }
-  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
-  get unit(): ScalarAndDimension { return this.UNIT; }
-}
-
 // pdeForm
 
 class EffectLimit extends Field {
@@ -270,6 +245,13 @@ class NoNoelFactor extends Field {
   get unit(): ScalarAndDimension { return this.UNIT; }
 }
 
+class Alpha extends Field {
+  get label(): string { return 'Alpha or BCF'; }
+  get unitName(): string { return ''; }
+  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
+  get unit(): ScalarAndDimension { return this.UNIT; }
+}
+
 class PDE extends Field {
   get label(): string { return 'Permissible daily exposure'; }
   readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
@@ -375,31 +357,8 @@ export class HbelCalcComponent {
 
   pdeForm = new PDEForm(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha, this.pde], [this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.pdeAlpha]);
 
-  @ViewChild('bioavailabilityPDERow') bioavailabilityPDERow: SdCalcRowComponent;
-  @ViewChild('bioavailabilityPDEInput') bioavailabilityPDEInput: ElementRef<HTMLInputElement>;
-  bioavailabilityPDE: BioavailabilityPDE = new BioavailabilityPDE;
-
-  @ViewChild('bioavailabilityCriticalStudyRow') bioavailabilityCriticalStudyRow: SdCalcRowComponent;
-  @ViewChild('bioavailabilityCriticalStudyInput') bioavailabilityCriticalStudyInput: ElementRef<HTMLInputElement>;
-  bioavailabilityCriticalStudy: BioavailabilityCriticalStudy = new BioavailabilityCriticalStudy;
-
-  @ViewChild('alphaRow') alphaRow: SdCalcRowComponent;
-  @ViewChild('alphaInput') alphaInput: ElementRef<HTMLInputElement>;
-  alpha: Alpha = new Alpha;
-
-  bcfForm = new Form(this.eqPrinter, [this.bioavailabilityPDE, this.bioavailabilityCriticalStudy, this.alpha]);
-
   constructor() {
     library.add(faFilePdf);
-
-    let bcfeq = new Equation(Equation.div(this.bioavailabilityPDE.var, Equation.mul(this.bioavailabilityCriticalStudy.var, this.alpha.var)), Equation.constantFromNumber(1));
-    this.bioavailabilityPDE.term = (<Equation>bcfeq.solve(this.bioavailabilityPDE.var)).RHS;
-    this.bioavailabilityCriticalStudy.term = (<Equation>bcfeq.solve(this.bioavailabilityCriticalStudy.var)).RHS;
-    this.alpha.term = (<Equation>bcfeq.solve(this.alpha.var)).RHS;
-    this.variableMap.set(this.bioavailabilityPDE.var, this.bioavailabilityPDE.equationVarName);
-    this.variableMap.set(this.bioavailabilityCriticalStudy.var, this.bioavailabilityCriticalStudy.equationVarName);
-    this.variableMap.set(this.alpha.var, this.alpha.equationVarName);
-    this.bcfForm.equationSnippet = this.alpha.equationSnippet(this.eqPrinter);
 
     // pdeForm
     this.compositeFactorsTerm = Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.pdeAlpha.var);
@@ -428,13 +387,6 @@ export class HbelCalcComponent {
   }
 
   ngAfterViewInit() {
-    this.bioavailabilityPDE.row = this.bioavailabilityPDERow;
-    this.bioavailabilityPDE.input = this.bioavailabilityPDEInput;
-    this.bioavailabilityCriticalStudy.row = this.bioavailabilityCriticalStudyRow;
-    this.bioavailabilityCriticalStudy.input = this.bioavailabilityCriticalStudyInput;
-    this.alpha.row = this.alphaRow;
-    this.alpha.input = this.alphaInput;
-
     this.effectLimit.row = this.effectLimitRow;
     this.effectLimit.input = this.effectLimitInput;
     this.effectLimit.units = this.effectLimitUnits;
