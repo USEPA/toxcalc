@@ -12,12 +12,6 @@ import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 
 import { printNum } from '../shared/number-util';
 
-const enum MouseOrRat {
-  False,
-  True,
-  Unknown,
-}
-
 // pdeForm
 
 class EffectLimit extends Field {
@@ -163,20 +157,25 @@ class StudyDurationFactor extends Field {
     return this.options()[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
   }
   options(): {label: string; value: number}[] {
-    switch (this.isMouseOrRat) {
-      case MouseOrRat.True:
-        return this.mouseOrRatOptions;
-      case MouseOrRat.False:
-        return this.notMouseOrRatOptions;
-      case MouseOrRat.Unknown:
-        return this.unknownMouseOrRatOptions;
+    switch (this.species) {
+      case 'mouse':
+      case 'rat':
+        return this.mouseRatOptions;
+      case 'rabbit':
+        return this.rabbitOptions;
+      case 'cat':
+      case 'dog':
+      case 'monkey':
+        return this.catDogMonkeyOptions;
+      default:
+        return this.unknownSpeciesOptions;
     }
   }
   updateErrorState(): void {
     if (!this.custom) return;
     super.updateErrorState();
   }
-  isMouseOrRat: MouseOrRat = MouseOrRat.Unknown;
+  species: string = 'custom';
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
   // The value shown in the custom box.
@@ -197,20 +196,29 @@ class StudyDurationFactor extends Field {
 
   selected: string = 'custom';
 
-  readonly mouseOrRatOptions = [
+  readonly mouseRatOptions = [
+    {label: 'one half lifetime (1 year)', value: 1},
     {label: 'whole period of organogenesis in a reproductive study', value: 1},
-    {label: 'a 6-month study', value: 2},
-    {label: 'a 3-month study', value: 5},
+    {label: '≥ 6-month study', value: 2},
+    {label: '≥ 3-month study', value: 5},
     {label: 'shorter duration studies', value: 10}];
-  readonly notMouseOrRatOptions = [
+  readonly rabbitOptions = [
+    {label: 'one half lifetime (1 year)', value: 1},
     {label: 'whole period of organogenesis in a reproductive study', value: 1},
-    {label: 'a 3.5-year study', value: 2},
-    {label: 'a 2-year study', value: 5},
+    {label: '≥ 3.5-year study', value: 2},
+    {label: '≥ 2-year study', value: 5},
     {label: 'shorter duration studies', value: 10}];
-  readonly unknownMouseOrRatOptions = [
+  readonly catDogMonkeyOptions = [
+    {label: 'one half lifetime (7 years)', value: 1},
     {label: 'whole period of organogenesis in a reproductive study', value: 1},
-    {label: 'a 6-month study in rodents, or a 3.5-year study in non-rodents', value: 2},
-    {label: 'a 3-month study in rodents, or a 2-year study in non-rodents', value: 5},
+    {label: '≥ 3.5-year study', value: 2},
+    {label: '≥ 2-year study', value: 5},
+    {label: 'shorter duration studies', value: 10}];
+  readonly unknownSpeciesOptions = [
+    {label: 'one half lifetime (1 year for rodents or rabbits; 7 years for cats, dogs and monkeys)', value: 1},
+    {label: 'whole period of organogenesis in a reproductive study', value: 1},
+    {label: '≥ 6-month study in rodents, or ≥ 3.5-year study in non-rodents', value: 2},
+    {label: '≥ 3-month study in rodents, or ≥ 2-year study in non-rodents', value: 5},
     {label: 'shorter duration studies', value: 10}];
 }
 
@@ -499,8 +507,6 @@ export class HbelCalcComponent {
     this.ready = true;
   }
 
-  isMouseOrRat: MouseOrRat = MouseOrRat.Unknown;
-
   changePdeUnits(): void {
     const PER_TIME = Dimension.initUnit().div(Dimension.initTime());
     if (this.pde.units!.value.d.equal(PER_TIME)) {
@@ -533,27 +539,14 @@ export class HbelCalcComponent {
     this.species.row.errorText = '';
 
     this.species.selectedValue = printNum(this.species.options[i].value);
-    switch (this.species.options[i].label) {
-      case 'rat':
-      case 'mouse':
-        this.isMouseOrRat = MouseOrRat.True;
-        break;
-      case 'other species':
-        this.isMouseOrRat = MouseOrRat.Unknown;
-        break;
-      default:
-        this.isMouseOrRat = MouseOrRat.False;
-        break;
-    }
-    this.studyDurationFactor.isMouseOrRat = this.isMouseOrRat;
+    this.studyDurationFactor.species = this.species.options[i].label;
 
     this.pdeForm.formChange();
   }
 
   speciesClickCustom(): void {
     this.species.custom = true;
-    this.isMouseOrRat = MouseOrRat.Unknown;
-    this.studyDurationFactor.isMouseOrRat = MouseOrRat.Unknown;
+    this.studyDurationFactor.species = 'custom';
     this.pdeForm.formChange();
   }
 
