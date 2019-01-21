@@ -168,7 +168,7 @@
       <ng-template sdCalcRowInput sdCustomRowInput="true">
         <div class="d-flex">
           <div>
-            <div class="form-check" *ngFor="let item of (isMouseOrRat ? studyDurationFactor.mouseOrRatOptions : studyDurationFactor.notMouseOrRatOptions); index as i">
+            <div class="form-check" *ngFor="let item of studyDurationFactor.options(); index as i">
               <input type="radio" name="studyDurationFactorGroup" class="form-check-input" [id]="'studyDurationFactorGroup' + i" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClick(item.value)">
               <label class="form-check-label" [for]="'studyDurationFactorGroup' + i">{{item.value}}: {{item.label}}</label>
             </div>

@@ -12,6 +12,12 @@ import { Term, Equation, EquationPrinter, Variable } from '../shared/equation';
 
 import { printNum } from '../shared/number-util';
 
+const enum MouseOrRat {
+  False,
+  True,
+  Unknown,
+}
+
 // pdeForm
 
 class EffectLimit extends Field {
@@ -154,13 +160,23 @@ class StudyDurationFactor extends Field {
     if (this.custom) {
       return this.customValue;
     }
-    return (this.isMouseOrRat ? this.mouseOrRatOptions : this.notMouseOrRatOptions)[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
+    return this.options()[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
+  }
+  options(): {label: string; value: number}[] {
+    switch (this.isMouseOrRat) {
+      case MouseOrRat.True:
+        return this.mouseOrRatOptions;
+      case MouseOrRat.False:
+        return this.notMouseOrRatOptions;
+      case MouseOrRat.Unknown:
+        return this.unknownMouseOrRatOptions;
+    }
   }
   updateErrorState(): void {
     if (!this.custom) return;
     super.updateErrorState();
   }
-  isMouseOrRat: boolean = false;
+  isMouseOrRat: MouseOrRat = MouseOrRat.Unknown;
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
   // The value shown in the custom box.
@@ -190,6 +206,11 @@ class StudyDurationFactor extends Field {
     {label: 'whole period of organogenesis in a reproductive study', value: 1},
     {label: 'a 3.5-year study', value: 2},
     {label: 'a 2-year study', value: 5},
+    {label: 'shorter duration studies', value: 10}];
+  readonly unknownMouseOrRatOptions = [
+    {label: 'whole period of organogenesis in a reproductive study', value: 1},
+    {label: 'a 6-month study in rodents, or a 3.5-year study in non-rodents', value: 2},
+    {label: 'a 3-month study in rodents, or a 2-year study in non-rodents', value: 5},
     {label: 'shorter duration studies', value: 10}];
 }
 
@@ -478,7 +499,7 @@ export class HbelCalcComponent {
     this.ready = true;
   }
 
-  isMouseOrRat: boolean = false;
+  isMouseOrRat: MouseOrRat = MouseOrRat.Unknown;
 
   changePdeUnits(): void {
     const PER_TIME = Dimension.initUnit().div(Dimension.initTime());
@@ -512,9 +533,18 @@ export class HbelCalcComponent {
     this.species.row.errorText = '';
 
     this.species.selectedValue = printNum(this.species.options[i].value);
-    this.isMouseOrRat =
-        (this.species.options[i].label == 'rat' ||
-         this.species.options[i].label == 'mouse');
+    switch (this.species.options[i].label) {
+      case 'rat':
+      case 'mouse':
+        this.isMouseOrRat = MouseOrRat.True;
+        break;
+      case 'other species':
+        this.isMouseOrRat = MouseOrRat.Unknown;
+        break;
+      default:
+        this.isMouseOrRat = MouseOrRat.False;
+        break;
+    }
     this.studyDurationFactor.isMouseOrRat = this.isMouseOrRat;
 
     this.pdeForm.formChange();
@@ -522,8 +552,8 @@ export class HbelCalcComponent {
 
   speciesClickCustom(): void {
     this.species.custom = true;
-    this.isMouseOrRat = false;
-    this.studyDurationFactor.isMouseOrRat = false;
+    this.isMouseOrRat = MouseOrRat.Unknown;
+    this.studyDurationFactor.isMouseOrRat = MouseOrRat.Unknown;
     this.pdeForm.formChange();
   }
 
