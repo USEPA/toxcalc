@@ -245,6 +245,13 @@ class NoNoelFactor extends Field {
   get unit(): ScalarAndDimension { return this.UNIT; }
 }
 
+class ExtraFactors extends Field {
+  get label(): string { return 'Additional modifying factor'; }
+  get unitName(): string { return ''; }
+  private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
+  get unit(): ScalarAndDimension { return this.UNIT; }
+}
+
 class Alpha extends Field {
   get label(): string { return 'Alpha or BCF'; }
   get unitName(): string { return ''; }
@@ -344,6 +351,10 @@ export class HbelCalcComponent {
   @ViewChild('noNoelFactorJustification') noNoelFactorJustification: SdJustificationComponent;
   noNoelFactor: NoNoelFactor = new NoNoelFactor;
 
+  @ViewChild('extraFactorsRow') extraFactorsRow: SdCalcRowComponent;
+  @ViewChild('extraFactorsInput') extraFactorsInput: ElementRef<HTMLInputElement>;
+  extraFactors: ExtraFactors = new ExtraFactors;
+
   @ViewChild('alphaRow') alphaRow: SdCalcRowComponent;
   @ViewChild('alphaInput') alphaInput: ElementRef<HTMLInputElement>;
   @ViewChild('alphaJustification') alphaJustification: SdJustificationComponent;
@@ -355,13 +366,13 @@ export class HbelCalcComponent {
   @ViewChild('pdeJustification') pdeJustification: SdJustificationComponent;
   pde: PDE = new PDE;
 
-  pdeForm = new PDEForm(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.alpha, this.pde], [this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.alpha]);
+  pdeForm = new PDEForm(this.eqPrinter, [this.effectLimit, this.bodyWeight, this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.extraFactors, this.alpha, this.pde], [this.species, this.safetyFactor, this.studyDurationFactor, this.severeToxicityFactor, this.noNoelFactor, this.extraFactors, this.alpha]);
 
   constructor() {
     library.add(faFilePdf);
 
     // pdeForm
-    this.compositeFactorsTerm = Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.alpha.var);
+    this.compositeFactorsTerm = Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.extraFactors.var, this.alpha.var);
     let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.compositeFactorsTerm, this.pde.var)), Equation.constantFromNumber(1));
     this.effectLimit.term = (<Equation>eq.solve(this.effectLimit.var)).RHS;
     this.bodyWeight.term = (<Equation>eq.solve(this.bodyWeight.var)).RHS;
@@ -370,6 +381,7 @@ export class HbelCalcComponent {
     this.studyDurationFactor.term = (<Equation>eq.solve(this.studyDurationFactor.var)).RHS;
     this.severeToxicityFactor.term = (<Equation>eq.solve(this.severeToxicityFactor.var)).RHS;
     this.noNoelFactor.term = (<Equation>eq.solve(this.noNoelFactor.var)).RHS;
+    this.extraFactors.term = (<Equation>eq.solve(this.extraFactors.var)).RHS;
     this.alpha.term = (<Equation>eq.solve(this.alpha.var)).RHS;
     this.pde.term = (<Equation>eq.solve(this.pde.var)).RHS;
 
@@ -380,6 +392,7 @@ export class HbelCalcComponent {
     this.variableMap.set(this.studyDurationFactor.var, this.studyDurationFactor.equationVarName);
     this.variableMap.set(this.severeToxicityFactor.var, this.severeToxicityFactor.equationVarName);
     this.variableMap.set(this.noNoelFactor.var, this.noNoelFactor.equationVarName);
+    this.variableMap.set(this.extraFactors.var, this.extraFactors.equationVarName);
     this.variableMap.set(this.alpha.var, this.alpha.equationVarName);
     this.variableMap.set(this.pde.var, this.pde.equationVarName);
 
@@ -409,6 +422,8 @@ export class HbelCalcComponent {
     this.noNoelFactor.row = this.noNoelFactorRow;
     this.noNoelFactor.input = this.noNoelFactorInput;
     this.noNoelFactor.justification = this.noNoelFactorJustification;
+    this.extraFactors.row = this.extraFactorsRow;
+    this.extraFactors.input = this.extraFactorsInput;
     this.alpha.row = this.alphaRow;
     this.alpha.input = this.alphaInput;
     this.alpha.justification = this.alphaJustification;

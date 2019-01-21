@@ -328,6 +328,27 @@
         Alpha or BCF is the bioavailability correction factor. This factor is applied when the route of administration of the critical study is different from the route of exposure to which the PDE applies. To calculate BCF use <a rel="noopener" target="_blank" href="BioAvailCalc">BioAvailCalc</a>. Note that application of BCF is not considered appropriate if the critical effect may be different between the route of exposure to which the PDE applies as compared to the route of exposure from the critical study. For example, a site-of-contact critical effect may be more concentration dependent rather than total dose dependent, and a BCF would not account for this.
       </ng-template>
     </sd-calc-row>
+    <sd-calc-row #extraFactorsRow>
+      <ng-template sdCalcRowLabel sdCalcRowLabelFor="extraFactors">
+        {{extraFactors.label}}
+      </ng-template>
+      <ng-template sdCalcRowInput>
+        <input
+          class="form-control"
+          id="extraFactors"
+          sdInputPosNum
+          (blur)="pdeForm.inputBlur()"
+          (focus)="pdeForm.inputFocus($event.target)"
+          [readonly]="extraFactors.readOnly"
+          [(ngModel)]="extraFactors.value"
+          [ngModelOptions]="{standalone: true}"
+          #extraFactorsInput
+          />
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        Application of this factor is based on professional judgment, where the risk assessor believes that uncertainties are not adequately addressed by F1 to F5. ICH Q3C does not specifically apply a factor for database completeness. Thus, if the database is considered poor quality or is insufficiently robust to address key hazard endpoints, this modifying factor may be used.
+      </ng-template>
+    </sd-calc-row>
     <sd-calc-row>
       <ng-template sdCalcRowLabel>
         Composite modifying factors
@@ -343,7 +364,7 @@
       <ng-template sdCalcRowInput sdCustomRowInput="true">
         <div>
           <p>This field is calculated based on the following equation:</p>
-          <p sdKatexInline="true" sdKatex="\textrm{F1} \times \textrm{F2} \times \textrm{F3} \times \textrm{F4} \times \textrm{F5} \times \textrm{Alpha or BCF}"></p>
+          <p sdKatexInline="true" [sdKatex]="eqPrinter.dispatch(compositeFactorsTerm)"></p>
         </div>
       </ng-template>
       <ng-template sdCalcRowInput sdCustomRowInput="true" *ngIf="getCompositeFactorsTooHigh()">
