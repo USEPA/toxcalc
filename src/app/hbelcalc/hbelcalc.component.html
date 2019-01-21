@@ -287,18 +287,37 @@
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="alpha">
         {{alpha.label}}
       </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="alpha"
-          sdInputPosNum
-          (blur)="pdeForm.inputBlur()"
-          (focus)="pdeForm.inputFocus($event.target)"
-          [readonly]="alpha.readOnly"
-          [(ngModel)]="alpha.value"
-          [ngModelOptions]="{standalone: true}"
-          #alphaInput
-          />
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <div class="form-inline">
+          <div class="input-group">
+            <input
+              class="form-control"
+              id="alpha"
+              sdInputPosNum
+              (blur)="pdeForm.inputBlur()"
+              (focus)="pdeForm.inputFocus($event.target)"
+              [disabled]="!alpha.enabled"
+              [readonly]="alpha.readOnly"
+              [(ngModel)]="alpha.textValue"
+              [ngModelOptions]="{standalone: true}"
+              #alphaInput
+              />
+          </div>
+          <input
+            class="form-check-input ml-3"
+            id="alphaDisableControl"
+            type="checkbox"
+            (change)="alphaDisable()"
+            [(ngModel)]="alphaDisabled"
+            [ngModelOptions]="{standalone: true}"
+            />
+          <label class="form-check-label" for="alphaDisableControl">Disable</label>
+          <div>
+            <button type="button" class="btn btn-light ml-3" (click)="alphaRow.showHelp = !alphaRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+            </button>
+          </div>
+        </div>
       </ng-template>
       <ng-template sdCalcRowHelp>
         Alpha or BCF is the bioavailability correction factor. This factor is applied when the route of administration of the critical study is different from the route of exposure to which the PDE applies. To calculate BCF use <a rel="noopener" target="_blank" href="BioAvailCalc">BioAvailCalc</a>. Note that application of BCF is not considered appropriate if the critical effect may be different between the route of exposure to which the PDE applies as compared to the route of exposure from the critical study. For example, a site-of-contact critical effect may be more concentration dependent rather than total dose dependent, and a BCF would not account for this.
@@ -308,18 +327,37 @@
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="extraFactors">
         {{extraFactors.label}}
       </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="extraFactors"
-          sdInputPosNum
-          (blur)="pdeForm.inputBlur()"
-          (focus)="pdeForm.inputFocus($event.target)"
-          [readonly]="extraFactors.readOnly"
-          [(ngModel)]="extraFactors.value"
-          [ngModelOptions]="{standalone: true}"
-          #extraFactorsInput
-          />
+      <ng-template sdCalcRowInput sdCustomRowInput="true">
+        <div class="form-inline">
+          <div class="input-group">
+            <input
+              class="form-control"
+              id="extraFactors"
+              sdInputPosNum
+              (blur)="pdeForm.inputBlur()"
+              (focus)="pdeForm.inputFocus($event.target)"
+              [disabled]="!extraFactors.enabled"
+              [readonly]="extraFactors.readOnly"
+              [(ngModel)]="extraFactors.textValue"
+              [ngModelOptions]="{standalone: true}"
+              #extraFactorsInput
+              />
+          </div>
+          <input
+            class="form-check-input ml-3"
+            id="extraFactorsDisableControl"
+            type="checkbox"
+            (change)="extraFactorsDisable()"
+            [(ngModel)]="extraFactorsDisabled"
+            [ngModelOptions]="{standalone: true}"
+            />
+          <label class="form-check-label" for="extraFactorsDisableControl">Disable</label>
+          <div>
+            <button type="button" class="btn btn-light ml-3" (click)="extraFactorsRow.showHelp = !extraFactorsRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+            </button>
+          </div>
+        </div>
       </ng-template>
       <ng-template sdCalcRowHelp>
         Application of this factor is based on professional judgment, where the risk assessor believes that uncertainties are not adequately addressed by F1 to F5. ICH Q3C does not specifically apply a factor for database completeness. Thus, if the database is considered poor quality or is insufficiently robust to address key hazard endpoints, this modifying factor may be used.

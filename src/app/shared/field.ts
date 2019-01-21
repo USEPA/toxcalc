@@ -26,6 +26,12 @@ export abstract class Field {
   unmarkAsOutput(): void { this.readOnly = false; }
   isMarkedAsOutput(): boolean { return this.readOnly; }
 
+  clear(): void {
+    this.row.errorText = '';
+    this.unmarkAsOutput();
+    this.value = '';
+  }
+
   value: string = '';
   get hasError(): boolean { return this.row.errorText != ''; }
   abstract get label(): string;

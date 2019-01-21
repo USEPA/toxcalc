@@ -48,18 +48,18 @@ class BodyWeight extends Field {
   customSpeciesName: string = '';
   custom: boolean = true;
   selectedValue: string = '';
-  get selectedName() {
+  get selectedName(): string {
     if (this.selected == 'custom') { return 'custom'; }
     return this.options[parseInt(this.selected)].label;
   }
-  get value() {
+  get value(): string {
     if (!this.enabled)
       return '1';
     if (this.custom)
       return this.customValue;
     return this.selectedValue;
   }
-  set value(new_value) { this.customValue = new_value; }
+  set value(new_value: string) { this.customValue = new_value; }
 
   // TODO: this should be in field, and its readOnly property should be removed
   // or replaced with this 'output'.
@@ -115,8 +115,8 @@ class Species extends Field {
     if (this.selected == 'custom') { return 'custom'; }
     return this.options[parseInt(this.selected)].label;
   }
-  get value() { return this.custom ? this.customValue : this.selectedValue; }
-  set value(new_value) { this.customValue = new_value; }
+  get value(): string { return this.custom ? this.customValue : this.selectedValue; }
+  set value(new_value: string) { this.customValue = new_value; }
 
   // TODO: this should be in field, and its readOnly property should be removed
   // or replaced with this 'output'.
@@ -169,8 +169,8 @@ class StudyDurationFactor extends Field {
   custom: boolean = true;
   // The value, if custom is not active.
   selectedValue: string = '';
-  get value() { return this.custom ? this.customValue : this.selectedValue; }
-  set value(new_value) { /* assert (this.custom) */ this.customValue = new_value; }
+  get value(): string { return this.custom ? this.customValue : this.selectedValue; }
+  set value(new_value: string) { /* assert (this.custom) */ this.customValue = new_value; }
 
   // TODO: this should be in field, and its readOnly property should be removed
   // or replaced with this 'output'.
@@ -216,8 +216,8 @@ class SevereToxicityFactor extends Field {
   custom: boolean = true;
   // The value, if custom is not active.
   selectedValue: string = '';
-  get value() { return this.custom ? this.customValue : this.selectedValue; }
-  set value(new_value) { /* assert (this.custom) */ this.customValue = new_value; }
+  get value(): string { return this.custom ? this.customValue : this.selectedValue; }
+  set value(new_value: string) { /* assert (this.custom) */ this.customValue = new_value; }
 
   // TODO: this should be in field, and its readOnly property should be removed
   // or replaced with this 'output'.
@@ -249,6 +249,37 @@ class ExtraFactors extends Field {
   get unitName(): string { return ''; }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
+
+  get value(): string {
+    return this.enabled ? this.textValue : '1';
+  }
+  set value(new_value: string) { this.textValue = new_value; }
+
+  get logValue(): string {
+    // super.logValue is inlined here, see:
+    // https://github.com/Microsoft/TypeScript/issues/338
+    return this.enabled ? [this.value, this.unitName].filter(txt => txt.length > 0).join(' ') : 'n/a';
+  }
+
+  enabled: boolean = true;
+  textValue: string = '';
+  saveText: string = '';
+  disable(variableMap: Map<Variable, string>): void {
+    this.enabled = false;
+    this.saveText = this.textValue;
+    this.textValue = '';
+    variableMap.set(this.var, '');
+  }
+  enable(variableMap: Map<Variable, string>): void {
+    this.enabled = true;
+    this.textValue = this.saveText;
+    this.saveText = '';
+    variableMap.set(this.var, this.equationVarName);
+  }
+  clear(): void {
+    this.saveText = '';
+    super.clear();
+  }
 }
 
 class Alpha extends Field {
@@ -256,6 +287,37 @@ class Alpha extends Field {
   get unitName(): string { return ''; }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
+
+  get value(): string {
+    return this.enabled ? this.textValue : '1';
+  }
+  set value(new_value: string) { this.textValue = new_value; }
+
+  get logValue(): string {
+    // super.logValue is inlined here, see:
+    // https://github.com/Microsoft/TypeScript/issues/338
+    return this.enabled ? [this.value, this.unitName].filter(txt => txt.length > 0).join(' ') : 'n/a';
+  }
+
+  enabled: boolean = true;
+  textValue: string = '';
+  saveText: string = '';
+  disable(variableMap: Map<Variable, string>): void {
+    this.enabled = false;
+    this.saveText = this.textValue;
+    this.textValue = '';
+    variableMap.set(this.var, '');
+  }
+  enable(variableMap: Map<Variable, string>): void {
+    this.enabled = true;
+    this.textValue = this.saveText;
+    this.saveText = '';
+    variableMap.set(this.var, this.equationVarName);
+  }
+  clear(): void {
+    this.saveText = '';
+    super.clear();
+  }
 }
 
 class PDE extends Field {
@@ -493,6 +555,22 @@ export class HbelCalcComponent {
   severeToxicityFactorClickCustom(): void {
     this.severeToxicityFactor.custom = true;
     this.pdeForm.formChange();
+  }
+
+  alphaDisable(): void {
+    if (this.alpha.enabled) {
+      this.alpha.disable(this.variableMap);
+    } else {
+      this.alpha.enable(this.variableMap);
+    }
+  }
+
+  extraFactorsDisable(): void {
+    if (this.extraFactors.enabled) {
+      this.extraFactors.disable(this.variableMap);
+    } else {
+      this.extraFactors.enable(this.variableMap);
+    }
   }
 
   // Allow the template to iterate over unit labels filtered by dimension.

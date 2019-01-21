@@ -37,9 +37,7 @@ export class Form {
     this.suppressChange = false;
     this.internalError = '';
     this.fields.forEach(function(f: Field) {
-      f.row.errorText = '';
-      f.unmarkAsOutput();
-      f.value = '';
+      f.clear();
     });
     this.equationSnippet = this.fields[this.fields.length - 1].equationSnippet(this.eqPrinter);
   }
