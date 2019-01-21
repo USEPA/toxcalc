@@ -31,9 +31,6 @@
           </sd-select>
         </div>
       </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #effectLimitJustification></sd-justification>
-      </ng-template>
       <ng-template sdCalcRowHelp>
         No/Low Effect levels are Points of Departure (PoD) obtained from the critical study used for PDE derivation. Other PoDs (e.g. benchmark dose limits) may also be used.
       </ng-template>
@@ -82,9 +79,6 @@
             </button>
           </div>
         </div>
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #bodyWeightJustification></sd-justification>
       </ng-template>
       <ng-template sdCalcRowInput *ngIf="!bodyWeight.enabled">
         <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected on PDE.</ngb-alert>
@@ -150,9 +144,6 @@
           </div>
         </div>
       </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #speciesJustification></sd-justification>
-      </ng-template>
       <ng-template sdCalcRowHelp>
         Use this factor if the No/Low Effect level comes from a non-human species. This factor is used to account for the uncertainty related to extrapolating animal data to humans. The basic assumption when using this factor is that critical effect for which the No/Low Effect level is derived is relevant to humans, but that toxicokinetic and toxicodynamic differences exist between humans and animals. The fixed factors listed for the different species are based on body surface area allometric scaling (BW<sup>2/3</sup>). For more on the priniciples of allometric scaling see <a rel="noopener" target="_blank" href="/assets/665c125d6b338f200ae3/Size Matters.pdf">Allometric Scaling Explained <fa-icon [icon]="['fas', 'file-pdf']"></fa-icon></a>. To perform this scaling for species not listed here, use <a rel="noopener" target="_blank" href="HumanCalc">HumanCalc</a>. Note that these are default methods for interspecies scaling to be used the absence of good comparative data on the toxicodynamic and toxicokinetic differences between the species from which the No/Lo Effect level is derived and humans.
       </ng-template>
@@ -174,9 +165,6 @@
           value="10"
           #safetyFactorInput
           />
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #safetyFactorJustification></sd-justification>
       </ng-template>
       <ng-template sdCalcRowHelp>
         This factor is intended to account for the variation in sensitivity among the members of the human population. Thus, if starting from a no effect level in humans, the no effect level is considered representative of the study from which the no effect level was derived, which may not be representative of the true range of human sensitivities within a population.  The application of this factor  is intended to cover the range from the <em>average</em> human (which is presumably reflected in the study population from which the no effect level is derived) to the <em>sensitive</em> human. If starting with a no effect level in animals, F1 extrapolates the no effect level from animals to humans and F2 subsequently extrapolates the no effect level in the <em>average</em> human to a human that may be more sensitive to the effects of the substance. Whether or not the applied F1 factor suitably covers sensitive subpopulations may be gained by investigating a chemical's mechanism of action.
@@ -224,9 +212,6 @@
           </div>
         </div>
       </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #studyDurationFactorJustification></sd-justification>
-      </ng-template>
       <ng-template sdCalcRowHelp>
         PDEs are calculated for lifetime exposures, yet experimental data evaluating the health effects of chemicals are typically days to months long. It is assumed that the health effects observed in these shorter duration studies are relevant to lifetime exposures, but that these effects may occur at lower doses or occur at higher severity with prolonged exposures. Furthermore, it also assumes that some effects may only be revealed after chronic exposures. F3 addresses the question of whether studies of longer duration than the one used for PDE derivation might have yielded a lower point of departure or no/low effect level.
       </ng-template>
@@ -273,9 +258,6 @@
           </div>
         </div>
       </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #severeToxicityFactorJustification></sd-justification>
-      </ng-template>
       <ng-template sdCalcRowHelp>
         This factor is used to account for the severity of effect observed. ICH Q3C indicates its use for severe toxicity (e.g. non-genotoxic carcinogenicity, neurotoxicity or teratogenicity). This factor is not uniformly used by other authoritative agencies that perform risk assessment.
       </ng-template>
@@ -297,9 +279,6 @@
           #noNoelFactorInput
           />
       </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #noNoelFactorJustification></sd-justification>
-      </ng-template>
       <ng-template sdCalcRowHelp>
         The absence of a NOEL with use of a LOEL creates some uncertainty. The use of the modifying factor is expected to drop the LOEL into the range of the NOEL. Note that if a benchmark dose limit is used as the point of departure, F5 does not need to be used.
       </ng-template>
@@ -320,9 +299,6 @@
           [ngModelOptions]="{standalone: true}"
           #alphaInput
           />
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #alphaJustification></sd-justification>
       </ng-template>
       <ng-template sdCalcRowHelp>
         Alpha or BCF is the bioavailability correction factor. This factor is applied when the route of administration of the critical study is different from the route of exposure to which the PDE applies. To calculate BCF use <a rel="noopener" target="_blank" href="BioAvailCalc">BioAvailCalc</a>. Note that application of BCF is not considered appropriate if the critical effect may be different between the route of exposure to which the PDE applies as compared to the route of exposure from the critical study. For example, a site-of-contact critical effect may be more concentration dependent rather than total dose dependent, and a BCF would not account for this.
@@ -401,9 +377,6 @@
             <option *ngFor="let unit of iterUnits(pde.UNITS, pde.PER_TIME)" [label]="unit" [value]="pde.UNITS[unit]">
           </optgroup>
         </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <sd-justification #pdeJustification></sd-justification>
       </ng-template>
       <ng-template sdCalcRowHelp>
         A substance specific dose that is unlikely to cause an adverse effect if an individual is exposed at or below this dose every day for a lifetime. Effectively synonymous with ADE.
