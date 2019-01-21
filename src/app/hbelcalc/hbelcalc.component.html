@@ -6,9 +6,6 @@
   </p>
   <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
   <form class="mb-3" autocomplete="off" novalidate (change)="pdeForm.formChange()">
-    <div class="form-group form-row m-0">
-      <legend class="p-0">Step 1</legend>
-    </div>
     <sd-calc-row #effectLimitRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="effectLimit">
         {{effectLimit.label}}
@@ -35,9 +32,6 @@
         No/Low Effect levels are Points of Departure (PoD) obtained from the critical study used for PDE derivation. Other PoDs (e.g. benchmark dose limits) may also be used.
       </ng-template>
     </sd-calc-row>
-    <div class="form-group form-row m-0">
-      <legend class="p-0">Step 2</legend>
-    </div>
     <sd-calc-row #bodyWeightRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
         {{bodyWeight.label}}
@@ -87,9 +81,6 @@
         This is the assumed body weight for the human to which the PDE applies. This  is needed to convert the No/Low Effect Level expressed in mg/kg bw/day to a PDE expressed in mg/day. For example, for a PDE being set based on NOEL of 100 mg/kg bw/day, and applying a modifying factor of 100, the PDE is 1 mg/kg bw/day (100 mg/kg bw/day ÷ 100=1 mg/kg bw/day). If the assumed human body weight is 50 kg, this PDE is equivalent to 50 mg/day (PDE of 1 mg/kg bw/day &times; 50 kg = 50 mg/day).
       </ng-template>
     </sd-calc-row>
-    <div class="form-group form-row m-0">
-      <legend class="p-0">Step 3</legend>
-    </div>
     <sd-calc-row #speciesRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="species">
         {{species.label}}
@@ -388,9 +379,6 @@
         The product of all modifying factors applied. Note that composite modifying factors above 5000 indicate a low confidence limit.
       </ng-template>
     </sd-calc-row>
-    <div class="form-group form-row m-0">
-      <legend class="p-0">Step 5</legend>
-    </div>
     <sd-calc-row #pdeRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="pde">
         {{pde.label}}
