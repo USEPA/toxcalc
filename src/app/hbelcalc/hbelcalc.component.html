@@ -214,6 +214,7 @@
       <ng-template sdCalcRowInput sdCustomRowInput="true">
         <div class="d-flex">
           <div>
+            This factor can be used for any form of severe toxicity. Examples of factors that could be applied in the realm of developmental toxicity studies is shown below:
             <div class="form-check" *ngFor="let item of severeToxicityFactor.options; index as i">
               <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" [id]="'severeToxicityFactorGroup' + i" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" checked [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClick(item.value)">
               <label class="form-check-label" [for]="'severeToxicityFactorGroup' + i">{{item.value}}: {{item.label}}</label>
