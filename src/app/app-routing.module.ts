@@ -6,7 +6,7 @@ import { TotalDoseCalcComponent } from './totaldosecalc/totaldosecalc.component'
 import { HumanCalcComponent } from './humancalc/humancalc.component';
 import { InhaleCalcComponent } from './inhalecalc/inhalecalc.component';
 import { HbelCalcComponent } from './hbelcalc/hbelcalc.component';
-import { BioAvailCalcComponent } from './bioavailcalc/bioavailcalc.component';
+import { BioavailCalcComponent } from './bioavailcalc/bioavailcalc.component';
 import { DefinitionsComponent } from './definitions/definitions.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 
@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'HumanCalc', component: HumanCalcComponent },
   { path: 'InhaleCalc', component: InhaleCalcComponent },
   { path: 'HBELCalc', component: HbelCalcComponent },
-  { path: 'BioAvailCalc', component: BioAvailCalcComponent },
+  { path: 'BioavailCalc', component: BioavailCalcComponent },
   { path: 'definitions', component: DefinitionsComponent },
   { path: 'disclaimer', component: DisclaimerComponent },
 ];

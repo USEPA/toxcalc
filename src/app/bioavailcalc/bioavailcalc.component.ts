@@ -37,7 +37,7 @@ class Alpha extends Field {
   templateUrl: './bioavailcalc.component.html',
   styleUrls: ['./bioavailcalc.component.css']
 })
-export class BioAvailCalcComponent {
+export class BioavailCalcComponent {
   variableMap: Map<Variable, string> = new Map();
   eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
 

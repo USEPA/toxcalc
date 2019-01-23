@@ -23,12 +23,12 @@ import { DefinitionsComponent } from './definitions/definitions.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { SdCalculationLogComponent } from './sd-calculation-log/sd-calculation-log.component';
 import { SdJustificationComponent } from './sd-justification/sd-justification.component';
-import { BioAvailCalcComponent } from './bioavailcalc/bioavailcalc.component';
+import { BioavailCalcComponent } from './bioavailcalc/bioavailcalc.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BioAvailCalcComponent,
+    BioavailCalcComponent,
     DefinitionsComponent,
     DisclaimerComponent,
     InhaleCalcComponent,
