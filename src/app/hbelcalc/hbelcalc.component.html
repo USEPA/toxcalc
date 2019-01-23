@@ -29,7 +29,7 @@
         </div>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        No/Low Effect levels are Points of Departure (PoD) obtained from the critical study used for PDE derivation. Other PoDs (e.g. benchmark dose limits) may also be used.
+        Enter the No/Low effect levels or other suitable Point of Departure (PoD) from the critical study. Either a human or animal No/Low effect level may be used. If an animal No/Low effect level is used, you can convert to a human equivalent dose (HED). If an HED is used as the No/Low effect level, no F1 factor needs to be applied.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #bodyWeightRow>
@@ -75,10 +75,10 @@
         </div>
       </ng-template>
       <ng-template sdCalcRowInput *ngIf="!bodyWeight.enabled">
-        <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected on PDE.</ngb-alert>
+        <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected for the PDE.</ngb-alert>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        This is the assumed body weight for the human to which the PDE applies. This  is needed to convert the No/Low Effect Level expressed in mg/kg bw/day to a PDE expressed in mg/day. For example, for a PDE being set based on NOEL of 100 mg/kg bw/day, and applying a modifying factor of 100, the PDE is 1 mg/kg bw/day (100 mg/kg bw/day ÷ 100=1 mg/kg bw/day). If the assumed human body weight is 50 kg, this PDE is equivalent to 50 mg/day (PDE of 1 mg/kg bw/day &times; 50 kg = 50 mg/day).
+        This is the assumed body weight for the human to which the PDE applies. This is needed if the PDE is to be expressed in mg/day. For example, for a PDE being set based on NOEL of 100 mg/kg bw/day, and applying a modifying factor of 100, the PDE is 1 mg/kg bw/day (100 mg/kg bw/day ÷ 100 = 1 mg/kg bw/day). If the assumed human body weight is 50 kg, this PDE is equivalent to 50 mg/day (PDE of 1 mg/kg bw/day × 50 kg = 50 mg/day).
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #speciesRow>
@@ -136,7 +136,7 @@
         </div>
       </ng-template>
       <ng-template sdCalcRowHelp>
-        Use this factor if the No/Low Effect level comes from a non-human species. This factor is used to account for the uncertainty related to extrapolating animal data to humans. The basic assumption when using this factor is that critical effect for which the No/Low Effect level is derived is relevant to humans, but that toxicokinetic and toxicodynamic differences exist between humans and animals. The fixed factors listed for the different species are based on body surface area allometric scaling (BW<sup>2/3</sup>). For more on the priniciples of allometric scaling see <a rel="noopener" target="_blank" href="/assets/665c125d6b338f200ae3/Size Matters.pdf">Allometric Scaling Explained <fa-icon [icon]="['fas', 'file-pdf']"></fa-icon></a>. To perform this scaling for species not listed here, use <a rel="noopener" target="_blank" href="HumanCalc">HumanCalc</a>. Note that these are default methods for interspecies scaling to be used the absence of good comparative data on the toxicodynamic and toxicokinetic differences between the species from which the No/Lo Effect level is derived and humans.
+        Use this factor if the No/Low Effect level comes from animals. This factor accounts for the uncertainty related to extrapolating animal data to humans. The basic assumption when using this factor is that the critical effect for which the No/Low effect level is derived is relevant to humans, but that toxicokinetic and toxicodynamic differences exist between humans and animals. The fixed factors listed for the species above are based on body surface area allometric scaling (BW<sup>2/3</sup>). For more on the priniciples of allometric scaling see <a rel="noopener" target="_blank" href="/assets/665c125d6b338f200ae3/Size Matters.pdf">Human Equivalent Doses and Allometry Explained <fa-icon [icon]="['fas', 'file-pdf']"></fa-icon></a>. <a rel="noopener" target="_blank" href="HumanCalc">HumanCalc</a> may also be used to perform allometric scaling. Note that these are default methods for interspecies scaling. These are to be used the absence of good comparative data on the toxicodynamic and toxicokinetic differences between the species from which the No/Low effect level is derived and humans.
       </ng-template>
     </sd-calc-row>
     <sd-calc-row #safetyFactorRow>

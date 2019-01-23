@@ -128,6 +128,7 @@ class Species extends Field {
   selected: string = 'custom';
 
   readonly options = [
+    {label: 'human equivalent dose (no F1 required)', value: 1},
     {label: 'human', value: 1},
     {label: 'dog', value: 2},
     {label: 'rabbit', value: 2.5},
