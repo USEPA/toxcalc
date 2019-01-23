@@ -23,6 +23,9 @@
           #bioavailabilityPDEInput
           />
       </ng-template>
+      <ng-template sdCalcRowHelp>
+        This is the % bioavailability for the intended route of exposure via the PDE. If there is uncertainty regarding this value, 100% should be assumed.
+      </ng-template>
     </sd-calc-row>
     <sd-calc-row #bioavailabilityCriticalStudyRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="bioavailabilityCriticalStudy">
@@ -41,6 +44,9 @@
           #bioavailabilityCriticalStudyInput
           />
       </ng-template>
+      <ng-template sdCalcRowHelp>
+        This is the % bioavailability from the study from which the No/Low Effect level or point of departure is derived. The user should have a high degree of certainty for this value before using this correction because overestimation of this value is not a conservative assumption. An example of how different assumptions in the % bioavailability for the critical study route can impact the PDE can be found here.
+      </ng-template>
     </sd-calc-row>
     <sd-calc-row #alphaRow>
       <ng-template sdCalcRowLabel sdCalcRowLabelFor="alpha">
@@ -58,6 +64,9 @@
           [ngModelOptions]="{standalone: true}"
           #alphaInput
           />
+      </ng-template>
+      <ng-template sdCalcRowHelp>
+        Alpha or BCF is the bioavailability correction factor. This factor is applied when the route of administration of the critical study is different from the route of exposure to which the PDE applies. Note that application of BCF is not considered appropriate if the critical effect may be different between the route of exposure to which the PDE applies as compared to the route of exposure from the critical study. For example, a site-of-contact critical effect may be more concentration dependent rather than total dose dependent, and a BCF would not account for this.
       </ng-template>
     </sd-calc-row>
     <sd-internal-calc-error [errorText]="bcfForm.internalError"></sd-internal-calc-error>
