@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFileDownload, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,16 @@ export class SdCalculationLogComponent {
   constructor(public log: SdCalculationLogService) {
     library.add(faFileDownload);
     library.add(faTrashAlt);
+  }
+
+  @ViewChild('sdcalcmostrecent') mostRecent: ElementRef;
+
+  scrollIntoView(): void {
+    this.mostRecent.nativeElement.scrollIntoView();
+  }
+
+  empty(): boolean {
+    return this.log.empty();
   }
 
   append(columns: Array<string>, cells: Array<string>): void {

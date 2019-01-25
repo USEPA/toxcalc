@@ -20,7 +20,7 @@
         <span class="text-muted"><i>No calculations yet. Click <span class="bg-primary text-white rounded p-1" style="font-style: normal">Calculate!</span> or <span class="bg-primary text-white rounded p-1" style="font-style: normal">Convert!</span> to log a calculation.</i></span>
       </div>
     </ng-container>
-    <ng-container *ngFor="let group of log.groups; let group_index=index">
+    <ng-container *ngFor="let group of log.groups; let group_index = index; let group_last = last">
       <table class="table table-bordered table-sm table-responsive w-100">
         <thead class="bg-light">
           <tr>
@@ -28,9 +28,9 @@
             <th scope="col"></th>
           </tr>
         </thead>
-        <tr *ngFor="let row of group.rows; let row_index=index">
+        <tr *ngFor="let row of group.rows; let row_index = index; let row_last = last">
           <td *ngFor="let cell of row">{{cell}}</td>
-          <td align="right"><button type="button" class="btn btn-light" aria-label="Delete" (click)="log.deleteRow(group_index, row_index);"><fa-icon [icon]="['fas', 'trash-alt']"></fa-icon></button></td>
+          <td align="right"><span #sdcalcmostrecent *ngIf="group_last && row_last"></span><button type="button" class="btn btn-light" aria-label="Delete" (click)="log.deleteRow(group_index, row_index);"><fa-icon [icon]="['fas', 'trash-alt']"></fa-icon></button></td>
         </tr>
       </table>
     </ng-container>

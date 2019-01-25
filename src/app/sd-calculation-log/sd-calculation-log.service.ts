@@ -23,6 +23,10 @@ export class SdCalculationLogService {
     return JSON.stringify(left) == JSON.stringify(right);
   }
 
+  empty(): boolean {
+    return this.groups_.length == 0;
+  }
+
   append(columns: Array<string>, cells: Array<string>): void {
     if (this.groups_.length == 0 ||
         !this.sameArray(this.groups_[this.groups_.length - 1].columns, columns)) {
