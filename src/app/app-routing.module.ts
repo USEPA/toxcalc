@@ -9,6 +9,7 @@ import { HbelCalcComponent } from './hbelcalc/hbelcalc.component';
 import { BioavailCalcComponent } from './bioavailcalc/bioavailcalc.component';
 import { DefinitionsComponent } from './definitions/definitions.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
+import { ExamplesComponent } from './examples/examples.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: LandingComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'BioavailCalc', component: BioavailCalcComponent },
   { path: 'definitions', component: DefinitionsComponent },
   { path: 'disclaimer', component: DisclaimerComponent },
+  { path: 'examples', component: ExamplesComponent },
 ];
 
 @NgModule({
