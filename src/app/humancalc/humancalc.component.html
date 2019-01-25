@@ -6,193 +6,201 @@
   <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
   <p><b>FDA Method</b></p>
   <p>For details on this method, see Table 1 (page 10) of the <a rel="noopener" target="_blank" href="https://www.fda.gov/downloads/drugs/guidances/ucm078932.pdf">FDA Guidance for Industry</a>.</p>
-  <form class="mb-3" autocomplete="off" novalidate (change)="fdaMethodForm.formChange()">
-    <sd-calc-row #animalSpeciesRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalSpecies">
-        {{animalSpecies.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <sd-select id="animalSpecies" (click)="changeSpecies()" #animalSpeciesSelect>
-          <option *ngFor="let species of speciesOptions" [label]="species.species" [value]="species"></option>
-        </sd-select>
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #animalDoseRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalDose">
-        {{animalDose.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="animalDose"
-          sdInputPosNum
-          (blur)="fdaMethodForm.inputBlur()"
-          (focus)="fdaMethodForm.inputFocus($event.target)"
-          [readonly]="animalDose.readOnly"
-          [(ngModel)]="animalDose.value"
-          [ngModelOptions]="{standalone: true}"
-          #animalDoseInput
-          />
-        <div class="input-group-append">
-          <span class="input-group-text">mg/kg BW/day</span>
+  <div class="card w-100 mb-3">
+    <div class="card-body">
+      <form autocomplete="off" novalidate (change)="fdaMethodForm.formChange()">
+        <sd-calc-row #animalSpeciesRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalSpecies">
+            {{animalSpecies.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <sd-select id="animalSpecies" (click)="changeSpecies()" #animalSpeciesSelect>
+              <option *ngFor="let species of speciesOptions" [label]="species.species" [value]="species"></option>
+            </sd-select>
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #animalDoseRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalDose">
+            {{animalDose.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="animalDose"
+              sdInputPosNum
+              (blur)="fdaMethodForm.inputBlur()"
+              (focus)="fdaMethodForm.inputFocus($event.target)"
+              [readonly]="animalDose.readOnly"
+              [(ngModel)]="animalDose.value"
+              [ngModelOptions]="{standalone: true}"
+              #animalDoseInput
+              />
+            <div class="input-group-append">
+              <span class="input-group-text">mg/kg BW/day</span>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The dose in mg/kg body weight/day that the animal received.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #humanDoseRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="humanDose">
+            {{humanEquivalentDose.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="humanDose"
+              sdInputPosNum
+              (blur)="fdaMethodForm.inputBlur()"
+              (focus)="fdaMethodForm.inputFocus($event.target)"
+              [readonly]="humanEquivalentDose.readOnly"
+              [(ngModel)]="humanEquivalentDose.value"
+              [ngModelOptions]="{standalone: true}"
+              #humanDoseInput/>
+            <div class="input-group-append">
+              <span class="input-group-text">mg/kg BW/day</span>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            Human dose extrapolated from an animal dose.
+          </ng-template>
+        </sd-calc-row>
+        <sd-internal-calc-error [errorText]="fdaMethodForm.internalError"></sd-internal-calc-error>
+        <div class="form-group form-row ml-0 mb-0">
+          <button class="btn btn-primary mr-3" (click)="fdaMethodForm.calculateAndLog(calculationLog)" [disabled]="fdaMethodForm.internalError">Convert!</button>
+          <button class="btn btn-secondary" (click)="fdaMethodForm.clear()">Clear</button>
         </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The dose in mg/kg body weight/day that the animal received.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #humanDoseRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="humanDose">
-        {{humanEquivalentDose.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="humanDose"
-          sdInputPosNum
-          (blur)="fdaMethodForm.inputBlur()"
-          (focus)="fdaMethodForm.inputFocus($event.target)"
-          [readonly]="humanEquivalentDose.readOnly"
-          [(ngModel)]="humanEquivalentDose.value"
-          [ngModelOptions]="{standalone: true}"
-          #humanDoseInput/>
-        <div class="input-group-append">
-          <span class="input-group-text">mg/kg BW/day</span>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        Human dose extrapolated from an animal dose.
-      </ng-template>
-    </sd-calc-row>
-    <sd-internal-calc-error [errorText]="fdaMethodForm.internalError"></sd-internal-calc-error>
-    <div class="form-group form-row ml-0">
-      <button class="btn btn-primary mr-3" (click)="fdaMethodForm.calculateAndLog(calculationLog)" [disabled]="fdaMethodForm.internalError">Convert!</button>
-      <button class="btn btn-secondary" (click)="fdaMethodForm.clear()">Clear</button>
+      </form>
     </div>
-  </form>
+  </div>
   <p>The above calculations are based on the following equation:</p>
   <p [sdKatex]="fdaMethodForm.equationSnippet"></p>
   <hr />
   <p><b>Body weight scaling method</b></p>
   <p>This method scales doses between animals and humans-based Body Weight¾ (EPA preferred method) or Body Weight⅔ (FDA preferred method). Note that use of the FDA preferred method will result in more conservative estimations of human equivalent doses. It is NOT recommended that this calculator be used to scale human doses to smaller animals because this will result in higher doses in the animals on a mg/kg basis (i.e. this is not conservative) UNLESS it is already known that the dosing of the substance in question scales allometrically.</p>
-  <form class="mb-3" autocomplete="off" novalidate (change)="weightMethodForm.formChange()">
-    <sd-calc-row #weightAnimalDoseRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="weightAnimalDose">
-        {{weightAnimalDose.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="weightAnimalDose"
-          sdInputPosNum
-          (blur)="weightMethodForm.inputBlur()"
-          (focus)="weightMethodForm.inputFocus($event.target)"
-          [readonly]="weightAnimalDose.readOnly"
-          [(ngModel)]="weightAnimalDose.value"
-          [ngModelOptions]="{standalone: true}"
-          #weightAnimalDoseInput
-          />
-        <div class="input-group-append">
-          <span class="input-group-text">mg/kg BW/day</span>
+  <div class="card w-100 mb-3">
+    <div class="card-body">
+      <form autocomplete="off" novalidate (change)="weightMethodForm.formChange()">
+        <sd-calc-row #weightAnimalDoseRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="weightAnimalDose">
+            {{weightAnimalDose.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="weightAnimalDose"
+              sdInputPosNum
+              (blur)="weightMethodForm.inputBlur()"
+              (focus)="weightMethodForm.inputFocus($event.target)"
+              [readonly]="weightAnimalDose.readOnly"
+              [(ngModel)]="weightAnimalDose.value"
+              [ngModelOptions]="{standalone: true}"
+              #weightAnimalDoseInput
+              />
+            <div class="input-group-append">
+              <span class="input-group-text">mg/kg BW/day</span>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The dose in mg/kg body weight/day that the animal received.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #animalWeightRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalWeight">
+            {{animalWeight.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="animalWeight"
+              sdInputPosNum
+              (blur)="weightMethodForm.inputBlur()"
+              (focus)="weightMethodForm.inputFocus($event.target)"
+              [readonly]="animalWeight.readOnly"
+              [(ngModel)]="animalWeight.value"
+              [ngModelOptions]="{standalone: true}"
+              #animalWeightInput
+              />
+            <sd-select name="animalWeightUnits" #animalWeightUnits (change)="changeAnimalWeightUnits()">
+              <option label="kg"></option>
+              <option label="g"></option>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The mass of the animal.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #humanWeightRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="humanWeight">
+            {{humanWeight.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="humanWeight"
+              sdInputPosNum
+              (blur)="weightMethodForm.inputBlur()"
+              (focus)="weightMethodForm.inputFocus($event.target)"
+              [readonly]="humanWeight.readOnly"
+              [(ngModel)]="humanWeight.value"
+              [ngModelOptions]="{standalone: true}"
+              #humanWeightInput
+              />
+            <sd-select name="humanWeightUnits" #humanWeightUnits (change)="changeHumanWeightUnits()">
+              <option label="kg"></option>
+              <option label="g"></option>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The mass of the human.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #conversionFactorRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="conversionFactor">
+            {{conversionFactor.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <sd-select (click)="changeConversionFactor()" id="conversionFactor" #conversionFactorSelect>
+                <option *ngFor="let factor of conversionFactorOptions" [label]="factor.display" [value]="factor"></option>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The FDA method recommends use of Body Weight<sup>⅔</sup> or scaling based on body surface area. When the equation is rearranged, this is Body Weight<sup>⅓</sup> or Body Weight<sup>0.33</sup>. The EPA default recommendation is Body Weight<sup>¾</sup> or scaling based on metabolic rate. When this equation is rearranged, this is Body Weight<sup>¼</sup> or Body Weight<sup>0.25</sup>.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #weightHumanDoseRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="weightHumanDose">
+            {{weightHumanEquivalentDose.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="weightHumanDose"
+              sdInputPosNum
+              (blur)="weightMethodForm.inputBlur()"
+              (focus)="weightMethodForm.inputFocus($event.target)"
+              [readonly]="weightHumanEquivalentDose.readOnly"
+              [(ngModel)]="weightHumanEquivalentDose.value"
+              [ngModelOptions]="{standalone: true}"
+              #weightHumanDoseInput
+              />
+            <div class="input-group-append">
+              <span class="input-group-text">mg/kg BW/day</span>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            Human dose extrapolated from an animal dose.
+          </ng-template>
+        </sd-calc-row>
+        <sd-internal-calc-error [errorText]="weightMethodForm.internalError"></sd-internal-calc-error>
+        <div class="form-group form-row ml-0 mb-0">
+          <button class="btn btn-primary mr-3" (click)="weightMethodForm.calculateAndLog(calculationLog)" [disabled]="weightMethodForm.internalError">Convert!</button>
+          <button class="btn btn-secondary" (click)="weightMethodForm.clear()">Clear</button>
         </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The dose in mg/kg body weight/day that the animal received.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #animalWeightRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalWeight">
-        {{animalWeight.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="animalWeight"
-          sdInputPosNum
-          (blur)="weightMethodForm.inputBlur()"
-          (focus)="weightMethodForm.inputFocus($event.target)"
-          [readonly]="animalWeight.readOnly"
-          [(ngModel)]="animalWeight.value"
-          [ngModelOptions]="{standalone: true}"
-          #animalWeightInput
-          />
-        <sd-select name="animalWeightUnits" #animalWeightUnits (change)="changeAnimalWeightUnits()">
-          <option label="kg"></option>
-          <option label="g"></option>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The mass of the animal.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #humanWeightRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="humanWeight">
-        {{humanWeight.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="humanWeight"
-          sdInputPosNum
-          (blur)="weightMethodForm.inputBlur()"
-          (focus)="weightMethodForm.inputFocus($event.target)"
-          [readonly]="humanWeight.readOnly"
-          [(ngModel)]="humanWeight.value"
-          [ngModelOptions]="{standalone: true}"
-          #humanWeightInput
-          />
-        <sd-select name="humanWeightUnits" #humanWeightUnits (change)="changeHumanWeightUnits()">
-          <option label="kg"></option>
-          <option label="g"></option>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The mass of the human.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #conversionFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="conversionFactor">
-        {{conversionFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <sd-select (click)="changeConversionFactor()" id="conversionFactor" #conversionFactorSelect>
-            <option *ngFor="let factor of conversionFactorOptions" [label]="factor.display" [value]="factor"></option>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The FDA method recommends use of Body Weight<sup>⅔</sup> or scaling based on body surface area. When the equation is rearranged, this is Body Weight<sup>⅓</sup> or Body Weight<sup>0.33</sup>. The EPA default recommendation is Body Weight<sup>¾</sup> or scaling based on metabolic rate. When this equation is rearranged, this is Body Weight<sup>¼</sup> or Body Weight<sup>0.25</sup>.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #weightHumanDoseRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="weightHumanDose">
-        {{weightHumanEquivalentDose.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="weightHumanDose"
-          sdInputPosNum
-          (blur)="weightMethodForm.inputBlur()"
-          (focus)="weightMethodForm.inputFocus($event.target)"
-          [readonly]="weightHumanEquivalentDose.readOnly"
-          [(ngModel)]="weightHumanEquivalentDose.value"
-          [ngModelOptions]="{standalone: true}"
-          #weightHumanDoseInput
-          />
-        <div class="input-group-append">
-          <span class="input-group-text">mg/kg BW/day</span>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        Human dose extrapolated from an animal dose.
-      </ng-template>
-    </sd-calc-row>
-    <sd-internal-calc-error [errorText]="weightMethodForm.internalError"></sd-internal-calc-error>
-    <div class="form-group form-row ml-0">
-      <button class="btn btn-primary mr-3" (click)="weightMethodForm.calculateAndLog(calculationLog)" [disabled]="weightMethodForm.internalError">Convert!</button>
-      <button class="btn btn-secondary" (click)="weightMethodForm.clear()">Clear</button>
+      </form>
     </div>
-  </form>
+  </div>
   <p>The above calculations are based on the following equation:</p>
   <p [sdKatex]="weightMethodForm.equationSnippet"></p>
   <p><a rel="noopener" target="_blank" href="/assets/665c125d6b338f200ae3/Size Matters.pdf">Human Equivalent Doses and Allometry Explained <fa-icon [icon]="['fas', 'file-pdf']"></fa-icon></a></p>

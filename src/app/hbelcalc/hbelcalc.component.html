@@ -4,415 +4,420 @@
     Health-Based Exposure Limit for Pharmaceuticals
   </p>
   <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
-  <form class="mb-3" autocomplete="off" novalidate (change)="pdeForm.formChange()">
-    <sd-calc-row #effectLimitRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="effectLimit">
-        {{effectLimit.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="effectLimit"
-          sdInputPosNum
-          (blur)="pdeForm.inputBlur()"
-          (focus)="pdeForm.inputFocus($event.target)"
-          [readonly]="effectLimit.readOnly"
-          [(ngModel)]="effectLimit.value"
-          [ngModelOptions]="{standalone: true}"
-          #effectLimitInput
-          />
-        <div class="input-group-append">
-          <sd-select name="effectLimitUnits" #effectLimitUnits (change)="pdeForm.formChange();">
-            <option *ngFor="let unit of iterUnits(effectLimit.UNITS)" [label]="unit" [value]="effectLimit.UNITS[unit]">
-          </sd-select>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        Enter the No/Low effect levels or other suitable Point of Departure (PoD) from the critical study. Either a human or animal No/Low effect level may be used. If an animal No/Low effect level is used, you can convert to a human equivalent dose (HED). If an HED is used as the No/Low effect level, no F1 factor needs to be applied.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #bodyWeightRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
-        {{bodyWeight.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <div class="d-flex">
-          <div>
-            <div class="form-check" *ngFor="let item of bodyWeight.options; index as i">
-              <input type="radio" name="bodyWeightGroup" class="form-check-input" [id]="'bodyWeightGroup' + i" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="bodyWeight.output" (click)="bodyWeightClick(i)">
-              <label [ngClass]="{'form-check-label': true, 'font-weight-bold': item.bold}" [for]="'bodyWeightGroup' + i">{{item.label}}</label>
-            </div>
-            <div class="form-check">
-              <input type="radio" name="bodyWeightGroup" class="form-check-input" id="bodyWeightCustom" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="bodyWeight.output" (click)="bodyWeightClickCustom()">
-              <label class="form-check-label" for="bodyWeightCustom">custom body weight:</label>
-              <div class="form-inline">
-                <div class="input-group">
-                  <input
-                    class="form-control"
-                    id="bodyWeightCustomValue"
-                    sdInputPosNum
-                    (blur)="pdeForm.inputBlur()"
-                    (focus)="pdeForm.inputFocus($event.target)"
-                    [readonly]="bodyWeight.output"
-                    [disabled]="!bodyWeight.custom"
-                    [(ngModel)]="bodyWeight.customValue"
-                    [ngModelOptions]="{standalone: true}"
-                    #bodyWeightInput
-                    />
-                  <div class="input-group-append">
-                    <span class="input-group-text">kg</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <button type="button" class="btn btn-light ml-3" (click)="bodyWeightRow.showHelp = !bodyWeightRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
-              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-            </button>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowInput *ngIf="!bodyWeight.enabled">
-        <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected for the PDE.</ngb-alert>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        This is the assumed body weight for the human to which the PDE applies. This is needed if the PDE is to be expressed in mg/day. For example, for a PDE being set based on NOEL of 100 mg/kg bw/day, and applying a modifying factor of 100, the PDE is 1 mg/kg bw/day (100 mg/kg bw/day ÷ 100 = 1 mg/kg bw/day). If the assumed human body weight is 50 kg, this PDE is equivalent to 50 mg/day (PDE of 1 mg/kg bw/day × 50 kg = 50 mg/day).
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #speciesRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="species">
-        {{species.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <div class="d-flex">
-          <div>
-            <div class="form-check" *ngFor="let item of species.options; index as i">
-              <input type="radio" name="speciesGroup" class="form-check-input" [id]="'speciesGroup' + i" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="species.output" (click)="speciesClick(i)">
-              <label class="form-check-label" [for]="'speciesGroup' + i">{{item.value}}: {{item.label}}</label>
-            </div>
-            <div class="form-check">
-              <input type="radio" name="speciesGroup" class="form-check-input" id="speciesCustom" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="species.output" (click)="speciesClickCustom()">
-              <label class="form-check-label" for="speciesCustom">custom species name:</label>
-              <div class="form-inline">
-                <div class="input-group">
-                  <input
-                    class="form-control"
-                    id="speciesCustomName"
-                    [disabled]="!species.custom"
-                    [(ngModel)]="species.customSpeciesName"
-                    [ngModelOptions]="{standalone: true}"
-                    />
-                </div>
-              </div>
-              <label class="form-check-label" for="speciesCustomFactor">with factor:</label>
-              <div class="form-inline">
-                <div class="input-group">
-                  <input
-                    class="form-control"
-                    id="speciesCustomFactor"
-                    sdInputPosNum
-                    (blur)="pdeForm.inputBlur()"
-                    (focus)="pdeForm.inputFocus($event.target)"
-                    [readonly]="species.output"
-                    [disabled]="!species.custom"
-                    [(ngModel)]="species.customValue"
-                    [ngModelOptions]="{standalone: true}"
-                    #speciesInput
-                    />
-                  <div class="invalid-tooltip d-block" *ngIf="speciesRow.errorText">
-                    {{speciesRow.errorText}}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <button type="button" class="btn btn-light ml-3" (click)="speciesRow.showHelp = !speciesRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
-              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-            </button>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        Use this factor if the No/Low Effect level comes from animals. This factor accounts for the uncertainty related to extrapolating animal data to humans. The basic assumption when using this factor is that the critical effect for which the No/Low effect level is derived is relevant to humans, but that toxicokinetic and toxicodynamic differences exist between humans and animals. The fixed factors listed for the species above are based on body surface area allometric scaling (BW<sup>2/3</sup>). For more on the priniciples of allometric scaling see <a rel="noopener" target="_blank" href="/assets/665c125d6b338f200ae3/Size Matters.pdf">Human Equivalent Doses and Allometry Explained <fa-icon [icon]="['fas', 'file-pdf']"></fa-icon></a>. <a rel="noopener" target="_blank" href="HumanCalc">HumanCalc</a> may also be used to perform allometric scaling. Note that these are default methods for interspecies scaling. These are to be used the absence of good comparative data on the toxicodynamic and toxicokinetic differences between the species from which the No/Low effect level is derived and humans.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #safetyFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="safetyFactor">
-        {{safetyFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="safetyFactor"
-          sdInputPosNum
-          (blur)="pdeForm.inputBlur()"
-          (focus)="pdeForm.inputFocus($event.target)"
-          [readonly]="safetyFactor.readOnly"
-          [(ngModel)]="safetyFactor.value"
-          [ngModelOptions]="{standalone: true}"
-          value="10"
-          #safetyFactorInput
-          />
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        This factor is intended to account for the variation in sensitivity among the members of the human population. Thus, if starting from a no effect level in humans, the no effect level is considered representative of the study from which the no effect level was derived, which may not be representative of the true range of human sensitivities within a population.  The application of this factor  is intended to cover the range from the <em>average</em> human (which is presumably reflected in the study population from which the no effect level is derived) to the <em>sensitive</em> human. If starting with a no effect level in animals, F1 extrapolates the no effect level from animals to humans and F2 subsequently extrapolates the no effect level in the <em>average</em> human to a human that may be more sensitive to the effects of the substance. Whether or not the applied F1 factor suitably covers sensitive subpopulations may be gained by investigating a chemical's mechanism of action.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #studyDurationFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="studyDurationFactor">
-        {{studyDurationFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <div class="d-flex">
-          <div>
-            <div class="form-check" *ngFor="let item of studyDurationFactor.options(); index as i">
-              <input type="radio" name="studyDurationFactorGroup" class="form-check-input" [id]="'studyDurationFactorGroup' + i" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClick(item.value)">
-              <label class="form-check-label" [for]="'studyDurationFactorGroup' + i">{{item.value}}: {{item.label}}</label>
-            </div>
-            <div class="form-check">
-              <input type="radio" name="studyDurationFactorGroup" class="form-check-input" id="studyDurationFactorGroupCustom" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClickCustom()">
-              <label class="form-check-label" for="studyDurationFactorGroupCustom">custom value:</label>
-              <div class="form-inline">
-                <div class="input-group">
-                  <input
-                    class="form-control"
-                    id="studyDurationFactorCustom"
-                    sdInputPosNum
-                    (blur)="pdeForm.inputBlur()"
-                    (focus)="pdeForm.inputFocus($event.target)"
-                    [readonly]="studyDurationFactor.output"
-                    [disabled]="!studyDurationFactor.custom"
-                    [(ngModel)]="studyDurationFactor.customValue"
-                    [ngModelOptions]="{standalone: true}"
-                    #studyDurationFactorInput
-                    />
-                  <div class="invalid-tooltip d-block" *ngIf="studyDurationFactorRow.errorText">
-                    {{studyDurationFactorRow.errorText}}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <button type="button" class="btn btn-light ml-3" (click)="studyDurationFactorRow.showHelp = !studyDurationFactorRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
-              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-            </button>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        PDEs are calculated for lifetime exposures, yet experimental data evaluating the health effects of chemicals are typically days to months long. It is assumed that the health effects observed in these shorter duration studies are relevant to lifetime exposures, but that these effects may occur at lower doses or occur at higher severity with prolonged exposures. Furthermore, it also assumes that some effects may only be revealed after chronic exposures. F3 addresses the question of whether studies of longer duration than the one used for PDE derivation might have yielded a lower point of departure or no/low effect level.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #severeToxicityFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="severeToxicityFactor">
-        {{severeToxicityFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <div class="d-flex">
-          <div>
-            This factor can be used for any form of severe toxicity. Examples of factors that could be applied in the realm of developmental toxicity studies is shown below:
-            <div class="form-check" *ngFor="let item of severeToxicityFactor.options; index as i">
-              <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" [id]="'severeToxicityFactorGroup' + i" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" checked [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClick(item.value)">
-              <label class="form-check-label" [for]="'severeToxicityFactorGroup' + i">{{item.value}}: {{item.label}}</label>
-            </div>
-            <div class="form-check">
-              <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" id="severeToxicityGroupCustom" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" value="custom" [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClickCustom()">
-              <label class="form-check-label" for="severeToxicityGroupCustom">custom value:</label>
-              <div class="form-inline">
-                <div class="input-group">
-                  <input
-                    class="form-control"
-                    id="severeToxicityFactorCustom"
-                    sdInputPosNum
-                    (blur)="pdeForm.inputBlur()"
-                    (focus)="pdeForm.inputFocus($event.target)"
-                    [readonly]="severeToxicityFactor.output"
-                    [disabled]="!severeToxicityFactor.custom"
-                    [(ngModel)]="severeToxicityFactor.customValue"
-                    [ngModelOptions]="{standalone: true}"
-                    #severeToxicityInput
-                    />
-                  <div class="invalid-tooltip d-block" *ngIf="severeToxicityFactorRow.errorText">
-                    {{severeToxicityFactorRow.errorText}}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <button type="button" class="btn btn-light ml-3" (click)="severeToxicityFactorRow.showHelp = !severeToxicityFactorRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
-              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-            </button>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        This factor is used to account for the severity of effect observed. ICH Q3C indicates its use for severe toxicity (e.g. non-genotoxic carcinogenicity, neurotoxicity or teratogenicity). This factor is not uniformly used by other authoritative agencies that perform risk assessment.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #noNoelFactorRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="noNoelFactor">
-        {{noNoelFactor.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="noNoelFactor"
-          sdInputPosNum
-          (blur)="pdeForm.inputBlur()"
-          (focus)="pdeForm.inputFocus($event.target)"
-          [readonly]="noNoelFactor.readOnly"
-          [(ngModel)]="noNoelFactor.value"
-          [ngModelOptions]="{standalone: true}"
-          #noNoelFactorInput
-          />
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The absence of a NOEL with use of a LOEL creates some uncertainty. The use of the modifying factor is expected to drop the LOEL into the range of the NOEL. Note that if a benchmark dose limit is used as the point of departure, F5 does not need to be used.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #alphaRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="alpha">
-        {{alpha.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <div class="form-inline">
-          <div class="input-group">
+  <div class="card w-100 mb-3">
+    <div class="card-body">
+      <form autocomplete="off" novalidate (change)="pdeForm.formChange()">
+        <sd-calc-row #effectLimitRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="effectLimit">
+            {{effectLimit.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
             <input
               class="form-control"
-              id="alpha"
+              id="effectLimit"
               sdInputPosNum
               (blur)="pdeForm.inputBlur()"
               (focus)="pdeForm.inputFocus($event.target)"
-              [disabled]="!alpha.enabled"
-              [readonly]="alpha.readOnly"
-              [(ngModel)]="alpha.textValue"
+              [readonly]="effectLimit.readOnly"
+              [(ngModel)]="effectLimit.value"
               [ngModelOptions]="{standalone: true}"
-              #alphaInput
+              #effectLimitInput
               />
-          </div>
-          <input
-            class="form-check-input ml-3"
-            id="alphaDisableControl"
-            type="checkbox"
-            (change)="alphaDisable()"
-            [(ngModel)]="alphaDisabled"
-            [ngModelOptions]="{standalone: true}"
-            />
-          <label class="form-check-label" for="alphaDisableControl">Disable</label>
-          <div>
-            <button type="button" class="btn btn-light ml-3" (click)="alphaRow.showHelp = !alphaRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
-              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-            </button>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        Alpha or BCF is the bioavailability correction factor. This factor is applied when the route of administration of the critical study is different from the route of exposure to which the PDE applies. To calculate BCF use <a rel="noopener" target="_blank" href="BioavailCalc">BioavailCalc</a>. Note that application of BCF is not considered appropriate if the critical effect may be different between the route of exposure to which the PDE applies as compared to the route of exposure from the critical study. For example, a site-of-contact critical effect may be more concentration dependent rather than total dose dependent, and a BCF would not account for this.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #extraFactorsRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="extraFactors">
-        {{extraFactors.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <div class="form-inline">
-          <div class="input-group">
+            <div class="input-group-append">
+              <sd-select name="effectLimitUnits" #effectLimitUnits (change)="pdeForm.formChange();">
+                <option *ngFor="let unit of iterUnits(effectLimit.UNITS)" [label]="unit" [value]="effectLimit.UNITS[unit]">
+              </sd-select>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            Enter the No/Low effect levels or other suitable Point of Departure (PoD) from the critical study. Either a human or animal No/Low effect level may be used. If an animal No/Low effect level is used, you can convert to a human equivalent dose (HED). If an HED is used as the No/Low effect level, no F1 factor needs to be applied.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #bodyWeightRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="bodyWeight">
+            {{bodyWeight.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput sdCustomRowInput="true">
+            <div class="d-flex">
+              <div>
+                <div class="form-check" *ngFor="let item of bodyWeight.options; index as i">
+                  <input type="radio" name="bodyWeightGroup" class="form-check-input" [id]="'bodyWeightGroup' + i" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="bodyWeight.output" (click)="bodyWeightClick(i)">
+                  <label [ngClass]="{'form-check-label': true, 'font-weight-bold': item.bold}" [for]="'bodyWeightGroup' + i">{{item.label}}</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="bodyWeightGroup" class="form-check-input" id="bodyWeightCustom" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="bodyWeight.output" (click)="bodyWeightClickCustom()">
+                  <label class="form-check-label" for="bodyWeightCustom">custom body weight:</label>
+                  <div class="form-inline">
+                    <div class="input-group">
+                      <input
+                        class="form-control"
+                        id="bodyWeightCustomValue"
+                        sdInputPosNum
+                        (blur)="pdeForm.inputBlur()"
+                        (focus)="pdeForm.inputFocus($event.target)"
+                        [readonly]="bodyWeight.output"
+                        [disabled]="!bodyWeight.custom"
+                        [(ngModel)]="bodyWeight.customValue"
+                        [ngModelOptions]="{standalone: true}"
+                        #bodyWeightInput
+                        />
+                      <div class="input-group-append">
+                        <span class="input-group-text">kg</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-light ml-3" (click)="bodyWeightRow.showHelp = !bodyWeightRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+                  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowInput *ngIf="!bodyWeight.enabled">
+            <ngb-alert [dismissible]="false">Body weight is not used in the calculation due to the units selected for the PDE.</ngb-alert>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            This is the assumed body weight for the human to which the PDE applies. This is needed if the PDE is to be expressed in mg/day. For example, for a PDE being set based on NOEL of 100 mg/kg bw/day, and applying a modifying factor of 100, the PDE is 1 mg/kg bw/day (100 mg/kg bw/day ÷ 100 = 1 mg/kg bw/day). If the assumed human body weight is 50 kg, this PDE is equivalent to 50 mg/day (PDE of 1 mg/kg bw/day × 50 kg = 50 mg/day).
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #speciesRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="species">
+            {{species.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput sdCustomRowInput="true">
+            <div class="d-flex">
+              <div>
+                <div class="form-check" *ngFor="let item of species.options; index as i">
+                  <input type="radio" name="speciesGroup" class="form-check-input" [id]="'speciesGroup' + i" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="species.output" (click)="speciesClick(i)">
+                  <label class="form-check-label" [for]="'speciesGroup' + i">{{item.value}}: {{item.label}}</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="speciesGroup" class="form-check-input" id="speciesCustom" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="species.output" (click)="speciesClickCustom()">
+                  <label class="form-check-label" for="speciesCustom">custom species name:</label>
+                  <div class="form-inline">
+                    <div class="input-group">
+                      <input
+                        class="form-control"
+                        id="speciesCustomName"
+                        [disabled]="!species.custom"
+                        [(ngModel)]="species.customSpeciesName"
+                        [ngModelOptions]="{standalone: true}"
+                        />
+                    </div>
+                  </div>
+                  <label class="form-check-label" for="speciesCustomFactor">with factor:</label>
+                  <div class="form-inline">
+                    <div class="input-group">
+                      <input
+                        class="form-control"
+                        id="speciesCustomFactor"
+                        sdInputPosNum
+                        (blur)="pdeForm.inputBlur()"
+                        (focus)="pdeForm.inputFocus($event.target)"
+                        [readonly]="species.output"
+                        [disabled]="!species.custom"
+                        [(ngModel)]="species.customValue"
+                        [ngModelOptions]="{standalone: true}"
+                        #speciesInput
+                        />
+                      <div class="invalid-tooltip d-block" *ngIf="speciesRow.errorText">
+                        {{speciesRow.errorText}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-light ml-3" (click)="speciesRow.showHelp = !speciesRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+                  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            Use this factor if the No/Low Effect level comes from animals. This factor accounts for the uncertainty related to extrapolating animal data to humans. The basic assumption when using this factor is that the critical effect for which the No/Low effect level is derived is relevant to humans, but that toxicokinetic and toxicodynamic differences exist between humans and animals. The fixed factors listed for the species above are based on body surface area allometric scaling (BW<sup>2/3</sup>). For more on the priniciples of allometric scaling see <a rel="noopener" target="_blank" href="/assets/665c125d6b338f200ae3/Size Matters.pdf">Human Equivalent Doses and Allometry Explained <fa-icon [icon]="['fas', 'file-pdf']"></fa-icon></a>. <a rel="noopener" target="_blank" href="HumanCalc">HumanCalc</a> may also be used to perform allometric scaling. Note that these are default methods for interspecies scaling. These are to be used the absence of good comparative data on the toxicodynamic and toxicokinetic differences between the species from which the No/Low effect level is derived and humans.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #safetyFactorRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="safetyFactor">
+            {{safetyFactor.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
             <input
               class="form-control"
-              id="extraFactors"
+              id="safetyFactor"
               sdInputPosNum
               (blur)="pdeForm.inputBlur()"
               (focus)="pdeForm.inputFocus($event.target)"
-              [disabled]="!extraFactors.enabled"
-              [readonly]="extraFactors.readOnly"
-              [(ngModel)]="extraFactors.textValue"
+              [readonly]="safetyFactor.readOnly"
+              [(ngModel)]="safetyFactor.value"
               [ngModelOptions]="{standalone: true}"
-              #extraFactorsInput
+              value="10"
+              #safetyFactorInput
               />
-          </div>
-          <input
-            class="form-check-input ml-3"
-            id="extraFactorsDisableControl"
-            type="checkbox"
-            (change)="extraFactorsDisable()"
-            [(ngModel)]="extraFactorsDisabled"
-            [ngModelOptions]="{standalone: true}"
-            />
-          <label class="form-check-label" for="extraFactorsDisableControl">Disable</label>
-          <div>
-            <button type="button" class="btn btn-light ml-3" (click)="extraFactorsRow.showHelp = !extraFactorsRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
-              <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
-            </button>
-          </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            This factor is intended to account for the variation in sensitivity among the members of the human population. Thus, if starting from a no effect level in humans, the no effect level is considered representative of the study from which the no effect level was derived, which may not be representative of the true range of human sensitivities within a population.  The application of this factor  is intended to cover the range from the <em>average</em> human (which is presumably reflected in the study population from which the no effect level is derived) to the <em>sensitive</em> human. If starting with a no effect level in animals, F1 extrapolates the no effect level from animals to humans and F2 subsequently extrapolates the no effect level in the <em>average</em> human to a human that may be more sensitive to the effects of the substance. Whether or not the applied F1 factor suitably covers sensitive subpopulations may be gained by investigating a chemical's mechanism of action.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #studyDurationFactorRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="studyDurationFactor">
+            {{studyDurationFactor.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput sdCustomRowInput="true">
+            <div class="d-flex">
+              <div>
+                <div class="form-check" *ngFor="let item of studyDurationFactor.options(); index as i">
+                  <input type="radio" name="studyDurationFactorGroup" class="form-check-input" [id]="'studyDurationFactorGroup' + i" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClick(item.value)">
+                  <label class="form-check-label" [for]="'studyDurationFactorGroup' + i">{{item.value}}: {{item.label}}</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="studyDurationFactorGroup" class="form-check-input" id="studyDurationFactorGroupCustom" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClickCustom()">
+                  <label class="form-check-label" for="studyDurationFactorGroupCustom">custom value:</label>
+                  <div class="form-inline">
+                    <div class="input-group">
+                      <input
+                        class="form-control"
+                        id="studyDurationFactorCustom"
+                        sdInputPosNum
+                        (blur)="pdeForm.inputBlur()"
+                        (focus)="pdeForm.inputFocus($event.target)"
+                        [readonly]="studyDurationFactor.output"
+                        [disabled]="!studyDurationFactor.custom"
+                        [(ngModel)]="studyDurationFactor.customValue"
+                        [ngModelOptions]="{standalone: true}"
+                        #studyDurationFactorInput
+                        />
+                      <div class="invalid-tooltip d-block" *ngIf="studyDurationFactorRow.errorText">
+                        {{studyDurationFactorRow.errorText}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-light ml-3" (click)="studyDurationFactorRow.showHelp = !studyDurationFactorRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+                  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            PDEs are calculated for lifetime exposures, yet experimental data evaluating the health effects of chemicals are typically days to months long. It is assumed that the health effects observed in these shorter duration studies are relevant to lifetime exposures, but that these effects may occur at lower doses or occur at higher severity with prolonged exposures. Furthermore, it also assumes that some effects may only be revealed after chronic exposures. F3 addresses the question of whether studies of longer duration than the one used for PDE derivation might have yielded a lower point of departure or no/low effect level.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #severeToxicityFactorRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="severeToxicityFactor">
+            {{severeToxicityFactor.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput sdCustomRowInput="true">
+            <div class="d-flex">
+              <div>
+                This factor can be used for any form of severe toxicity. Examples of factors that could be applied in the realm of developmental toxicity studies is shown below:
+                <div class="form-check" *ngFor="let item of severeToxicityFactor.options; index as i">
+                  <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" [id]="'severeToxicityFactorGroup' + i" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" checked [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClick(item.value)">
+                  <label class="form-check-label" [for]="'severeToxicityFactorGroup' + i">{{item.value}}: {{item.label}}</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" id="severeToxicityGroupCustom" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" value="custom" [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClickCustom()">
+                  <label class="form-check-label" for="severeToxicityGroupCustom">custom value:</label>
+                  <div class="form-inline">
+                    <div class="input-group">
+                      <input
+                        class="form-control"
+                        id="severeToxicityFactorCustom"
+                        sdInputPosNum
+                        (blur)="pdeForm.inputBlur()"
+                        (focus)="pdeForm.inputFocus($event.target)"
+                        [readonly]="severeToxicityFactor.output"
+                        [disabled]="!severeToxicityFactor.custom"
+                        [(ngModel)]="severeToxicityFactor.customValue"
+                        [ngModelOptions]="{standalone: true}"
+                        #severeToxicityInput
+                        />
+                      <div class="invalid-tooltip d-block" *ngIf="severeToxicityFactorRow.errorText">
+                        {{severeToxicityFactorRow.errorText}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-light ml-3" (click)="severeToxicityFactorRow.showHelp = !severeToxicityFactorRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+                  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            This factor is used to account for the severity of effect observed. ICH Q3C indicates its use for severe toxicity (e.g. non-genotoxic carcinogenicity, neurotoxicity or teratogenicity). This factor is not uniformly used by other authoritative agencies that perform risk assessment.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #noNoelFactorRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="noNoelFactor">
+            {{noNoelFactor.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="noNoelFactor"
+              sdInputPosNum
+              (blur)="pdeForm.inputBlur()"
+              (focus)="pdeForm.inputFocus($event.target)"
+              [readonly]="noNoelFactor.readOnly"
+              [(ngModel)]="noNoelFactor.value"
+              [ngModelOptions]="{standalone: true}"
+              #noNoelFactorInput
+              />
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The absence of a NOEL with use of a LOEL creates some uncertainty. The use of the modifying factor is expected to drop the LOEL into the range of the NOEL. Note that if a benchmark dose limit is used as the point of departure, F5 does not need to be used.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #alphaRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="alpha">
+            {{alpha.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput sdCustomRowInput="true">
+            <div class="form-inline">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="alpha"
+                  sdInputPosNum
+                  (blur)="pdeForm.inputBlur()"
+                  (focus)="pdeForm.inputFocus($event.target)"
+                  [disabled]="!alpha.enabled"
+                  [readonly]="alpha.readOnly"
+                  [(ngModel)]="alpha.textValue"
+                  [ngModelOptions]="{standalone: true}"
+                  #alphaInput
+                  />
+              </div>
+              <input
+                class="form-check-input ml-3"
+                id="alphaDisableControl"
+                type="checkbox"
+                (change)="alphaDisable()"
+                [(ngModel)]="alphaDisabled"
+                [ngModelOptions]="{standalone: true}"
+                />
+              <label class="form-check-label" for="alphaDisableControl">Disable</label>
+              <div>
+                <button type="button" class="btn btn-light ml-3" (click)="alphaRow.showHelp = !alphaRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+                  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            Alpha or BCF is the bioavailability correction factor. This factor is applied when the route of administration of the critical study is different from the route of exposure to which the PDE applies. To calculate BCF use <a rel="noopener" target="_blank" href="BioavailCalc">BioavailCalc</a>. Note that application of BCF is not considered appropriate if the critical effect may be different between the route of exposure to which the PDE applies as compared to the route of exposure from the critical study. For example, a site-of-contact critical effect may be more concentration dependent rather than total dose dependent, and a BCF would not account for this.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #extraFactorsRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="extraFactors">
+            {{extraFactors.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput sdCustomRowInput="true">
+            <div class="form-inline">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="extraFactors"
+                  sdInputPosNum
+                  (blur)="pdeForm.inputBlur()"
+                  (focus)="pdeForm.inputFocus($event.target)"
+                  [disabled]="!extraFactors.enabled"
+                  [readonly]="extraFactors.readOnly"
+                  [(ngModel)]="extraFactors.textValue"
+                  [ngModelOptions]="{standalone: true}"
+                  #extraFactorsInput
+                  />
+              </div>
+              <input
+                class="form-check-input ml-3"
+                id="extraFactorsDisableControl"
+                type="checkbox"
+                (change)="extraFactorsDisable()"
+                [(ngModel)]="extraFactorsDisabled"
+                [ngModelOptions]="{standalone: true}"
+                />
+              <label class="form-check-label" for="extraFactorsDisableControl">Disable</label>
+              <div>
+                <button type="button" class="btn btn-light ml-3" (click)="extraFactorsRow.showHelp = !extraFactorsRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
+                  <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            Application of this factor is based on professional judgment, where the risk assessor believes that uncertainties are not adequately addressed by F1 to F5. ICH Q3C does not specifically apply a factor for database completeness. Thus, if the database is considered poor quality or is insufficiently robust to address key hazard endpoints, this modifying factor may be used.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row>
+          <ng-template sdCalcRowLabel>
+            Composite modifying factors
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control text-right"
+              readonly
+              [value]="getCompositeFactorsValue()"
+              #compositeFactorsOutput
+              />
+          </ng-template>
+          <ng-template sdCalcRowInput sdCustomRowInput="true">
+            <div>
+              <p>This field is calculated based on the following equation:</p>
+              <p sdKatexInline="true" [sdKatex]="eqPrinter.dispatch(compositeFactorsTerm)"></p>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowInput sdCustomRowInput="true" *ngIf="getCompositeFactorsTooHigh()">
+            <ngb-alert [dismissible]="false">Composite uncertainty associated with this PDE is high.</ngb-alert>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The product of all modifying factors applied. Note that composite modifying factors above 5000 indicate a low confidence limit.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #pdeRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="pde">
+            {{pde.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="pde"
+              sdInputPosNum
+              (blur)="pdeForm.inputBlur()"
+              (focus)="pdeForm.inputFocus($event.target)"
+              [readonly]="pde.readOnly"
+              [(ngModel)]="pde.value"
+              [ngModelOptions]="{standalone: true}"
+              #pdeInput
+              />
+            <sd-select name="pdeUnits" #pdeUnits (change)="changePdeUnits();">
+              <optgroup label="mass/time">
+                <option *ngFor="let unit of iterUnits(pde.UNITS, pde.MASS_TIME)" [label]="unit" [value]="pde.UNITS[unit]">
+              </optgroup>
+              <optgroup label="mass/body weight/time">
+                <option *ngFor="let unit of iterUnits(pde.UNITS, pde.PER_TIME)" [label]="unit" [value]="pde.UNITS[unit]">
+              </optgroup>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            A substance specific dose that is unlikely to cause an adverse effect if an individual is exposed at or below this dose every day for a lifetime. Effectively synonymous with ADE.
+          </ng-template>
+        </sd-calc-row>
+        <sd-internal-calc-error [errorText]="pdeForm.internalError"></sd-internal-calc-error>
+        <div class="form-group form-row ml-0 mb-0">
+          <button class="btn btn-primary mr-3" (click)="pdeForm.calculateAndLog(calculationLog)" [disabled]="pdeForm.internalError">Convert!</button>
+          <button class="btn btn-secondary" (click)="pdeForm.clear()">Clear</button>
         </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        Application of this factor is based on professional judgment, where the risk assessor believes that uncertainties are not adequately addressed by F1 to F5. ICH Q3C does not specifically apply a factor for database completeness. Thus, if the database is considered poor quality or is insufficiently robust to address key hazard endpoints, this modifying factor may be used.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row>
-      <ng-template sdCalcRowLabel>
-        Composite modifying factors
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control text-right"
-          readonly
-          [value]="getCompositeFactorsValue()"
-          />
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true">
-        <div>
-          <p>This field is calculated based on the following equation:</p>
-          <p sdKatexInline="true" [sdKatex]="eqPrinter.dispatch(compositeFactorsTerm)"></p>
-        </div>
-      </ng-template>
-      <ng-template sdCalcRowInput sdCustomRowInput="true" *ngIf="getCompositeFactorsTooHigh()">
-        <ngb-alert [dismissible]="false">Composite uncertainty associated with this PDE is high.</ngb-alert>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The product of all modifying factors applied. Note that composite modifying factors above 5000 indicate a low confidence limit.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #pdeRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="pde">
-        {{pde.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="pde"
-          sdInputPosNum
-          (blur)="pdeForm.inputBlur()"
-          (focus)="pdeForm.inputFocus($event.target)"
-          [readonly]="pde.readOnly"
-          [(ngModel)]="pde.value"
-          [ngModelOptions]="{standalone: true}"
-          #pdeInput
-          />
-        <sd-select name="pdeUnits" #pdeUnits (change)="changePdeUnits();">
-          <optgroup label="mass/time">
-            <option *ngFor="let unit of iterUnits(pde.UNITS, pde.MASS_TIME)" [label]="unit" [value]="pde.UNITS[unit]">
-          </optgroup>
-          <optgroup label="mass/body weight/time">
-            <option *ngFor="let unit of iterUnits(pde.UNITS, pde.PER_TIME)" [label]="unit" [value]="pde.UNITS[unit]">
-          </optgroup>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        A substance specific dose that is unlikely to cause an adverse effect if an individual is exposed at or below this dose every day for a lifetime. Effectively synonymous with ADE.
-      </ng-template>
-    </sd-calc-row>
-    <sd-internal-calc-error [errorText]="pdeForm.internalError"></sd-internal-calc-error>
-    <div class="form-group form-row ml-0">
-      <button class="btn btn-primary mr-3" (click)="pdeForm.calculateAndLog(calculationLog)" [disabled]="pdeForm.internalError">Convert!</button>
-      <button class="btn btn-secondary" (click)="pdeForm.clear()">Clear</button>
+      </form>
     </div>
-  </form>
+  </div>
   <p>The above calculations are based on the following equation:</p>
   <p [sdKatex]="pdeForm.equationSnippet"></p>
   <p>The calculations presented follow the principles outlined in the <a rel="noopener" target="_blank" href="https://www.ich.org/fileadmin/Public_Web_Site/ICH_Products/Guidelines/Quality/Q3C/Q3C__R6___Step_4.pdf">ICH Q3C Guideline</a>.</p>

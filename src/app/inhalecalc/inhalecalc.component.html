@@ -4,192 +4,200 @@
   <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
   <p>Use this calculator to convert between air concentrations in volume/volume to mass/volume.</p>
   <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
-  <form class="mb-3" autocomplete="off" novalidate (change)="conversionForm.formChange()">
-    <sd-calc-row #concenVolVolRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="concenVolVol">
-        {{concenVolVol.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="concenVolVol"
-          sdInputPosNum
-          (blur)="conversionForm.inputBlur()"
-          (focus)="conversionForm.inputFocus($event.target)"
-          [readonly]="concenVolVol.readOnly"
-          [(ngModel)]="concenVolVol.value"
-          [ngModelOptions]="{standalone: true}"
-          #concenVolVolInput
-          />
-        <sd-select (click)="conversionForm.formChange()" #concenVolVolUnits>
-          <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The <b>air concentration (parts per notation)</b> is the amount of one substance present in any volume of air.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #molarMassRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
-        {{molarMass.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="molarMass"
-          sdInputPosNum
-          (blur)="conversionForm.inputBlur()"
-          (focus)="conversionForm.inputFocus($event.target)"
-          [readonly]="molarMass.readOnly"
-          [(ngModel)]="molarMass.value"
-          [ngModelOptions]="{standalone: true}"
-          #molarMassInput
-          />
-        <div class="input-group-append">
-          <span class="input-group-text">g/mol</span>
+  <div class="card w-100 mb-3">
+    <div class="card-body">
+      <form autocomplete="off" novalidate (change)="conversionForm.formChange()">
+        <sd-calc-row #concenVolVolRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="concenVolVol">
+            {{concenVolVol.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="concenVolVol"
+              sdInputPosNum
+              (blur)="conversionForm.inputBlur()"
+              (focus)="conversionForm.inputFocus($event.target)"
+              [readonly]="concenVolVol.readOnly"
+              [(ngModel)]="concenVolVol.value"
+              [ngModelOptions]="{standalone: true}"
+              #concenVolVolInput
+              />
+            <sd-select (click)="conversionForm.formChange()" #concenVolVolUnits>
+              <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The <b>air concentration (parts per notation)</b> is the amount of one substance present in any volume of air.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #molarMassRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="molarMass">
+            {{molarMass.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="molarMass"
+              sdInputPosNum
+              (blur)="conversionForm.inputBlur()"
+              (focus)="conversionForm.inputFocus($event.target)"
+              [readonly]="molarMass.readOnly"
+              [(ngModel)]="molarMass.value"
+              [ngModelOptions]="{standalone: true}"
+              #molarMassInput
+              />
+            <div class="input-group-append">
+              <span class="input-group-text">g/mol</span>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            <b>Molar mass</b> is the sum of the total mass in grams of all the atoms that make up a mole of a particular molecule. The unit used to measure molar mass is grams per mole. To calculate molar mass, you can look it up for your molecule from a trusted source, or you can calculate it using the atomic masses of individual atoms that make up the molecule. So, for sodium chloride or NaCl, the atomic mass of sodium is 22.99 g/mol. The atomic mass of chlorine is 35.45 g/mol. Since there is only one atom of sodium and one atom of chlorine in sodium chloride, we add these two together to get the molar mass of NaCl, which is 58.44 g/mol (22.99+35.45=58.44 g/mol).
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #concenMassVolRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="concenMassVol">
+            {{concenMassVol.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="concenMassVol"
+              sdInputPosNum
+              (blur)="conversionForm.inputBlur()"
+              (focus)="conversionForm.inputFocus($event.target)"
+              [readonly]="concenMassVol.readOnly"
+              [(ngModel)]="concenMassVol.value"
+              [ngModelOptions]="{standalone: true}"
+              #concenMassVolInput
+              />
+            <sd-select (click)="conversionForm.formChange()" #concenMassVolUnits>
+              <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            <b>Air concentration (mass/volume)</b> is the mass of the substance present in a specified volume of air.
+          </ng-template>
+        </sd-calc-row>
+        <sd-internal-calc-error [errorText]="conversionForm.internalError"></sd-internal-calc-error>
+        <div class="form-group form-row ml-0 mb-0">
+          <button class="btn btn-primary mr-3" (click)="conversionForm.calculateAndLog(calculationLog)" [disabled]="conversionForm.internalError">Convert!</button>
+          <button class="btn btn-secondary" (click)="conversionForm.clear()">Clear</button>
         </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        <b>Molar mass</b> is the sum of the total mass in grams of all the atoms that make up a mole of a particular molecule. The unit used to measure molar mass is grams per mole. To calculate molar mass, you can look it up for your molecule from a trusted source, or you can calculate it using the atomic masses of individual atoms that make up the molecule. So, for sodium chloride or NaCl, the atomic mass of sodium is 22.99 g/mol. The atomic mass of chlorine is 35.45 g/mol. Since there is only one atom of sodium and one atom of chlorine in sodium chloride, we add these two together to get the molar mass of NaCl, which is 58.44 g/mol (22.99+35.45=58.44 g/mol).
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #concenMassVolRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="concenMassVol">
-        {{concenMassVol.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="concenMassVol"
-          sdInputPosNum
-          (blur)="conversionForm.inputBlur()"
-          (focus)="conversionForm.inputFocus($event.target)"
-          [readonly]="concenMassVol.readOnly"
-          [(ngModel)]="concenMassVol.value"
-          [ngModelOptions]="{standalone: true}"
-          #concenMassVolInput
-          />
-        <sd-select (click)="conversionForm.formChange()" #concenMassVolUnits>
-          <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        <b>Air concentration (mass/volume)</b> is the mass of the substance present in a specified volume of air.
-      </ng-template>
-    </sd-calc-row>
-    <sd-internal-calc-error [errorText]="conversionForm.internalError"></sd-internal-calc-error>
-    <div class="form-group form-row ml-0">
-      <button class="btn btn-primary mr-3" (click)="conversionForm.calculateAndLog(calculationLog)" [disabled]="conversionForm.internalError">Convert!</button>
-      <button class="btn btn-secondary" (click)="conversionForm.clear()">Clear</button>
+      </form>
     </div>
-  </form>
+  </div>
   <p>The above calculations are based on the following equation:</p>
   <p [sdKatex]="conversionForm.equationSnippet"></p>
   <hr>
   <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
-  <form autocomplete="off" novalidate (change)="inhalationForm.formChange()">
-    <sd-calc-row #concenRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
-        {{concen.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="concen"
-          sdInputPosNum
-          (blur)="inhalationForm.inputBlur()"
-          (focus)="inhalationForm.inputFocus($event.target)"
-          [readonly]="concen.readOnly"
-          [(ngModel)]="concen.value"
-          [ngModelOptions]="{standalone: true}"
-          #concenInput
-          />
-        <sd-select (click)="inhalationForm.formChange()" #concenUnits>
-          <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        <b>Air concentration (mass/volume)</b> is the mass of the substance present in a specified volume of air.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #intakeRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
-        {{intake.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="intake"
-          sdInputPosNum
-          (blur)="inhalationForm.inputBlur()"
-          (focus)="inhalationForm.inputFocus($event.target)"
-          [readonly]="intake.readOnly"
-          [(ngModel)]="intake.value"
-          [ngModelOptions]="{standalone: true}"
-          #intakeInput
-          />
-        <div class="input-group-append">
-          <span class="input-group-text">m³/day</span>
+  <div class="card w-100">
+    <div class="card-body">
+      <form autocomplete="off" novalidate (change)="inhalationForm.formChange()">
+        <sd-calc-row #concenRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
+            {{concen.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="concen"
+              sdInputPosNum
+              (blur)="inhalationForm.inputBlur()"
+              (focus)="inhalationForm.inputFocus($event.target)"
+              [readonly]="concen.readOnly"
+              [(ngModel)]="concen.value"
+              [ngModelOptions]="{standalone: true}"
+              #concenInput
+              />
+            <sd-select (click)="inhalationForm.formChange()" #concenUnits>
+              <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            <b>Air concentration (mass/volume)</b> is the mass of the substance present in a specified volume of air.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #intakeRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="intake">
+            {{intake.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="intake"
+              sdInputPosNum
+              (blur)="inhalationForm.inputBlur()"
+              (focus)="inhalationForm.inputFocus($event.target)"
+              [readonly]="intake.readOnly"
+              [(ngModel)]="intake.value"
+              [ngModelOptions]="{standalone: true}"
+              #intakeInput
+              />
+            <div class="input-group-append">
+              <span class="input-group-text">m³/day</span>
+            </div>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            <b>Intake</b> is the amount of air inhaled in a day.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #weightRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="weight">
+            {{weight.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="weight"
+              sdInputPosNum
+              (blur)="inhalationForm.inputBlur()"
+              (focus)="inhalationForm.inputFocus($event.target)"
+              [readonly]="weight.readOnly"
+              [(ngModel)]="weight.value"
+              [ngModelOptions]="{standalone: true}"
+              #weightInput
+              />
+            <sd-select (click)="inhalationForm.formChange()" #weightUnits>
+              <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            The <b>body weight</b> of the animal or human consuming the substance.
+          </ng-template>
+        </sd-calc-row>
+        <sd-calc-row #doseRow>
+          <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
+            {{dose.label}}
+          </ng-template>
+          <ng-template sdCalcRowInput>
+            <input
+              class="form-control"
+              id="dose"
+              sdInputPosNum
+              (blur)="inhalationForm.inputBlur()"
+              (focus)="inhalationForm.inputFocus($event.target)"
+              [readonly]="dose.readOnly"
+              [(ngModel)]="dose.value"
+              [ngModelOptions]="{standalone: true}"
+              #doseInput
+              />
+            <sd-select (click)="inhalationForm.formChange()" #doseUnits>
+              <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
+            </sd-select>
+          </ng-template>
+          <ng-template sdCalcRowHelp>
+            <b>Dose</b> is the quantity of a substance administered to or received by the animal or human in a day.
+          </ng-template>
+        </sd-calc-row>
+        <sd-internal-calc-error [errorText]="inhalationForm.internalError"></sd-internal-calc-error>
+        <div class="form-group form-row ml-0 mb-0">
+          <button class="btn btn-primary mr-3" (click)="inhalationForm.calculateAndLog(calculationLog)" [disabled]="inhalationForm.internalError">Calculate!</button>
+          <button class="btn btn-secondary" (click)="inhalationForm.clear()">Clear</button>
         </div>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        <b>Intake</b> is the amount of air inhaled in a day.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #weightRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="weight">
-        {{weight.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="weight"
-          sdInputPosNum
-          (blur)="inhalationForm.inputBlur()"
-          (focus)="inhalationForm.inputFocus($event.target)"
-          [readonly]="weight.readOnly"
-          [(ngModel)]="weight.value"
-          [ngModelOptions]="{standalone: true}"
-          #weightInput
-          />
-        <sd-select (click)="inhalationForm.formChange()" #weightUnits>
-          <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        The <b>body weight</b> of the animal or human consuming the substance.
-      </ng-template>
-    </sd-calc-row>
-    <sd-calc-row #doseRow>
-      <ng-template sdCalcRowLabel sdCalcRowLabelFor="dose">
-        {{dose.label}}
-      </ng-template>
-      <ng-template sdCalcRowInput>
-        <input
-          class="form-control"
-          id="dose"
-          sdInputPosNum
-          (blur)="inhalationForm.inputBlur()"
-          (focus)="inhalationForm.inputFocus($event.target)"
-          [readonly]="dose.readOnly"
-          [(ngModel)]="dose.value"
-          [ngModelOptions]="{standalone: true}"
-          #doseInput
-          />
-        <sd-select (click)="inhalationForm.formChange()" #doseUnits>
-          <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
-        </sd-select>
-      </ng-template>
-      <ng-template sdCalcRowHelp>
-        <b>Dose</b> is the quantity of a substance administered to or received by the animal or human in a day.
-      </ng-template>
-    </sd-calc-row>
-    <sd-internal-calc-error [errorText]="inhalationForm.internalError"></sd-internal-calc-error>
-    <div class="form-group form-row ml-0">
-      <button class="btn btn-primary mr-3" (click)="inhalationForm.calculateAndLog(calculationLog)" [disabled]="inhalationForm.internalError">Calculate!</button>
-      <button class="btn btn-secondary" (click)="inhalationForm.clear()">Clear</button>
+      </form>
     </div>
-  </form>
+  </div>
   <p>Air concentrations for gases and vapours may be expressed in either ppm (v/v) or mg/m³ but for aerosols only mg/m³ should be used.</p>
   <p>To get the molar mass, add the atomic weights of all atoms in the substance. To find the atomic weights, you may use the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/File:Periodic_Table_Of_Elements.svg">Periodic Table</a> or look up the molar mass from a trusted source such as <a rel="noopener" target="_blank" href="https://chem.nlm.nih.gov/chemidplus/">ChemIDPlus</a>.</p>
   <p>The above calculations are based on the following equation:</p>
