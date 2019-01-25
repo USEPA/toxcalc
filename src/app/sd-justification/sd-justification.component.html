@@ -2,7 +2,7 @@
   <button class="btn btn-link text-decoration-none p-0 border-0 m-0" (click)="openJustificationEditor()" *ngIf="!showJustification && justification.trim() == ''">Include a justification</button>
   <div class="d-flex w-100" *ngIf="!showJustification && justification.trim() != ''">
     <div class="d-flex w-100" style="min-width: 0">
-      <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{justification}}</span>
+      <span class="d-inline-block text-truncate">{{justification}}</span>
     </div>
     <div class="d-flex ml-1">
       <button class="btn btn-link text-decoration-none p-0 border-0 m-0" (click)="openJustificationEditor()">edit</button>
