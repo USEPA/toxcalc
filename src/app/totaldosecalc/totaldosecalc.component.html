@@ -136,7 +136,8 @@
         <sd-internal-calc-error [errorText]="form.internalError"></sd-internal-calc-error>
         <div class="form-group form-row ml-0 mb-0">
           <button type="button" class="btn btn-primary mr-3" (click)="form.calculateAndLog(calculationLog)" [disabled]="form.underConstructionShow || form.internalError">Calculate!</button>
-          <button type="reset" class="btn btn-secondary" (click)="form.clear()">Clear</button>
+          <button type="reset" class="btn btn-secondary mr-4" (click)="form.clear()">Clear</button>
+          <button class="btn btn-link" (click)="calculationLog.scrollIntoView()" *ngIf="!calculationLog.empty()">See calculation log!</button>
         </div>
       </form>
     </div>

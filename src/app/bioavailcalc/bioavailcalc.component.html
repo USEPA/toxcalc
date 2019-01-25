@@ -73,7 +73,8 @@
         <sd-internal-calc-error [errorText]="bcfForm.internalError"></sd-internal-calc-error>
         <div class="form-group form-row ml-0 mb-0">
           <button class="btn btn-primary mr-3" (click)="bcfForm.calculateAndLog(calculationLog)" [disabled]="bcfForm.internalError">Convert!</button>
-          <button class="btn btn-secondary" (click)="bcfForm.clear()">Clear</button>
+          <button class="btn btn-secondary mr-4" (click)="bcfForm.clear()">Clear</button>
+          <button class="btn btn-link" (click)="calculationLog.scrollIntoView()" *ngIf="!calculationLog.empty()">See calculation log!</button>
         </div>
       </form>
     </div>
