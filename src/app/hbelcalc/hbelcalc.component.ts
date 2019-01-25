@@ -41,7 +41,7 @@ class BodyWeight extends Field {
   get logValue(): string {
     // super.logValue is inlined here, see:
     // https://github.com/Microsoft/TypeScript/issues/338
-    return this.enabled ? [this.value, this.unitName].filter(txt => txt.length > 0).join(' ') : 'n/a';
+    return this.enabled ? [this.value, this.unitName, this.isMarkedAsOutput() ? '(calculated)' : ''].filter(txt => txt.length > 0).join(' ') : 'n/a';
   }
 
   customValue: string = '';
@@ -95,7 +95,13 @@ class Species extends Field {
   get logValue(): string {
     if (this.custom) {
       if (this.customSpeciesName == '') {
+        if (this.isMarkedAsOutput()) {
+          return `custom (${this.customValue}) (calculated)`;
+        }
         return `custom (${this.customValue})`;
+      }
+      if (this.isMarkedAsOutput()) {
+        return `${this.customSpeciesName} (${this.customValue}) (calculated)`;
       }
       return `${this.customSpeciesName} (${this.customValue})`;
     }
@@ -153,6 +159,9 @@ class StudyDurationFactor extends Field {
   get unitName(): string { return ''; }
   get logValue(): string {
     if (this.custom) {
+      if (this.isMarkedAsOutput()) {
+        return `${this.customValue} (calculated)`;
+      }
       return this.customValue;
     }
     return this.options()[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
@@ -229,6 +238,9 @@ class SevereToxicityFactor extends Field {
   get unitName(): string { return ''; }
   get logValue(): string {
     if (this.custom) {
+      if (this.isMarkedAsOutput()) {
+        return `${this.customValue} (calculated)`;
+      }
       return this.customValue;
     }
     return this.options[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
@@ -288,7 +300,7 @@ class ExtraFactors extends Field {
   get logValue(): string {
     // super.logValue is inlined here, see:
     // https://github.com/Microsoft/TypeScript/issues/338
-    return this.enabled ? [this.value, this.unitName].filter(txt => txt.length > 0).join(' ') : 'n/a';
+    return this.enabled ? [this.value, this.unitName, this.isMarkedAsOutput() ? '(calculated)' : ''].filter(txt => txt.length > 0).join(' ') : 'n/a';
   }
 
   enabled: boolean = true;
@@ -326,7 +338,7 @@ class Alpha extends Field {
   get logValue(): string {
     // super.logValue is inlined here, see:
     // https://github.com/Microsoft/TypeScript/issues/338
-    return this.enabled ? [this.value, this.unitName].filter(txt => txt.length > 0).join(' ') : 'n/a';
+    return this.enabled ? [this.value, this.unitName, this.isMarkedAsOutput() ? '(calculated)' : ''].filter(txt => txt.length > 0).join(' ') : 'n/a';
   }
 
   enabled: boolean = true;
