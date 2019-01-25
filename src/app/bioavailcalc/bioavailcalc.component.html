@@ -1,9 +1,9 @@
 <div class="container py-3">
-  <ngb-alert [dismissible]="false">This is a prototype for testing purposes only.</ngb-alert>
+  This is a prototype for testing purposes only.
   <p class="lead font-weight-bold">
     Relative Bioavailability Correction
   </p>
-  <p>This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</p>
+  <ngb-alert type="info" [dismissible]="false">This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</ngb-alert>
   <div class="card w-100 mb-3">
     <div class="card-body">
       <form autocomplete="off" novalidate (change)="bcfForm.formChange()">
