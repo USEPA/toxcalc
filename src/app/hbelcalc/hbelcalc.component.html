@@ -234,7 +234,7 @@
                         [disabled]="!severeToxicityFactor.custom"
                         [(ngModel)]="severeToxicityFactor.customValue"
                         [ngModelOptions]="{standalone: true}"
-                        #severeToxicityInput
+                        #severeToxicityFactorInput
                         />
                       <div class="invalid-tooltip d-block" *ngIf="severeToxicityFactorRow.errorText">
                         {{severeToxicityFactorRow.errorText}}
