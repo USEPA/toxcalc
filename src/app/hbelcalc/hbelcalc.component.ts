@@ -395,6 +395,16 @@ class PDEForm extends Form {
 
     super.calculate();
   }
+
+  showComposite: boolean = false;
+  inputFocus(self: HTMLInputElement): void {
+    super.inputFocus(self);
+    this.showComposite = false;
+  }
+  inputBlur(): void {
+    super.inputBlur();
+    this.showComposite = true;
+  }
 }
 
 @Component({
@@ -611,6 +621,7 @@ export class HbelCalcComponent {
   compositeFactorsTerm: Term;
   getCompositeFactorsValue(): string {
     if (!this.ready) return '';
+    if (!this.pdeForm.showComposite) return '';
     let result = this.compositeFactorsTerm.getValue();
     if (result == null) return '';
     if (isCalculateError(result)) return '';
