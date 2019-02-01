@@ -78,8 +78,11 @@
         </div>
       </form>
     </div>
+    <div class="border-top card-header">
+      Live view of the equation used in this calculation:
+    </div>
+    <div class="card-body text-center" [sdKatexInline]="true" [sdKatex]="bcfForm.equationSnippet">
+    </div>
   </div>
-  <p>The above calculations are based on the following equation:</p>
-  <p [sdKatex]="bcfForm.equationSnippet"></p>
   <sd-calculation-log #calculationLog></sd-calculation-log>
 </div>

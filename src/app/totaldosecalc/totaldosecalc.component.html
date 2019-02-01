@@ -141,6 +141,13 @@
         </div>
       </form>
     </div>
+    <ng-container *ngIf="!form.underConstructionShow">
+      <div class="border-top card-header">
+        Live view of the equation used in this calculation:
+      </div>
+      <div class="card-body text-center" [sdKatexInline]="true" [sdKatex]="form.equationSnippet">
+      </div>
+    </ng-container>
   </div>
   <p>This calculator is designed to only be used for homogenous (i.e. uniform) chemical <a target="_blank" href="definitions#mixture">mixtures</a>. It should not be used for radionuclides.</p>
   <p>
@@ -149,10 +156,6 @@
   <p>
     If body weight of the animal or human is unknown, use defaults. Some defaults for rodents can be found here: <a rel="noopener" target="_blank" href="https://semspub.epa.gov/work/10/500017164.pdf">EPA Default Animal Body Weights</a> and here <a rel="noopener" target="_blank" href="https://www.tera.org/Tools/ratmousevalues.pdf">TERA Default Rat and Mouse Body Weights</a>.
   </p>
-  <ng-container *ngIf="!form.underConstructionShow">
-  <p>The above calculations are based on the following equation:</p>
-  <p [sdKatex]="form.equationSnippet"></p>
-  </ng-container>
   <p><a rel="noopener" target="_blank" href="/assets/a82014b103e4d9e8f05a/totaldosecalc-tutorial.pdf">Tutorial: How do changes in body weight, intake rate and concentration impact dose? <fa-icon [icon]="['fas', 'file-pdf']"></fa-icon></a></p>
   <sd-calculation-log #calculationLog></sd-calculation-log>
 </div>

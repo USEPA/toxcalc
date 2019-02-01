@@ -418,9 +418,12 @@
         </div>
       </form>
     </div>
+    <div class="border-top card-header">
+      Live view of the equation used in this calculation:
+    </div>
+    <div class="card-body text-center" [sdKatexInline]="true" [sdKatex]="pdeForm.equationSnippet">
+    </div>
   </div>
-  <p>The above calculations are based on the following equation:</p>
-  <p [sdKatex]="pdeForm.equationSnippet"></p>
   <p>The calculations presented follow the principles outlined in the <a rel="noopener" target="_blank" href="https://www.ich.org/fileadmin/Public_Web_Site/ICH_Products/Guidelines/Quality/Q3C/Q3C__R6___Step_4.pdf">ICH Q3C Guideline</a>.</p>
   <sd-calculation-log #calculationLog></sd-calculation-log>
 </div>

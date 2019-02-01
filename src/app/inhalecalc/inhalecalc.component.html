@@ -87,9 +87,12 @@
         </div>
       </form>
     </div>
+    <div class="border-top card-header">
+      Live view of the equation used in this calculation:
+    </div>
+    <div class="card-body text-center" [sdKatexInline]="true" [sdKatex]="conversionForm.equationSnippet">
+    </div>
   </div>
-  <p>The above calculations are based on the following equation:</p>
-  <p [sdKatex]="conversionForm.equationSnippet"></p>
   <hr>
   <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
   <div class="card w-100 mb-3">
@@ -199,10 +202,13 @@
         </div>
       </form>
     </div>
+    <div class="border-top card-header">
+      Live view of the equation used in this calculation:
+    </div>
+    <div class="card-body text-center" [sdKatexInline]="true" [sdKatex]="inhalationForm.equationSnippet">
+    </div>
   </div>
   <p>Air concentrations for gases and vapours may be expressed in either ppm (v/v) or mg/m³ but for aerosols only mg/m³ should be used.</p>
   <p>To get the molar mass, add the atomic weights of all atoms in the substance. To find the atomic weights, you may use the <a rel="noopener" target="_blank" href="https://en.wikipedia.org/wiki/File:Periodic_Table_Of_Elements.svg">Periodic Table</a> or look up the molar mass from a trusted source such as <a rel="noopener" target="_blank" href="https://chem.nlm.nih.gov/chemidplus/">ChemIDPlus</a>.</p>
-  <p>The above calculations are based on the following equation:</p>
-  <p [sdKatex]="inhalationForm.equationSnippet"></p>
   <sd-calculation-log #calculationLog></sd-calculation-log>
 </div>
