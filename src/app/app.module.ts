@@ -16,7 +16,7 @@ import { SdReturnToCalculatorsComponent } from './sd-return-to-calculators/sd-re
 import { SdSelectComponent, SdSelectItem, SdSelectGroup } from './sd-select/sd-select.component';
 import { SdCalcRowComponent, SdCalcRowLabel, SdCalcRowInput, SdCalcRowHelp } from './sd-calc-row/sd-calc-row.component';
 import { TotalDoseCalcComponent } from './totaldosecalc/totaldosecalc.component';
-import { SdInputPositiveNumber } from './shared/number-util';
+import { SdInputPositiveNumber, SdInputPositiveNumberLeft } from './shared/number-util';
 import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-internal-calc-error.component';
 import { SdKatexDirective } from './sd-katex.directive';
 import { DefinitionsComponent } from './definitions/definitions.component';
@@ -42,6 +42,7 @@ import { ExamplesComponent } from './examples/examples.component';
     SdCalcRowLabel,
     SdCalculationLogComponent,
     SdInputPositiveNumber,
+    SdInputPositiveNumberLeft,
     SdInternalCalcErrorComponent,
     SdJustificationComponent,
     SdKatexDirective,

@@ -14,6 +14,17 @@ export class SdInputPositiveNumber {
   }
 }
 
+@Directive({
+  selector: '[sdInputPosNumLeft]',
+  host: {type: 'text'}
+})
+export class SdInputPositiveNumberLeft {
+  constructor(public e: ElementRef<HTMLInputElement>) {}
+  @HostListener('input') onInput() {
+    this.e.nativeElement.value = this.e.nativeElement.value.replace(/[^\d.]/g, '');
+  }
+}
+
 export function printNum(n: number): string {
   // Never use scientific notation, round to 6 decimal places or fewer.
   return Number(n).toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 6 });
