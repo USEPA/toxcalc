@@ -15,7 +15,7 @@
             <input
               [ngClass]="{'form-control': true, 'output': bioavailabilityPDE.isMarkedAsOutput()}"
               id="bioavailabilityPDE"
-              sdInputPosNum
+              sdInputPosNumLeft
               (blur)="bcfForm.inputBlur()"
               (focus)="bcfForm.inputFocus($event.target)"
               [readonly]="bioavailabilityPDE.isMarkedAsOutput()"
@@ -36,7 +36,7 @@
             <input
               [ngClass]="{'form-control': true, 'output': bioavailabilityCriticalStudy.isMarkedAsOutput()}"
               id="bioavailabilityCriticalStudy"
-              sdInputPosNum
+              sdInputPosNumLeft
               (blur)="bcfForm.inputBlur()"
               (focus)="bcfForm.inputFocus($event.target)"
               [readonly]="bioavailabilityCriticalStudy.isMarkedAsOutput()"
@@ -57,7 +57,7 @@
             <input
               [ngClass]="{'form-control': true, 'output': alpha.isMarkedAsOutput()}"
               id="alpha"
-              sdInputPosNum
+              sdInputPosNumLeft
               (blur)="bcfForm.inputBlur()"
               (focus)="bcfForm.inputFocus($event.target)"
               [readonly]="alpha.isMarkedAsOutput()"
