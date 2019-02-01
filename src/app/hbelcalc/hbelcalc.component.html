@@ -24,7 +24,7 @@
               #effectLimitInput
               />
             <div class="input-group-append">
-              <sd-select name="effectLimitUnits" #effectLimitUnits (change)="pdeForm.formChange();">
+              <sd-select name="effectLimitUnits" #effectLimitUnits (change)="pdeForm.formChange();" [sdAppend]="true">
                 <option *ngFor="let unit of iterUnits(effectLimit.UNITS)" [label]="unit" [value]="effectLimit.UNITS[unit]">
               </sd-select>
             </div>
@@ -397,7 +397,7 @@
               [ngModelOptions]="{standalone: true}"
               #pdeInput
               />
-            <sd-select name="pdeUnits" #pdeUnits (change)="changePdeUnits();">
+            <sd-select name="pdeUnits" #pdeUnits (change)="changePdeUnits();" [sdAppend]="true">
               <optgroup label="mass/time">
                 <option *ngFor="let unit of iterUnits(pde.UNITS, pde.MASS_TIME)" [label]="unit" [value]="pde.UNITS[unit]">
               </optgroup>

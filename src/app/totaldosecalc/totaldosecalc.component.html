@@ -11,7 +11,7 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input class="form-control" name="concen" id="concen" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="concen.readOnly" [(ngModel)]="concen.value" [ngModelOptions]="{standalone: true}" #concenInput>
-            <sd-select name="concen-units" #concenUnits (change)="changeUnits();">
+            <sd-select name="concen-units" #concenUnits (change)="changeUnits();" [sdAppend]="true">
               <optgroup label="mass/volume">
                 <option *ngFor="let unit of iterUnits(CONCEN_UNITS, MASS_VOLUME)" [label]="unit"></option>
               </optgroup>
@@ -45,7 +45,7 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input class="form-control" name="intake" id="intake" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="intake.readOnly" [(ngModel)]="intake.value" [ngModelOptions]="{standalone: true}" #intakeInput>
-            <sd-select name="intake-units" #intakeUnits (change)="changeUnits();">
+            <sd-select name="intake-units" #intakeUnits (change)="changeUnits();" [sdAppend]="true">
               <optgroup label="volume/time">
                 <option *ngFor="let unit of iterUnits(INTAKE_UNITS, VOLUME_TIME)" [label]="unit"></option>
               </optgroup>
@@ -64,7 +64,7 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input class="form-control" name="substanceDensity" id="substanceDensity" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="substanceDensity.readOnly" [(ngModel)]="substanceDensity.value" [ngModelOptions]="{standalone: true}" #substanceDensityInput>
-            <sd-select name="substanceDensity-units" #substanceDensityUnits (change)="changeUnits();">
+            <sd-select name="substanceDensity-units" #substanceDensityUnits (change)="changeUnits();" [sdAppend]="true">
               <option *ngFor="let unit of iterUnits(DENSITY_UNITS)" [label]="unit"></option>
             </sd-select>
           </ng-template>
@@ -92,7 +92,7 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input class="form-control" name="solutionDensity" id="solutionDensity" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="solutionDensity.readOnly" [(ngModel)]="solutionDensity.value" [ngModelOptions]="{standalone: true}" #solutionDensityInput>
-            <sd-select name="solutionDensity-units" #solutionDensityUnits (change)="changeUnits();">
+            <sd-select name="solutionDensity-units" #solutionDensityUnits (change)="changeUnits();" [sdAppend]="true">
               <option *ngFor="let unit of iterUnits(DENSITY_UNITS)" [label]="unit"></option>
             </sd-select>
           </ng-template>
@@ -106,7 +106,7 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input class="form-control" name="bodyWeight" id="bodyWeight" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="bodyWeight.readOnly" [(ngModel)]="bodyWeight.value" [ngModelOptions]="{standalone: true}" #bodyWeightInput>
-            <sd-select name="bodyWeight-units" #bodyWeightUnits (change)="changeUnits();">
+            <sd-select name="bodyWeight-units" #bodyWeightUnits (change)="changeUnits();" [sdAppend]="true">
               <option label="kg"></option>
               <option label="g"></option>
             </sd-select>
@@ -121,7 +121,7 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input class="form-control" name="dose" id="dose" sdInputPosNum (focus)="form.inputFocus($event.target)" (blur)="form.inputBlur()" [readonly]="dose.readOnly" [(ngModel)]="dose.value" [ngModelOptions]="{standalone: true}" #doseInput>
-            <sd-select name="dose-units" #doseUnits (change)="changeUnits();">
+            <sd-select name="dose-units" #doseUnits (change)="changeUnits();" [sdAppend]="true">
               <option *ngFor="let unit of iterUnits(DOSE_UNITS)" [label]="unit"></option>
             </sd-select>
           </ng-template>

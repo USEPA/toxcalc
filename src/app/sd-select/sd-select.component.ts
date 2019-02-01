@@ -25,6 +25,8 @@ export class SdSelectGroup implements AfterContentInit {
   styleUrls: ['./sd-select.component.css'],
 })
 export class SdSelectComponent implements AfterContentInit {
+  @Input('sdAppend') append: boolean;
+
   selectedItem: SdSelectItem;
   selectedGroup: SdSelectGroup;
 

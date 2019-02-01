@@ -126,7 +126,7 @@
               [ngModelOptions]="{standalone: true}"
               #animalWeightInput
               />
-            <sd-select name="animalWeightUnits" #animalWeightUnits (change)="changeAnimalWeightUnits()">
+            <sd-select name="animalWeightUnits" #animalWeightUnits (change)="changeAnimalWeightUnits()" [sdAppend]="true">
               <option label="kg"></option>
               <option label="g"></option>
             </sd-select>
@@ -151,7 +151,7 @@
               [ngModelOptions]="{standalone: true}"
               #humanWeightInput
               />
-            <sd-select name="humanWeightUnits" #humanWeightUnits (change)="changeHumanWeightUnits()">
+            <sd-select name="humanWeightUnits" #humanWeightUnits (change)="changeHumanWeightUnits()" [sdAppend]="true">
               <option label="kg"></option>
               <option label="g"></option>
             </sd-select>

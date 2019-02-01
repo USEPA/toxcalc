@@ -23,7 +23,7 @@
               [ngModelOptions]="{standalone: true}"
               #concenVolVolInput
               />
-            <sd-select (click)="conversionForm.formChange()" #concenVolVolUnits>
+            <sd-select (click)="conversionForm.formChange()" [sdAppend]="true" #concenVolVolUnits>
               <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
@@ -71,7 +71,7 @@
               [ngModelOptions]="{standalone: true}"
               #concenMassVolInput
               />
-            <sd-select (click)="conversionForm.formChange()" #concenMassVolUnits>
+            <sd-select (click)="conversionForm.formChange()" [sdAppend]="true" #concenMassVolUnits>
               <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
@@ -114,7 +114,7 @@
               [ngModelOptions]="{standalone: true}"
               #concenInput
               />
-            <sd-select (click)="inhalationForm.formChange()" #concenUnits>
+            <sd-select (click)="inhalationForm.formChange()" [sdAppend]="true" #concenUnits>
               <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
@@ -162,7 +162,7 @@
               [ngModelOptions]="{standalone: true}"
               #weightInput
               />
-            <sd-select (click)="inhalationForm.formChange()" #weightUnits>
+            <sd-select (click)="inhalationForm.formChange()" [sdAppend]="true" #weightUnits>
               <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
@@ -186,7 +186,7 @@
               [ngModelOptions]="{standalone: true}"
               #doseInput
               />
-            <sd-select (click)="inhalationForm.formChange()" #doseUnits>
+            <sd-select (click)="inhalationForm.formChange()" [sdAppend]="true" #doseUnits>
               <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
