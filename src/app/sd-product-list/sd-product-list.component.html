@@ -1,17 +1,16 @@
-<div class="mx-auto container m-3">
-  <div class="row border rounded mb-2 bg-white" *ngFor="let item of items">
-    <div class="col-3 align-middle m-auto p-3">
-      <a class="lead" routerLink="{{ item.routerLink }}">
+<div class="mx-auto container">
+  <a class="card mb-2 bg-white text-reset" *ngFor="let item of items" [routerLink]="item.routerLink">
+    <div class="card-body">
+      <p class="card-title lead" style="font-size: 1.75rem">
         <b>
-          <ng-template [ngTemplateOutlet]="item.title?.templateRef"></ng-template>
+          <a [routerLink]="item.routerLink">
+            <ng-template [ngTemplateOutlet]="item.title?.templateRef"></ng-template>
+          </a>
         </b>
-      </a>
+      </p>
+      <p>
+        <ng-template [ngTemplateOutlet]="item.description?.templateRef"></ng-template>
+      </p>
     </div>
-    <div class="col-9 col-sm-7 align-middle m-auto p-3">
-      <ng-template [ngTemplateOutlet]="item.description?.templateRef"></ng-template>
-    </div>
-    <a class="col-sm-2 p-3 justify-content-center align-items-center border-left d-none d-sm-flex" routerLink="{{ item.routerLink }}">
-      <h1>›</h1>
-    </a>
-  </div>
+  </a>
 </div>
