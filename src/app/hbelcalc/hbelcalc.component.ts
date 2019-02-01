@@ -61,13 +61,6 @@ class BodyWeight extends Field {
   }
   set value(new_value: string) { this.customValue = new_value; }
 
-  // TODO: this should be in field, and its readOnly property should be removed
-  // or replaced with this 'output'.
-  output: boolean = false;
-  markAsOutput(): void { this.output = true; }
-  unmarkAsOutput(): void { this.output = false; }
-  isMarkedAsOutput(): boolean { return this.output; }
-
   selected: string = 'custom';
 
   readonly options = [
@@ -123,13 +116,6 @@ class Species extends Field {
   }
   get value(): string { return this.custom ? this.customValue : this.selectedValue; }
   set value(new_value: string) { this.customValue = new_value; }
-
-  // TODO: this should be in field, and its readOnly property should be removed
-  // or replaced with this 'output'.
-  output: boolean = false;
-  markAsOutput(): void { this.output = true; }
-  unmarkAsOutput(): void { this.output = false; }
-  isMarkedAsOutput(): boolean { return this.output; }
 
   selected: string = 'custom';
 
@@ -197,13 +183,6 @@ class StudyDurationFactor extends Field {
   get value(): string { return this.custom ? this.customValue : this.selectedValue; }
   set value(new_value: string) { /* assert (this.custom) */ this.customValue = new_value; }
 
-  // TODO: this should be in field, and its readOnly property should be removed
-  // or replaced with this 'output'.
-  output: boolean = false;
-  markAsOutput(): void { this.output = true; }
-  unmarkAsOutput(): void { this.output = false; }
-  isMarkedAsOutput(): boolean { return this.output; }
-
   selected: string = 'custom';
 
   readonly mouseRatOptions = [
@@ -260,13 +239,6 @@ class SevereToxicityFactor extends Field {
   selectedValue: string = '';
   get value(): string { return this.custom ? this.customValue : this.selectedValue; }
   set value(new_value: string) { /* assert (this.custom) */ this.customValue = new_value; }
-
-  // TODO: this should be in field, and its readOnly property should be removed
-  // or replaced with this 'output'.
-  output: boolean = false;
-  markAsOutput(): void { this.output = true; }
-  unmarkAsOutput(): void { this.output = false; }
-  isMarkedAsOutput(): boolean { return this.output; }
 
   selected: string = 'custom';
 

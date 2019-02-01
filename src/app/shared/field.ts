@@ -21,10 +21,10 @@ export abstract class Field {
   public set term(t: Term) { this.mTerm = t; }
   readonly unit: ScalarAndDimension;
 
-  readOnly: boolean = false;
-  markAsOutput(): void { this.readOnly = true; }
-  unmarkAsOutput(): void { this.readOnly = false; }
-  isMarkedAsOutput(): boolean { return this.readOnly; }
+  output: boolean = false;
+  markAsOutput(): void { this.output = true; }
+  unmarkAsOutput(): void { this.output = false; }
+  isMarkedAsOutput(): boolean { return this.output; }
 
   clear(): void {
     this.row.errorText = '';
@@ -43,7 +43,7 @@ export abstract class Field {
   // Only look for errors that are certainly wrong given the state of this field,
   // ignoring the state of the of the rest of the form.
   updateErrorState(): void {
-    if (this.readOnly || this.value == '') {
+    if (this.isMarkedAsOutput() || this.value == '') {
       this.row.errorText = '';
       return;
     }
