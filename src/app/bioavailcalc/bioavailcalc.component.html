@@ -13,12 +13,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': bioavailabilityPDE.isMarkedAsOutput()}"
               id="bioavailabilityPDE"
               sdInputPosNum
               (blur)="bcfForm.inputBlur()"
               (focus)="bcfForm.inputFocus($event.target)"
-              [readonly]="bioavailabilityPDE.readOnly"
+              [readonly]="bioavailabilityPDE.isMarkedAsOutput()"
               [(ngModel)]="bioavailabilityPDE.value"
               [ngModelOptions]="{standalone: true}"
               #bioavailabilityPDEInput
@@ -34,12 +34,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': bioavailabilityCriticalStudy.isMarkedAsOutput()}"
               id="bioavailabilityCriticalStudy"
               sdInputPosNum
               (blur)="bcfForm.inputBlur()"
               (focus)="bcfForm.inputFocus($event.target)"
-              [readonly]="bioavailabilityCriticalStudy.readOnly"
+              [readonly]="bioavailabilityCriticalStudy.isMarkedAsOutput()"
               [(ngModel)]="bioavailabilityCriticalStudy.value"
               [ngModelOptions]="{standalone: true}"
               #bioavailabilityCriticalStudyInput
@@ -55,12 +55,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': alpha.isMarkedAsOutput()}"
               id="alpha"
               sdInputPosNum
               (blur)="bcfForm.inputBlur()"
               (focus)="bcfForm.inputFocus($event.target)"
-              [readonly]="alpha.readOnly"
+              [readonly]="alpha.isMarkedAsOutput()"
               [(ngModel)]="alpha.value"
               [ngModelOptions]="{standalone: true}"
               #alphaInput

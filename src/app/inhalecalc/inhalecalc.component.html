@@ -13,12 +13,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, output: concenVolVol.isMarkedAsOutput()}"
               id="concenVolVol"
               sdInputPosNum
               (blur)="conversionForm.inputBlur()"
               (focus)="conversionForm.inputFocus($event.target)"
-              [readonly]="concenVolVol.readOnly"
+              [readonly]="concenVolVol.isMarkedAsOutput()"
               [(ngModel)]="concenVolVol.value"
               [ngModelOptions]="{standalone: true}"
               #concenVolVolInput
@@ -37,12 +37,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, output: molarMass.isMarkedAsOutput()}"
               id="molarMass"
               sdInputPosNum
               (blur)="conversionForm.inputBlur()"
               (focus)="conversionForm.inputFocus($event.target)"
-              [readonly]="molarMass.readOnly"
+              [readonly]="molarMass.isMarkedAsOutput()"
               [(ngModel)]="molarMass.value"
               [ngModelOptions]="{standalone: true}"
               #molarMassInput
@@ -61,12 +61,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': concenMassVol.isMarkedAsOutput()}"
               id="concenMassVol"
               sdInputPosNum
               (blur)="conversionForm.inputBlur()"
               (focus)="conversionForm.inputFocus($event.target)"
-              [readonly]="concenMassVol.readOnly"
+              [readonly]="concenMassVol.isMarkedAsOutput()"
               [(ngModel)]="concenMassVol.value"
               [ngModelOptions]="{standalone: true}"
               #concenMassVolInput
@@ -104,12 +104,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': concen.isMarkedAsOutput()}"
               id="concen"
               sdInputPosNum
               (blur)="inhalationForm.inputBlur()"
               (focus)="inhalationForm.inputFocus($event.target)"
-              [readonly]="concen.readOnly"
+              [readonly]="concen.isMarkedAsOutput()"
               [(ngModel)]="concen.value"
               [ngModelOptions]="{standalone: true}"
               #concenInput
@@ -128,12 +128,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': intake.isMarkedAsOutput()}"
               id="intake"
               sdInputPosNum
               (blur)="inhalationForm.inputBlur()"
               (focus)="inhalationForm.inputFocus($event.target)"
-              [readonly]="intake.readOnly"
+              [readonly]="intake.isMarkedAsOutput()"
               [(ngModel)]="intake.value"
               [ngModelOptions]="{standalone: true}"
               #intakeInput
@@ -152,12 +152,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': weight.isMarkedAsOutput()}"
               id="weight"
               sdInputPosNum
               (blur)="inhalationForm.inputBlur()"
               (focus)="inhalationForm.inputFocus($event.target)"
-              [readonly]="weight.readOnly"
+              [readonly]="weight.isMarkedAsOutput()"
               [(ngModel)]="weight.value"
               [ngModelOptions]="{standalone: true}"
               #weightInput
@@ -176,12 +176,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': dose.isMarkedAsOutput()}"
               id="dose"
               sdInputPosNum
               (blur)="inhalationForm.inputBlur()"
               (focus)="inhalationForm.inputFocus($event.target)"
-              [readonly]="dose.readOnly"
+              [readonly]="dose.isMarkedAsOutput()"
               [(ngModel)]="dose.value"
               [ngModelOptions]="{standalone: true}"
               #doseInput

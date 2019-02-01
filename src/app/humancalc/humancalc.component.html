@@ -25,12 +25,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': animalDose.isMarkedAsOutput()}"
               id="animalDose"
               sdInputPosNum
               (blur)="fdaMethodForm.inputBlur()"
               (focus)="fdaMethodForm.inputFocus($event.target)"
-              [readonly]="animalDose.readOnly"
+              [readonly]="animalDose.isMarkedAsOutput()"
               [(ngModel)]="animalDose.value"
               [ngModelOptions]="{standalone: true}"
               #animalDoseInput
@@ -49,12 +49,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': humanEquivalentDose.isMarkedAsOutput()}"
               id="humanDose"
               sdInputPosNum
               (blur)="fdaMethodForm.inputBlur()"
               (focus)="fdaMethodForm.inputFocus($event.target)"
-              [readonly]="humanEquivalentDose.readOnly"
+              [readonly]="humanEquivalentDose.isMarkedAsOutput()"
               [(ngModel)]="humanEquivalentDose.value"
               [ngModelOptions]="{standalone: true}"
               #humanDoseInput/>
@@ -92,12 +92,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': weightAnimalDose.isMarkedAsOutput()}"
               id="weightAnimalDose"
               sdInputPosNum
               (blur)="weightMethodForm.inputBlur()"
               (focus)="weightMethodForm.inputFocus($event.target)"
-              [readonly]="weightAnimalDose.readOnly"
+              [readonly]="weightAnimalDose.isMarkedAsOutput()"
               [(ngModel)]="weightAnimalDose.value"
               [ngModelOptions]="{standalone: true}"
               #weightAnimalDoseInput
@@ -116,12 +116,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, output: animalWeight.isMarkedAsOutput()}"
               id="animalWeight"
               sdInputPosNum
               (blur)="weightMethodForm.inputBlur()"
               (focus)="weightMethodForm.inputFocus($event.target)"
-              [readonly]="animalWeight.readOnly"
+              [readonly]="animalWeight.isMarkedAsOutput()"
               [(ngModel)]="animalWeight.value"
               [ngModelOptions]="{standalone: true}"
               #animalWeightInput
@@ -141,12 +141,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': humanWeight.isMarkedAsOutput()}"
               id="humanWeight"
               sdInputPosNum
               (blur)="weightMethodForm.inputBlur()"
               (focus)="weightMethodForm.inputFocus($event.target)"
-              [readonly]="humanWeight.readOnly"
+              [readonly]="humanWeight.isMarkedAsOutput()"
               [(ngModel)]="humanWeight.value"
               [ngModelOptions]="{standalone: true}"
               #humanWeightInput
@@ -179,12 +179,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': weightHumanEquivalentDose.isMarkedAsOutput()}"
               id="weightHumanDose"
               sdInputPosNum
               (blur)="weightMethodForm.inputBlur()"
               (focus)="weightMethodForm.inputFocus($event.target)"
-              [readonly]="weightHumanEquivalentDose.readOnly"
+              [readonly]="weightHumanEquivalentDose.isMarkedAsOutput()"
               [(ngModel)]="weightHumanEquivalentDose.value"
               [ngModelOptions]="{standalone: true}"
               #weightHumanDoseInput

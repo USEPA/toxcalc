@@ -13,12 +13,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': effectLimit.isMarkedAsOutput()}"
               id="effectLimit"
               sdInputPosNum
               (blur)="pdeForm.inputBlur()"
               (focus)="pdeForm.inputFocus($event.target)"
-              [readonly]="effectLimit.readOnly"
+              [readonly]="effectLimit.isMarkedAsOutput()"
               [(ngModel)]="effectLimit.value"
               [ngModelOptions]="{standalone: true}"
               #effectLimitInput
@@ -50,12 +50,12 @@
                   <div class="form-inline">
                     <div class="input-group">
                       <input
-                        class="form-control"
+                        [ngClass]="{'form-control': true, 'output': bodyWeight.isMarkedAsOutput()}"
                         id="bodyWeightCustomValue"
                         sdInputPosNum
                         (blur)="pdeForm.inputBlur()"
                         (focus)="pdeForm.inputFocus($event.target)"
-                        [readonly]="bodyWeight.output"
+                        [readonly]="bodyWeight.isMarkedAsOutput()"
                         [disabled]="!bodyWeight.custom"
                         [(ngModel)]="bodyWeight.customValue"
                         [ngModelOptions]="{standalone: true}"
@@ -111,12 +111,12 @@
                   <div class="form-inline">
                     <div class="input-group">
                       <input
-                        class="form-control"
+                        [ngClass]="{'form-control': true, 'output': species.isMarkedAsOutput()}"
                         id="speciesCustomFactor"
                         sdInputPosNum
                         (blur)="pdeForm.inputBlur()"
                         (focus)="pdeForm.inputFocus($event.target)"
-                        [readonly]="species.output"
+                        [readonly]="species.isMarkedAsOutput()"
                         [disabled]="!species.custom"
                         [(ngModel)]="species.customValue"
                         [ngModelOptions]="{standalone: true}"
@@ -146,12 +146,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': safetyFactor.isMarkedAsOutput()}"
               id="safetyFactor"
               sdInputPosNum
               (blur)="pdeForm.inputBlur()"
               (focus)="pdeForm.inputFocus($event.target)"
-              [readonly]="safetyFactor.readOnly"
+              [readonly]="safetyFactor.isMarkedAsOutput()"
               [(ngModel)]="safetyFactor.value"
               [ngModelOptions]="{standalone: true}"
               value="10"
@@ -179,12 +179,12 @@
                   <div class="form-inline">
                     <div class="input-group">
                       <input
-                        class="form-control"
+                        [ngClass]="{'form-control': true, 'output': studyDurationFactor.isMarkedAsOutput()}"
                         id="studyDurationFactorCustom"
                         sdInputPosNum
                         (blur)="pdeForm.inputBlur()"
                         (focus)="pdeForm.inputFocus($event.target)"
-                        [readonly]="studyDurationFactor.output"
+                        [readonly]="studyDurationFactor.isMarkedAsOutput()"
                         [disabled]="!studyDurationFactor.custom"
                         [(ngModel)]="studyDurationFactor.customValue"
                         [ngModelOptions]="{standalone: true}"
@@ -226,12 +226,12 @@
                   <div class="form-inline">
                     <div class="input-group">
                       <input
-                        class="form-control"
+                        [ngClass]="{'form-control': true, 'output': severeToxicityFactor.isMarkedAsOutput()}"
                         id="severeToxicityFactorCustom"
                         sdInputPosNum
                         (blur)="pdeForm.inputBlur()"
                         (focus)="pdeForm.inputFocus($event.target)"
-                        [readonly]="severeToxicityFactor.output"
+                        [readonly]="severeToxicityFactor.isMarkedAsOutput()"
                         [disabled]="!severeToxicityFactor.custom"
                         [(ngModel)]="severeToxicityFactor.customValue"
                         [ngModelOptions]="{standalone: true}"
@@ -261,12 +261,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': noNoelFactor.isMarkedAsOutput()}"
               id="noNoelFactor"
               sdInputPosNum
               (blur)="pdeForm.inputBlur()"
               (focus)="pdeForm.inputFocus($event.target)"
-              [readonly]="noNoelFactor.readOnly"
+              [readonly]="noNoelFactor.isMarkedAsOutput()"
               [(ngModel)]="noNoelFactor.value"
               [ngModelOptions]="{standalone: true}"
               #noNoelFactorInput
@@ -284,13 +284,13 @@
             <div class="form-inline">
               <div class="input-group">
                 <input
-                  class="form-control"
+                  [ngClass]="{'form-control': true, output: alpha.isMarkedAsOutput()}"
                   id="alpha"
                   sdInputPosNum
                   (blur)="pdeForm.inputBlur()"
                   (focus)="pdeForm.inputFocus($event.target)"
                   [disabled]="!alpha.enabled"
-                  [readonly]="alpha.readOnly"
+                  [readonly]="alpha.isMarkedAsOutput()"
                   [(ngModel)]="alpha.textValue"
                   [ngModelOptions]="{standalone: true}"
                   #alphaInput
@@ -324,13 +324,13 @@
             <div class="form-inline">
               <div class="input-group">
                 <input
-                  class="form-control"
+                  [ngClass]="{'form-control': true, 'output': extraFactors.isMarkedAsOutput()}"
                   id="extraFactors"
                   sdInputPosNum
                   (blur)="pdeForm.inputBlur()"
                   (focus)="pdeForm.inputFocus($event.target)"
                   [disabled]="!extraFactors.enabled"
-                  [readonly]="extraFactors.readOnly"
+                  [readonly]="extraFactors.isMarkedAsOutput()"
                   [(ngModel)]="extraFactors.textValue"
                   [ngModelOptions]="{standalone: true}"
                   #extraFactorsInput
@@ -362,7 +362,9 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control text-right"
+              [ngClass]="{'form-control': true, 'text-right': true,
+                          'output-only': getCompositeFactorsValue() != ''}"
+              type="text"
               readonly
               [value]="getCompositeFactorsValue()"
               #compositeFactorsOutput
@@ -387,12 +389,12 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <input
-              class="form-control"
+              [ngClass]="{'form-control': true, 'output': pde.isMarkedAsOutput()}"
               id="pde"
               sdInputPosNum
               (blur)="pdeForm.inputBlur()"
               (focus)="pdeForm.inputFocus($event.target)"
-              [readonly]="pde.readOnly"
+              [readonly]="pde.isMarkedAsOutput()"
               [(ngModel)]="pde.value"
               [ngModelOptions]="{standalone: true}"
               #pdeInput
