@@ -17,12 +17,21 @@ export class Form {
   }
 
   updateErrors(required: boolean): void {
+    let hasEmptyField = false;
+    let hasOutput = false;
     this.fields.filter(f => f.row.show).forEach(function(f: Field) {
       f.updateErrorState();
+      hasOutput = hasOutput || f.isMarkedAsOutput();
       if (required && !f.hasError && f.value == '') {
         f.row.errorText = 'Please fill in a number.';
+        hasEmptyField = true;
       }
     });
+    if (required && !hasEmptyField && !hasOutput) {
+      this.fields.filter(f => f.row.show).forEach(function(f: Field) {
+        f.row.errorText = 'Please remove a value.';
+      });
+    }
   }
 
   hasErrors(): boolean {
