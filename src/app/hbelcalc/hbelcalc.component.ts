@@ -383,7 +383,7 @@ class PDEForm extends Form {
   showComposite: boolean = false;
   inputFocus(self: HTMLInputElement): void {
     super.inputFocus(self);
-    this.showComposite = false;
+    this.showComposite = this.factorFields.filter(f => f.row.show).every(function (f: Field) { if (f.input && f.input!.nativeElement == self) return false; return true; } );
   }
   inputBlur(): void {
     super.inputBlur();
