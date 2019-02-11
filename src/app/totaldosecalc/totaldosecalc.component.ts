@@ -163,6 +163,25 @@ class TotalDoseCalcForm extends Form {
   hasErrors(): boolean {
     return this.underConstructionShow || super.hasErrors();
   }
+
+  updateErrors(required: boolean): void {
+    let hasEmptyField = false;
+    let hasOutput = false;
+    this.fields.filter(f => f.row.show).forEach(function(f: Field) {
+      f.updateErrorState();
+      hasOutput = hasOutput || f.isMarkedAsOutput();
+      if (!f.hasError && f.value == '') {
+        if (required)
+          f.row.errorText = 'Please fill in a number.';
+        hasEmptyField = true;
+      }
+    });
+    if (!hasEmptyField && !hasOutput) {
+      this.fields.filter(f => f.row.show).forEach(function(f: Field) {
+        f.row.errorText = 'Please remove a value.';
+      });
+    }
+  }
 }
 
 @Component({
