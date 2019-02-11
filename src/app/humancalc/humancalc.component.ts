@@ -19,6 +19,7 @@ class Species extends Field {
   get unitName(): string { return ''; }
   get value() { return this.select.value.species; }
   set value(unused) {}
+  get equationVarName(): string { return printNum(this.select ? this.select.value.factor : this.options[0].factor); }
   get logValue(): string { return this.select.value.species + ' (' + printNum(this.select.value.factor) + ')'; }
   select: SdSelectComponent;
   updateErrorState(): void {}
@@ -27,6 +28,8 @@ class Species extends Field {
   updateVar() {
     this.var.setValue(new ScalarAndDimension(this.select.value.factor, this.unit.d));
   }
+
+  readonly options = SPECIES_CONVERSION;
 }
 
 class AnimalDose extends Field {
@@ -58,6 +61,7 @@ class AnimalWeight extends Field {
 class ConversionFactor extends Field {
   get label(): string { return 'Use the conversion factor recommended by'; }
   get logColumnName(): string { return 'Conversion factor'; }
+  get equationVarName(): string { return (!this.select || this.select.value === this.options[0]) ? '0.33' : '0.25'; }
   get logValue(): string { return this.select.value.logvalue; }
   get value() { return this.select.value.display; }
   set value(unused) {}
@@ -68,6 +72,11 @@ class ConversionFactor extends Field {
   updateVar() {
     this.var.setValue(new ScalarAndDimension(this.select.value.value, this.unit.d));
   }
+
+  readonly options = [
+    {display: 'FDA Standard (0.33)', value: (1/3), logvalue: '0.33 (FDA standard)'},
+    {display: 'EPA Standard (0.25)', value: (1/4), logvalue: '0.25 (EPA standard)'}
+  ];
 }
 
 @Component({
@@ -139,13 +148,6 @@ export class HumanCalcComponent implements AfterViewInit {
     this.weightHumanEquivalentDose.row = this.weightHumanDoseRow;
   }
 
-  speciesOptions = SPECIES_CONVERSION;
-
-  conversionFactorOptions = [
-    {display: 'FDA Standard (0.33)', value: (1/3), logvalue: '0.33 (FDA standard)'},
-    {display: 'EPA Standard (0.25)', value: (1/4), logvalue: '0.25 (EPA standard)'}
-  ];
-
   constructor() {
     library.add(faFilePdf);
 
@@ -154,9 +156,9 @@ export class HumanCalcComponent implements AfterViewInit {
     this.animalDose.term = (<Equation>fdaMethodEq.solve(this.animalDose.var)).RHS;
     this.humanEquivalentDose.term = (<Equation>fdaMethodEq.solve(this.humanEquivalentDose.var)).RHS;
 
-    this.variableMap.set(this.animalSpecies.var, printNum(SPECIES_CONVERSION[0].factor));
-    this.variableMap.set(this.animalDose.var, 'Animal dose administered');
-    this.variableMap.set(this.humanEquivalentDose.var, 'Human equivalent dose');
+    this.variableMap.set(this.animalSpecies.var, this.animalSpecies.equationVarName);
+    this.variableMap.set(this.animalDose.var, this.animalDose.equationVarName);
+    this.variableMap.set(this.humanEquivalentDose.var, this.humanEquivalentDose.equationVarName);
 
     this.fdaMethodForm.equationSnippet = this.humanEquivalentDose.equationSnippet(this.eqPrinter);
 
@@ -167,22 +169,22 @@ export class HumanCalcComponent implements AfterViewInit {
     // Skip conversionFactor, it's never an output.
     this.weightHumanEquivalentDose.term = (<Equation>weightMethodEq.solve(this.weightHumanEquivalentDose.var)).RHS;
 
-    this.variableMap.set(this.weightAnimalDose.var, 'Animal dose administered');
-    this.variableMap.set(this.animalWeight.var, 'Body weight of animal');
-    this.variableMap.set(this.humanWeight.var, 'Body weight of human');
-    this.variableMap.set(this.conversionFactor.var, '0.33');
-    this.variableMap.set(this.weightHumanEquivalentDose.var, 'Human equivalent dose');
+    this.variableMap.set(this.weightAnimalDose.var, this.weightAnimalDose.equationVarName);
+    this.variableMap.set(this.animalWeight.var, this.animalWeight.equationVarName);
+    this.variableMap.set(this.humanWeight.var, this.humanWeight.equationVarName);
+    this.variableMap.set(this.conversionFactor.var, this.conversionFactor.equationVarName);
+    this.variableMap.set(this.weightHumanEquivalentDose.var, this.weightHumanEquivalentDose.equationVarName);
 
     this.weightMethodForm.equationSnippet = this.weightHumanEquivalentDose.equationSnippet(this.eqPrinter);
   }
 
   changeSpecies(): void {
-    this.variableMap.set(this.animalSpecies.var, printNum(this.animalSpecies.select.value.factor));
+    this.variableMap.set(this.animalSpecies.var, this.animalSpecies.equationVarName);
     this.fdaMethodForm.formChange();
   }
 
   changeConversionFactor(): void {
-    this.variableMap.set(this.conversionFactor.var, this.conversionFactor.select.value === this.conversionFactorOptions[0] ? '0.33' : '0.25');
+    this.variableMap.set(this.conversionFactor.var, this.conversionFactor.equationVarName);
     this.weightMethodForm.formChange();
   }
 

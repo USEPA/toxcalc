@@ -15,7 +15,7 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <sd-select id="animalSpecies" (click)="changeSpecies()" #animalSpeciesSelect>
-              <option *ngFor="let species of speciesOptions" [label]="species.species" [value]="species"></option>
+              <option *ngFor="let species of animalSpecies.options" [label]="species.species" [value]="species"></option>
             </sd-select>
           </ng-template>
         </sd-calc-row>
@@ -166,7 +166,7 @@
           </ng-template>
           <ng-template sdCalcRowInput>
             <sd-select (click)="changeConversionFactor()" id="conversionFactor" #conversionFactorSelect>
-                <option *ngFor="let factor of conversionFactorOptions" [label]="factor.display" [value]="factor"></option>
+                <option *ngFor="let factor of conversionFactor.options" [label]="factor.display" [value]="factor"></option>
             </sd-select>
           </ng-template>
           <ng-template sdCalcRowHelp>

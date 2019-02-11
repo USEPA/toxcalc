@@ -177,9 +177,9 @@ export class InhaleCalcComponent implements AfterViewInit {
     this.molarMass.term = (<Equation>conversionEq.solve(this.molarMass.var)).RHS;
     this.concenMassVol.term = (<Equation>conversionEq.solve(this.concenMassVol.var)).RHS;
 
-    this.variableMap.set(this.concenVolVol.var, 'Air concentration (v/v)');
-    this.variableMap.set(this.molarMass.var, 'Molar mass');
-    this.variableMap.set(this.concenMassVol.var, 'Air concentration (m/v)');
+    this.variableMap.set(this.concenVolVol.var, this.concenVolVol.equationVarName);
+    this.variableMap.set(this.molarMass.var, this.molarMass.equationVarName);
+    this.variableMap.set(this.concenMassVol.var, this.concenMassVol.equationVarName);
 
     this.conversionForm.equationSnippet = this.concenMassVol.equationSnippet(this.eqPrinter);
 
@@ -189,10 +189,10 @@ export class InhaleCalcComponent implements AfterViewInit {
     this.weight.term = (<Equation>inhalationEq.solve(this.weight.var)).RHS;
     this.dose.term = (<Equation>inhalationEq.solve(this.dose.var)).RHS;
 
-    this.variableMap.set(this.concen.var, 'Air concentration');
-    this.variableMap.set(this.intake.var, 'Intake');
-    this.variableMap.set(this.weight.var, 'Body weight');
-    this.variableMap.set(this.dose.var, 'Dose');
+    this.variableMap.set(this.concen.var, this.concen.equationVarName);
+    this.variableMap.set(this.intake.var, this.intake.equationVarName);
+    this.variableMap.set(this.weight.var, this.weight.equationVarName);
+    this.variableMap.set(this.dose.var, this.dose.equationVarName);
 
     this.inhalationForm.equationSnippet = this.dose.equationSnippet(this.eqPrinter);
   }
