@@ -612,6 +612,7 @@ export class HbelCalcComponent {
     } else {
       this.alpha.enable(this.variableMap);
     }
+    this.pdeForm.calculate();
   }
 
   extraFactorsDisable(): void {
@@ -620,6 +621,7 @@ export class HbelCalcComponent {
     } else {
       this.extraFactors.enable(this.variableMap);
     }
+    this.pdeForm.calculate();
   }
 
   // Allow the template to iterate over unit labels filtered by dimension.
