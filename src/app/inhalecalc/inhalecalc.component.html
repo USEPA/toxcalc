@@ -6,7 +6,7 @@
   <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
   <div class="card w-100 mb-3">
     <div class="card-body">
-      <form autocomplete="off" novalidate (change)="conversionForm.formChange()">
+      <form autocomplete="off" novalidate>
         <sd-calc-row #concenVolVolRow>
           <ng-template sdCalcRowLabel sdCalcRowLabelFor="concenVolVol">
             {{concenVolVol.label}}
@@ -16,14 +16,13 @@
               [ngClass]="{'form-control': true, output: concenVolVol.isMarkedAsOutput()}"
               id="concenVolVol"
               sdInputPosNum
-              (blur)="conversionForm.inputBlur()"
-              (focus)="conversionForm.inputFocus($event.target)"
+              (input)="conversionForm.calculate()"
               [readonly]="concenVolVol.isMarkedAsOutput()"
               [(ngModel)]="concenVolVol.value"
               [ngModelOptions]="{standalone: true}"
               #concenVolVolInput
               />
-            <sd-select (click)="conversionForm.formChange()" [sdAppend]="true" #concenVolVolUnits>
+            <sd-select (click)="conversionForm.calculate()" [sdAppend]="true" #concenVolVolUnits>
               <option *ngFor="let ratio of concenUnitsVolVolOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
@@ -40,8 +39,7 @@
               [ngClass]="{'form-control': true, output: molarMass.isMarkedAsOutput()}"
               id="molarMass"
               sdInputPosNum
-              (blur)="conversionForm.inputBlur()"
-              (focus)="conversionForm.inputFocus($event.target)"
+              (input)="conversionForm.calculate()"
               [readonly]="molarMass.isMarkedAsOutput()"
               [(ngModel)]="molarMass.value"
               [ngModelOptions]="{standalone: true}"
@@ -64,14 +62,13 @@
               [ngClass]="{'form-control': true, 'output': concenMassVol.isMarkedAsOutput()}"
               id="concenMassVol"
               sdInputPosNum
-              (blur)="conversionForm.inputBlur()"
-              (focus)="conversionForm.inputFocus($event.target)"
+              (input)="conversionForm.calculate()"
               [readonly]="concenMassVol.isMarkedAsOutput()"
               [(ngModel)]="concenMassVol.value"
               [ngModelOptions]="{standalone: true}"
               #concenMassVolInput
               />
-            <sd-select (click)="conversionForm.formChange()" [sdAppend]="true" #concenMassVolUnits>
+            <sd-select (click)="conversionForm.calculate()" [sdAppend]="true" #concenMassVolUnits>
               <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
@@ -97,7 +94,7 @@
   <p><b>All calculations are for a temperature of 25 degrees Celsius and 1 atmosphere of pressure (SATP)</b></p>
   <div class="card w-100 mb-3">
     <div class="card-body">
-      <form autocomplete="off" novalidate (change)="inhalationForm.formChange()">
+      <form autocomplete="off" novalidate>
         <sd-calc-row #concenRow>
           <ng-template sdCalcRowLabel sdCalcRowLabelFor="concen">
             {{concen.label}}
@@ -107,14 +104,13 @@
               [ngClass]="{'form-control': true, 'output': concen.isMarkedAsOutput()}"
               id="concen"
               sdInputPosNum
-              (blur)="inhalationForm.inputBlur()"
-              (focus)="inhalationForm.inputFocus($event.target)"
+              (input)="inhalationForm.calculate()"
               [readonly]="concen.isMarkedAsOutput()"
               [(ngModel)]="concen.value"
               [ngModelOptions]="{standalone: true}"
               #concenInput
               />
-            <sd-select (click)="inhalationForm.formChange()" [sdAppend]="true" #concenUnits>
+            <sd-select (click)="inhalationForm.calculate()" [sdAppend]="true" #concenUnits>
               <option *ngFor="let ratio of concenUnitsMassVolOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
@@ -131,8 +127,7 @@
               [ngClass]="{'form-control': true, 'output': intake.isMarkedAsOutput()}"
               id="intake"
               sdInputPosNum
-              (blur)="inhalationForm.inputBlur()"
-              (focus)="inhalationForm.inputFocus($event.target)"
+              (input)="inhalationForm.calculate()"
               [readonly]="intake.isMarkedAsOutput()"
               [(ngModel)]="intake.value"
               [ngModelOptions]="{standalone: true}"
@@ -155,14 +150,13 @@
               [ngClass]="{'form-control': true, 'output': weight.isMarkedAsOutput()}"
               id="weight"
               sdInputPosNum
-              (blur)="inhalationForm.inputBlur()"
-              (focus)="inhalationForm.inputFocus($event.target)"
+              (input)="inhalationForm.calculate()"
               [readonly]="weight.isMarkedAsOutput()"
               [(ngModel)]="weight.value"
               [ngModelOptions]="{standalone: true}"
               #weightInput
               />
-            <sd-select (click)="inhalationForm.formChange()" [sdAppend]="true" #weightUnits>
+            <sd-select (click)="inhalationForm.calculate()" [sdAppend]="true" #weightUnits>
               <option *ngFor="let ratio of weightUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>
@@ -179,14 +173,13 @@
               [ngClass]="{'form-control': true, 'output': dose.isMarkedAsOutput()}"
               id="dose"
               sdInputPosNum
-              (blur)="inhalationForm.inputBlur()"
-              (focus)="inhalationForm.inputFocus($event.target)"
+              (input)="inhalationForm.calculate()"
               [readonly]="dose.isMarkedAsOutput()"
               [(ngModel)]="dose.value"
               [ngModelOptions]="{standalone: true}"
               #doseInput
               />
-            <sd-select (click)="inhalationForm.formChange()" [sdAppend]="true" #doseUnits>
+            <sd-select (click)="inhalationForm.calculate()" [sdAppend]="true" #doseUnits>
               <option *ngFor="let ratio of doseUnitsOptions" [value]="ratio" [label]="ratio.units"></option>
             </sd-select>
           </ng-template>

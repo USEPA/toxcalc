@@ -6,7 +6,7 @@
   <ngb-alert type="info" [dismissible]="false">This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</ngb-alert>
   <div class="card w-100 mb-3">
     <div class="card-body">
-      <form autocomplete="off" novalidate (change)="bcfForm.formChange()">
+      <form autocomplete="off" novalidate>
         <sd-calc-row #bioavailabilityPDERow>
           <ng-template sdCalcRowLabel sdCalcRowLabelFor="bioavailabilityPDE">
             {{bioavailabilityPDE.label}}
@@ -16,8 +16,7 @@
               [ngClass]="{'form-control': true, 'output': bioavailabilityPDE.isMarkedAsOutput()}"
               id="bioavailabilityPDE"
               sdInputPosNumLeft
-              (blur)="bcfForm.inputBlur()"
-              (focus)="bcfForm.inputFocus($event.target)"
+              (input)="bcfForm.calculate()"
               [readonly]="bioavailabilityPDE.isMarkedAsOutput()"
               [(ngModel)]="bioavailabilityPDE.value"
               [ngModelOptions]="{standalone: true}"
@@ -37,8 +36,7 @@
               [ngClass]="{'form-control': true, 'output': bioavailabilityCriticalStudy.isMarkedAsOutput()}"
               id="bioavailabilityCriticalStudy"
               sdInputPosNumLeft
-              (blur)="bcfForm.inputBlur()"
-              (focus)="bcfForm.inputFocus($event.target)"
+              (input)="bcfForm.calculate()"
               [readonly]="bioavailabilityCriticalStudy.isMarkedAsOutput()"
               [(ngModel)]="bioavailabilityCriticalStudy.value"
               [ngModelOptions]="{standalone: true}"
@@ -58,8 +56,7 @@
               [ngClass]="{'form-control': true, 'output': alpha.isMarkedAsOutput()}"
               id="alpha"
               sdInputPosNumLeft
-              (blur)="bcfForm.inputBlur()"
-              (focus)="bcfForm.inputFocus($event.target)"
+              (input)="bcfForm.calculate()"
               [readonly]="alpha.isMarkedAsOutput()"
               [(ngModel)]="alpha.value"
               [ngModelOptions]="{standalone: true}"

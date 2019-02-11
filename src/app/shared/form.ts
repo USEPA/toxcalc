@@ -43,36 +43,11 @@ export class Form {
   equationSnippet: string = '';
 
   clear(): void {
-    this.suppressChange = false;
     this.internalError = '';
     this.fields.forEach(function(f: Field) {
       f.clear();
     });
     this.equationSnippet = this.fields[this.fields.length - 1].equationSnippet(this.eqPrinter);
-  }
-
-  suppressChange: boolean = false;
-
-  inputBlur(): void {
-    this.suppressChange = false;
-    this.calculate();
-  }
-
-  inputFocus(self: HTMLInputElement): void {
-    this.suppressChange = true;
-    for (let i = 0; i != this.fields.length; ++i) {
-      if (this.fields[i].isMarkedAsOutput() &&
-          this.fields[i].input &&
-          this.fields[i].input!.nativeElement != self) {
-        this.fields[i].value = '';
-        return;
-      }
-    }
-  }
-
-  formChange(): void {
-    if (!this.suppressChange)
-      this.calculate();
   }
 
   calculate(): void {

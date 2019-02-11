@@ -6,7 +6,7 @@
   <ngb-alert type="info" [dismissible]="false">This is a MULTIDIRECTIONAL calculator. <u>Leave any <b>one</b> field blank and hit Calculate!</u> It will calculate the missing field for you.</ngb-alert>
   <div class="card w-100 mb-3">
     <div class="card-body">
-      <form autocomplete="off" novalidate (change)="pdeForm.formChange()">
+      <form autocomplete="off" novalidate>
         <sd-calc-row #effectLimitRow>
           <ng-template sdCalcRowLabel sdCalcRowLabelFor="effectLimit">
             {{effectLimit.label}}
@@ -16,15 +16,14 @@
               [ngClass]="{'form-control': true, 'output': effectLimit.isMarkedAsOutput()}"
               id="effectLimit"
               sdInputPosNum
-              (blur)="pdeForm.inputBlur()"
-              (focus)="pdeForm.inputFocus($event.target)"
+              (input)="pdeForm.calculate()"
               [readonly]="effectLimit.isMarkedAsOutput()"
               [(ngModel)]="effectLimit.value"
               [ngModelOptions]="{standalone: true}"
               #effectLimitInput
               />
             <div class="input-group-append">
-              <sd-select name="effectLimitUnits" #effectLimitUnits (change)="pdeForm.formChange();" [sdAppend]="true">
+              <sd-select name="effectLimitUnits" #effectLimitUnits (change)="pdeForm.calculate();" [sdAppend]="true">
                 <option *ngFor="let unit of iterUnits(effectLimit.UNITS)" [label]="unit" [value]="effectLimit.UNITS[unit]">
               </sd-select>
             </div>
@@ -53,8 +52,7 @@
                         [ngClass]="{'form-control': true, 'output': bodyWeight.isMarkedAsOutput()}"
                         id="bodyWeightCustomValue"
                         sdInputPosNum
-                        (blur)="pdeForm.inputBlur()"
-                        (focus)="pdeForm.inputFocus($event.target)"
+                        (input)="pdeForm.calculate()"
                         [readonly]="bodyWeight.isMarkedAsOutput()"
                         [disabled]="!bodyWeight.custom"
                         [(ngModel)]="bodyWeight.customValue"
@@ -115,8 +113,7 @@
                         [ngClass]="{'form-control': true, 'output': species.isMarkedAsOutput()}"
                         id="speciesCustomFactor"
                         sdInputPosNumLeft
-                        (blur)="pdeForm.inputBlur()"
-                        (focus)="pdeForm.inputFocus($event.target)"
+                        (input)="pdeForm.calculate()"
                         [readonly]="species.isMarkedAsOutput()"
                         [disabled]="!species.custom"
                         [(ngModel)]="species.customValue"
@@ -150,8 +147,7 @@
               [ngClass]="{'form-control': true, 'output': safetyFactor.isMarkedAsOutput()}"
               id="safetyFactor"
               sdInputPosNumLeft
-              (blur)="pdeForm.inputBlur()"
-              (focus)="pdeForm.inputFocus($event.target)"
+              (input)="pdeForm.calculate()"
               [readonly]="safetyFactor.isMarkedAsOutput()"
               [(ngModel)]="safetyFactor.value"
               [ngModelOptions]="{standalone: true}"
@@ -182,8 +178,7 @@
                         [ngClass]="{'form-control': true, 'output': studyDurationFactor.isMarkedAsOutput()}"
                         id="studyDurationFactorCustom"
                         sdInputPosNumLeft
-                        (blur)="pdeForm.inputBlur()"
-                        (focus)="pdeForm.inputFocus($event.target)"
+                        (input)="pdeForm.calculate()"
                         [readonly]="studyDurationFactor.isMarkedAsOutput()"
                         [disabled]="!studyDurationFactor.custom"
                         [(ngModel)]="studyDurationFactor.customValue"
@@ -229,8 +224,7 @@
                         [ngClass]="{'form-control': true, 'output': severeToxicityFactor.isMarkedAsOutput()}"
                         id="severeToxicityFactorCustom"
                         sdInputPosNumLeft
-                        (blur)="pdeForm.inputBlur()"
-                        (focus)="pdeForm.inputFocus($event.target)"
+                        (input)="pdeForm.calculate()"
                         [readonly]="severeToxicityFactor.isMarkedAsOutput()"
                         [disabled]="!severeToxicityFactor.custom"
                         [(ngModel)]="severeToxicityFactor.customValue"
@@ -264,8 +258,7 @@
               [ngClass]="{'form-control': true, 'output': noNoelFactor.isMarkedAsOutput()}"
               id="noNoelFactor"
               sdInputPosNumLeft
-              (blur)="pdeForm.inputBlur()"
-              (focus)="pdeForm.inputFocus($event.target)"
+              (input)="pdeForm.calculate()"
               [readonly]="noNoelFactor.isMarkedAsOutput()"
               [(ngModel)]="noNoelFactor.value"
               [ngModelOptions]="{standalone: true}"
@@ -287,8 +280,7 @@
                   [ngClass]="{'form-control': true, output: alpha.isMarkedAsOutput()}"
                   id="alpha"
                   sdInputPosNumLeft
-                  (blur)="pdeForm.inputBlur()"
-                  (focus)="pdeForm.inputFocus($event.target)"
+                  (input)="pdeForm.calculate()"
                   [disabled]="!alpha.enabled"
                   [readonly]="alpha.isMarkedAsOutput()"
                   [(ngModel)]="alpha.textValue"
@@ -327,8 +319,7 @@
                   [ngClass]="{'form-control': true, 'output': extraFactors.isMarkedAsOutput()}"
                   id="extraFactors"
                   sdInputPosNumLeft
-                  (blur)="pdeForm.inputBlur()"
-                  (focus)="pdeForm.inputFocus($event.target)"
+                  (input)="pdeForm.calculate()"
                   [disabled]="!extraFactors.enabled"
                   [readonly]="extraFactors.isMarkedAsOutput()"
                   [(ngModel)]="extraFactors.textValue"
@@ -392,8 +383,7 @@
               [ngClass]="{'form-control': true, 'output': pde.isMarkedAsOutput()}"
               id="pde"
               sdInputPosNum
-              (blur)="pdeForm.inputBlur()"
-              (focus)="pdeForm.inputFocus($event.target)"
+              (input)="pdeForm.calculate()"
               [readonly]="pde.isMarkedAsOutput()"
               [(ngModel)]="pde.value"
               [ngModelOptions]="{standalone: true}"

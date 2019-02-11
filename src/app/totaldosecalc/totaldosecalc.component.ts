@@ -336,7 +336,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.row.show = false;
       this.form.underConstructionShow = true;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
 
@@ -353,7 +353,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.recip = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
     if (this.concenUnits.selectedGroupName == 'mol/mass' &&
@@ -366,7 +366,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.recip = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
     if (this.concenUnits.selectedGroupName == 'mass/mass' &&
@@ -380,7 +380,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.recip = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
 
@@ -398,7 +398,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.row.show = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
 
@@ -408,7 +408,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.row.show = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
 
@@ -419,7 +419,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.row.show = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
     if (residual.equal(this.molarMass.unit.d.recip())) {
@@ -429,7 +429,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.row.show = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
 
@@ -440,7 +440,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.recip = true;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
 
@@ -451,7 +451,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.row.show = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
     if (residual.equal(this.substanceDensity.unit.d.div(this.molarMass.unit.d))) {
@@ -461,7 +461,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.row.show = false;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
 
@@ -473,7 +473,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.recip = true;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
     if (residual.equal(this.solutionDensity.unit.d.recip().mul(this.molarMass.unit.d.recip()))) {
@@ -484,7 +484,7 @@ export class TotalDoseCalcComponent {
       this.solutionDensity.recip = true;
       this.form.underConstructionShow = false;
       this.updateEquation();
-      this.form.formChange();
+      this.form.calculate();
       return;
     }
 
@@ -493,6 +493,6 @@ export class TotalDoseCalcComponent {
 
     this.form.underConstructionShow = true;
     this.updateEquation();
-    this.form.formChange();
+    this.form.calculate();
   }
 }

@@ -180,19 +180,19 @@ export class HumanCalcComponent implements AfterViewInit {
 
   changeSpecies(): void {
     this.variableMap.set(this.animalSpecies.var, this.animalSpecies.equationVarName);
-    this.fdaMethodForm.formChange();
+    this.fdaMethodForm.calculate();
   }
 
   changeConversionFactor(): void {
     this.variableMap.set(this.conversionFactor.var, this.conversionFactor.equationVarName);
-    this.weightMethodForm.formChange();
+    this.weightMethodForm.calculate();
   }
 
   changeAnimalWeightUnits(): void {
-    this.weightMethodForm.formChange();
+    this.weightMethodForm.calculate();
   }
 
   changeHumanWeightUnits(): void {
-    this.weightMethodForm.formChange();
+    this.weightMethodForm.calculate();
   }
 }

@@ -8,7 +8,7 @@
   <p>For details on this method, see Table 1 (page 10) of the <a rel="noopener" target="_blank" href="https://www.fda.gov/downloads/drugs/guidances/ucm078932.pdf">FDA Guidance for Industry</a>.</p>
   <div class="card w-100 mb-3">
     <div class="card-body">
-      <form autocomplete="off" novalidate (change)="fdaMethodForm.formChange()">
+      <form autocomplete="off" novalidate>
         <sd-calc-row #animalSpeciesRow>
           <ng-template sdCalcRowLabel sdCalcRowLabelFor="animalSpecies">
             {{animalSpecies.label}}
@@ -28,8 +28,7 @@
               [ngClass]="{'form-control': true, 'output': animalDose.isMarkedAsOutput()}"
               id="animalDose"
               sdInputPosNum
-              (blur)="fdaMethodForm.inputBlur()"
-              (focus)="fdaMethodForm.inputFocus($event.target)"
+              (input)="fdaMethodForm.calculate()"
               [readonly]="animalDose.isMarkedAsOutput()"
               [(ngModel)]="animalDose.value"
               [ngModelOptions]="{standalone: true}"
@@ -52,8 +51,7 @@
               [ngClass]="{'form-control': true, 'output': humanEquivalentDose.isMarkedAsOutput()}"
               id="humanDose"
               sdInputPosNum
-              (blur)="fdaMethodForm.inputBlur()"
-              (focus)="fdaMethodForm.inputFocus($event.target)"
+              (input)="fdaMethodForm.calculate()"
               [readonly]="humanEquivalentDose.isMarkedAsOutput()"
               [(ngModel)]="humanEquivalentDose.value"
               [ngModelOptions]="{standalone: true}"
@@ -85,7 +83,7 @@
   <p>This method scales doses between animals and humans-based Body Weight¾ (EPA preferred method) or Body Weight⅔ (FDA preferred method). Note that use of the FDA preferred method will result in more conservative estimations of human equivalent doses. It is NOT recommended that this calculator be used to scale human doses to smaller animals because this will result in higher doses in the animals on a mg/kg basis (i.e. this is not conservative) UNLESS it is already known that the dosing of the substance in question scales allometrically.</p>
   <div class="card w-100 mb-3">
     <div class="card-body">
-      <form autocomplete="off" novalidate (change)="weightMethodForm.formChange()">
+      <form autocomplete="off" novalidate>
         <sd-calc-row #weightAnimalDoseRow>
           <ng-template sdCalcRowLabel sdCalcRowLabelFor="weightAnimalDose">
             {{weightAnimalDose.label}}
@@ -95,8 +93,7 @@
               [ngClass]="{'form-control': true, 'output': weightAnimalDose.isMarkedAsOutput()}"
               id="weightAnimalDose"
               sdInputPosNum
-              (blur)="weightMethodForm.inputBlur()"
-              (focus)="weightMethodForm.inputFocus($event.target)"
+              (input)="weightMethodForm.calculate()"
               [readonly]="weightAnimalDose.isMarkedAsOutput()"
               [(ngModel)]="weightAnimalDose.value"
               [ngModelOptions]="{standalone: true}"
@@ -119,8 +116,7 @@
               [ngClass]="{'form-control': true, output: animalWeight.isMarkedAsOutput()}"
               id="animalWeight"
               sdInputPosNum
-              (blur)="weightMethodForm.inputBlur()"
-              (focus)="weightMethodForm.inputFocus($event.target)"
+              (input)="weightMethodForm.calculate()"
               [readonly]="animalWeight.isMarkedAsOutput()"
               [(ngModel)]="animalWeight.value"
               [ngModelOptions]="{standalone: true}"
@@ -144,8 +140,7 @@
               [ngClass]="{'form-control': true, 'output': humanWeight.isMarkedAsOutput()}"
               id="humanWeight"
               sdInputPosNum
-              (blur)="weightMethodForm.inputBlur()"
-              (focus)="weightMethodForm.inputFocus($event.target)"
+              (input)="weightMethodForm.calculate()"
               [readonly]="humanWeight.isMarkedAsOutput()"
               [(ngModel)]="humanWeight.value"
               [ngModelOptions]="{standalone: true}"
@@ -182,8 +177,7 @@
               [ngClass]="{'form-control': true, 'output': weightHumanEquivalentDose.isMarkedAsOutput()}"
               id="weightHumanDose"
               sdInputPosNum
-              (blur)="weightMethodForm.inputBlur()"
-              (focus)="weightMethodForm.inputFocus($event.target)"
+              (input)="weightMethodForm.calculate()"
               [readonly]="weightHumanEquivalentDose.isMarkedAsOutput()"
               [(ngModel)]="weightHumanEquivalentDose.value"
               [ngModelOptions]="{standalone: true}"

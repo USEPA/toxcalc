@@ -384,16 +384,6 @@ class PDEForm extends Form {
 
     super.calculate();
   }
-
-  showComposite: boolean = false;
-  inputFocus(self: HTMLInputElement): void {
-    super.inputFocus(self);
-    this.showComposite = this.factorFields.every(function (f: Field) { if (f.input && f.input!.nativeElement == self) return false; return true; } );
-  }
-  inputBlur(): void {
-    super.inputBlur();
-    this.showComposite = true;
-  }
 }
 
 @Component({
@@ -514,7 +504,7 @@ export class HbelCalcComponent {
     } else {
       this.bodyWeight.enable(this.variableMap);
     }
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   bodyWeightClick(i: number): void {
@@ -524,12 +514,12 @@ export class HbelCalcComponent {
 
     this.bodyWeight.selectedValue = printNum(this.bodyWeight.options[i].value);
 
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   bodyWeightClickCustom(): void {
     this.bodyWeight.custom = true;
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   speciesClick(i: number): void {
@@ -541,13 +531,13 @@ export class HbelCalcComponent {
     this.species.selectedValue = printNum(this.species.options[i].value);
     this.studyDurationFactor.species = this.species.options[i].label;
 
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   speciesClickCustom(): void {
     this.species.custom = true;
     this.studyDurationFactor.species = 'custom';
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   studyDurationFactorClick(value: number): void {
@@ -557,12 +547,12 @@ export class HbelCalcComponent {
 
     this.studyDurationFactor.selectedValue = printNum(value);
 
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   studyDurationFactorClickCustom(): void {
     this.studyDurationFactor.custom = true;
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   severeToxicityFactorClick(value: number): void {
@@ -572,12 +562,12 @@ export class HbelCalcComponent {
 
     this.severeToxicityFactor.selectedValue = printNum(value);
 
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   severeToxicityFactorClickCustom(): void {
     this.severeToxicityFactor.custom = true;
-    this.pdeForm.formChange();
+    this.pdeForm.calculate();
   }
 
   alphaDisable(): void {
@@ -610,7 +600,6 @@ export class HbelCalcComponent {
   compositeFactorsTerm: Term;
   getCompositeFactorsValue(): string {
     if (!this.ready) return '';
-    if (!this.pdeForm.showComposite) return '';
     let result = this.compositeFactorsTerm.getValue();
     if (result == null) return '';
     if (isCalculateError(result)) return '';
