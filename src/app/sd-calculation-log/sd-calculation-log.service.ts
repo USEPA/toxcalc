@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
+import { removeSoftHyphen } from '../shared/string-util';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -78,9 +80,9 @@ export class SdCalculationLogService {
 
     let result = '';
     this.groups_.forEach(function(group: {'columns': Array<string>, 'rows': Array<Array<string>>}) {
-      result += group.columns.map(SdCalculationLogService.csvEscape).join(',') + '\r\n';
+      result += group.columns.map(removeSoftHyphen).map(SdCalculationLogService.csvEscape).join(',') + '\r\n';
       group.rows.forEach(function(row: Array<string>){
-        result += row.map(SdCalculationLogService.csvEscape).join(',') + '\r\n';
+        result += row.map(removeSoftHyphen).map(SdCalculationLogService.csvEscape).join(',') + '\r\n';
       });
     });
 

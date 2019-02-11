@@ -8,6 +8,8 @@ import { ScalarAndDimension } from './dimension';
 
 import { Term, EquationPrinter, Variable } from './equation';
 
+import { removeSoftHyphen } from './string-util';
+
 export abstract class Field {
   input: ElementRef<HTMLInputElement> | null = null;
   units: SdSelectComponent | null = null;
@@ -36,7 +38,7 @@ export abstract class Field {
   get hasError(): boolean { return this.row.errorText != ''; }
   abstract get label(): string;
   get logColumnName(): string { return this.label; }
-  get equationVarName(): string { return this.logColumnName; }
+  get equationVarName(): string { return removeSoftHyphen(this.logColumnName); }
   get logValue(): string { return [this.value, this.unitName, this.isMarkedAsOutput() ? '(calculated)' : ''].filter(txt => txt.length > 0).join(' '); }
   get unitName(): string { return this.units!.selectedName; }
 

@@ -53,7 +53,7 @@ class Concen extends Field {
 }
 
 class Intake extends Field {
-  get label(): string { return 'Intake'; }
+  get label(): string { return 'In­take'; }
   get unitName(): string { return 'm³/day'; }
   private readonly VOLUME = Dimension.initLength().exp(3);
   private readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());

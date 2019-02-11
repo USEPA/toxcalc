@@ -15,7 +15,7 @@ import { Field } from '../shared/field';
 import { Form } from '../shared/form';
 
 class Concentration extends Field {
-  get label(): string { return 'Concentration'; }
+  get label(): string { return 'Con­cen­tra­tion'; } 
   readonly VOLUME = Dimension.initLength().exp(3);
   readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
   readonly MOL_VOLUME = Dimension.initMolarMass().div(this.VOLUME);
@@ -48,7 +48,7 @@ class Concentration extends Field {
 }
 
 class Intake extends Field {
-  get label(): string { return 'Intake'; }
+  get label(): string { return 'In­take'; }
   readonly VOLUME = Dimension.initLength().exp(3);
   readonly VOLUME_TIME = this.VOLUME.div(Dimension.initTime());
   readonly MASS_TIME = Dimension.initMass().div(Dimension.initTime());
