@@ -158,7 +158,6 @@ class Dose extends Field {
 class TotalDoseCalcForm extends Form {
   constructor(eqPrinter: EquationPrinter, fields: Field[]) {
     super(eqPrinter, fields);
-    this.equationSnippet = '\\text{Dose} = \\frac{\\text{Concentration} \\times \\text{Intake}}{\\text{Body weight}}';
   }
   underConstructionShow: boolean = false;
   hasErrors(): boolean {
@@ -196,7 +195,7 @@ export class TotalDoseCalcComponent {
 
   variableMap: Map<Variable, string> = new Map();
   eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
-  equationSnippet: string = '\\text{Dose} = \\frac{\\text{Concentration} \\times \\text{Intake}}{\\text{Body weight}}';
+  equationSnippet: string;
 
   concen: Concentration = new Concentration;
   intake: Intake = new Intake;
@@ -226,6 +225,8 @@ export class TotalDoseCalcComponent {
     this.variableMap.set(this.intake.var, this.intake.equationVarName);
     this.variableMap.set(this.bodyWeight.var, this.bodyWeight.equationVarName);
     this.variableMap.set(this.dose.var, this.dose.equationVarName);
+
+    this.form.equationSnippet = this.dose.equationSnippet(this.eqPrinter);
   }
 
   ngAfterViewInit() {
