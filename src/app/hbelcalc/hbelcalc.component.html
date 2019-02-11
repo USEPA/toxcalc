@@ -39,11 +39,11 @@
           <ng-template sdCalcRowInput sdCustomRowInput="true">
             <div class="d-flex">
               <div>
-                <div class="form-check" *ngFor="let item of bodyWeight.options; index as i">
+                <div [ngClass]="{'form-check': true, 'd-none': !bodyWeight.expanded && bodyWeight.selected != i}" *ngFor="let item of bodyWeight.options; index as i">
                   <input type="radio" name="bodyWeightGroup" class="form-check-input" [id]="'bodyWeightGroup' + i" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="bodyWeight.output" (click)="bodyWeightClick(i)">
                   <label [ngClass]="{'form-check-label': true, 'font-weight-bold': item.bold}" [for]="'bodyWeightGroup' + i">{{item.label}}</label>
                 </div>
-                <div class="form-check">
+                <div [ngClass]="{'form-check': true, 'd-none': !bodyWeight.expanded && !bodyWeight.custom}">
                   <input type="radio" name="bodyWeightGroup" class="form-check-input" id="bodyWeightCustom" [(ngModel)]="bodyWeight.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="bodyWeight.output" (click)="bodyWeightClickCustom()">
                   <label class="form-check-label" for="bodyWeightCustom">custom body weight:</label>
                   <div class="form-inline">
@@ -66,6 +66,9 @@
                   </div>
                 </div>
               </div>
+              <div class="mx-2" (click)="bodyWeight.expanded = !bodyWeight.expanded">
+                <span class="dropdown-toggle"></span>
+              </div>
               <div>
                 <button type="button" class="btn btn-light ml-3" (click)="bodyWeightRow.showHelp = !bodyWeightRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
                   <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
@@ -87,11 +90,11 @@
           <ng-template sdCalcRowInput sdCustomRowInput="true">
             <div class="d-flex">
               <div>
-                <div class="form-check" *ngFor="let item of species.options; index as i">
+                <div [ngClass]="{'form-check': true, 'd-none': !species.expanded && species.selected != i}" *ngFor="let item of species.options; index as i">
                   <input type="radio" name="speciesGroup" class="form-check-input" [id]="'speciesGroup' + i" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="species.output" (click)="speciesClick(i)">
                   <label class="form-check-label" [for]="'speciesGroup' + i">{{item.value}}: {{item.label}}</label>
                 </div>
-                <div class="form-check">
+                <div [ngClass]="{'form-check': true, 'd-none': !species.expanded && !species.custom}">
                   <input type="radio" name="speciesGroup" class="form-check-input" id="speciesCustom" [(ngModel)]="species.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="species.output" (click)="speciesClickCustom()">
                   <label class="form-check-label" for="speciesCustom">custom species name:</label>
                   <div class="form-inline">
@@ -126,6 +129,9 @@
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="mx-2" (click)="species.expanded = !species.expanded">
+                <span class="dropdown-toggle"></span>
               </div>
               <div>
                 <button type="button" class="btn btn-light ml-3" (click)="speciesRow.showHelp = !speciesRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
@@ -165,11 +171,11 @@
           <ng-template sdCalcRowInput sdCustomRowInput="true">
             <div class="d-flex">
               <div>
-                <div class="form-check" *ngFor="let item of studyDurationFactor.options(); index as i">
+                <div [ngClass]="{'form-check': true, 'd-none': !studyDurationFactor.expanded && studyDurationFactor.selected != i}" *ngFor="let item of studyDurationFactor.options(); index as i">
                   <input type="radio" name="studyDurationFactorGroup" class="form-check-input" [id]="'studyDurationFactorGroup' + i" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClick(item.value)">
                   <label class="form-check-label" [for]="'studyDurationFactorGroup' + i">{{item.value}}: {{item.label}}</label>
                 </div>
-                <div class="form-check">
+                <div [ngClass]="{'form-check': true, 'd-none': !studyDurationFactor.expanded && !studyDurationFactor.custom}">
                   <input type="radio" name="studyDurationFactorGroup" class="form-check-input" id="studyDurationFactorGroupCustom" [(ngModel)]="studyDurationFactor.selected" [ngModelOptions]="{standalone: true}" value="custom" checked [disabled]="studyDurationFactor.output" (click)="studyDurationFactorClickCustom()">
                   <label class="form-check-label" for="studyDurationFactorGroupCustom">custom value:</label>
                   <div class="form-inline">
@@ -192,6 +198,9 @@
                   </div>
                 </div>
               </div>
+              <div class="mx-2" (click)="studyDurationFactor.expanded = !studyDurationFactor.expanded">
+                <span class="dropdown-toggle"></span>
+              </div>
               <div>
                 <button type="button" class="btn btn-light ml-3" (click)="studyDurationFactorRow.showHelp = !studyDurationFactorRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">
                   <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
@@ -211,11 +220,11 @@
             <div class="d-flex">
               <div>
                 This factor can be used for any form of severe toxicity. Examples of factors that could be applied in the realm of developmental toxicity studies is shown below:
-                <div class="form-check" *ngFor="let item of severeToxicityFactor.options; index as i">
+                <div [ngClass]="{'form-check': true, 'd-none': !severeToxicityFactor.expanded && severeToxicityFactor.selected != i}" *ngFor="let item of severeToxicityFactor.options; index as i">
                   <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" [id]="'severeToxicityFactorGroup' + i" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" [value]="i" checked [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClick(item.value)">
                   <label class="form-check-label" [for]="'severeToxicityFactorGroup' + i">{{item.value}}: {{item.label}}</label>
                 </div>
-                <div class="form-check">
+                <div [ngClass]="{'form-check': true, 'd-none': !severeToxicityFactor.expanded && !severeToxicityFactor.custom}">
                   <input type="radio" name="severeToxicityFactorGroup" class="form-check-input" id="severeToxicityGroupCustom" [(ngModel)]="severeToxicityFactor.selected" [ngModelOptions]="{standalone: true}" value="custom" [disabled]="severeToxicityFactor.output" (click)="severeToxicityFactorClickCustom()">
                   <label class="form-check-label" for="severeToxicityGroupCustom">custom value:</label>
                   <div class="form-inline">
@@ -237,6 +246,9 @@
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="mx-2" (click)="severeToxicityFactor.expanded = !severeToxicityFactor.expanded">
+                <span class="dropdown-toggle"></span>
               </div>
               <div>
                 <button type="button" class="btn btn-light ml-3" (click)="severeToxicityFactorRow.showHelp = !severeToxicityFactorRow.showHelp" aria-controls="help" aria-label="Help" aria-haspopup="true" [attr.aria-expanded]="showHelp">

@@ -79,6 +79,12 @@ class BodyWeight extends Field {
     this.enabled = true;
     variableMap.set(this.var, this.equationVarName);
   }
+
+  expanded: boolean = true;
+  clear(): void {
+    super.clear();
+    this.expanded = true;
+  }
 }
 
 class Species extends Field {
@@ -118,6 +124,12 @@ class Species extends Field {
   set value(new_value: string) { this.customValue = new_value; }
 
   selected: string = 'custom';
+
+  expanded: boolean = true;
+  clear(): void {
+    super.clear();
+    this.expanded = true;
+  }
 
   readonly options = [
     {label: 'human equivalent dose (no F1 required)', value: 1},
@@ -185,6 +197,12 @@ class StudyDurationFactor extends Field {
 
   selected: string = 'custom';
 
+  expanded: boolean = true;
+  clear(): void {
+    super.clear();
+    this.expanded = true;
+  }
+
   readonly mouseRatOptions = [
     {label: 'one half lifetime (1 year)', value: 1},
     {label: 'whole period of organogenesis in a reproductive study', value: 1},
@@ -241,6 +259,12 @@ class SevereToxicityFactor extends Field {
   set value(new_value: string) { /* assert (this.custom) */ this.customValue = new_value; }
 
   selected: string = 'custom';
+
+  expanded: boolean = true;
+  clear(): void {
+    super.clear();
+    this.expanded = true;
+  }
 
   readonly options = [
     {label: 'fetal toxicity associated with maternal toxicity', value: 1},
@@ -511,6 +535,7 @@ export class HbelCalcComponent {
     this.bodyWeight.custom = false;
     this.bodyWeight.customValue = '';
     this.bodyWeight.row.errorText = '';
+    this.bodyWeight.expanded = !this.bodyWeight.expanded;
 
     this.bodyWeight.selectedValue = printNum(this.bodyWeight.options[i].value);
 
@@ -519,6 +544,7 @@ export class HbelCalcComponent {
 
   bodyWeightClickCustom(): void {
     this.bodyWeight.custom = true;
+    this.bodyWeight.expanded = !this.bodyWeight.expanded;
     this.pdeForm.calculate();
   }
 
@@ -527,6 +553,7 @@ export class HbelCalcComponent {
     this.species.customValue = '';
     this.species.customSpeciesName = '';
     this.species.row.errorText = '';
+    this.species.expanded = !this.species.expanded;
 
     this.species.selectedValue = printNum(this.species.options[i].value);
     this.studyDurationFactor.species = this.species.options[i].label;
@@ -537,6 +564,7 @@ export class HbelCalcComponent {
   speciesClickCustom(): void {
     this.species.custom = true;
     this.studyDurationFactor.species = 'custom';
+    this.species.expanded = !this.species.expanded;
     this.pdeForm.calculate();
   }
 
@@ -544,6 +572,7 @@ export class HbelCalcComponent {
     this.studyDurationFactor.custom = false;
     this.studyDurationFactor.customValue = '';
     this.studyDurationFactor.row.errorText = '';
+    this.studyDurationFactor.expanded = !this.studyDurationFactor.expanded
 
     this.studyDurationFactor.selectedValue = printNum(value);
 
@@ -552,6 +581,7 @@ export class HbelCalcComponent {
 
   studyDurationFactorClickCustom(): void {
     this.studyDurationFactor.custom = true;
+    this.studyDurationFactor.expanded = !this.studyDurationFactor.expanded
     this.pdeForm.calculate();
   }
 
@@ -559,6 +589,7 @@ export class HbelCalcComponent {
     this.severeToxicityFactor.custom = false;
     this.severeToxicityFactor.customValue = '';
     this.severeToxicityFactor.row.errorText = '';
+    this.severeToxicityFactor.expanded = !this.severeToxicityFactor.expanded;
 
     this.severeToxicityFactor.selectedValue = printNum(value);
 
@@ -567,6 +598,7 @@ export class HbelCalcComponent {
 
   severeToxicityFactorClickCustom(): void {
     this.severeToxicityFactor.custom = true;
+    this.severeToxicityFactor.expanded = !this.severeToxicityFactor.expanded;
     this.pdeForm.calculate();
   }
 
