@@ -48,10 +48,6 @@ class BodyWeight extends Field {
   customSpeciesName: string = '';
   custom: boolean = true;
   selectedValue: string = '';
-  get selectedName(): string {
-    if (this.selected == 'custom') { return 'custom'; }
-    return this.options[parseInt(this.selected)].label;
-  }
   get value(): string {
     if (!this.enabled)
       return '1';
