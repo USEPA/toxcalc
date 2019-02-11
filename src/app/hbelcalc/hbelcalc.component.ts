@@ -79,6 +79,8 @@ class BodyWeight extends Field {
   expanded: boolean = true;
   clear(): void {
     super.clear();
+    this.selected = 'custom';
+    this.custom = true;
     this.expanded = true;
   }
 }
@@ -124,6 +126,8 @@ class Species extends Field {
   expanded: boolean = true;
   clear(): void {
     super.clear();
+    this.selected = 'custom';
+    this.custom = true;
     this.expanded = true;
   }
 
@@ -196,6 +200,8 @@ class StudyDurationFactor extends Field {
   expanded: boolean = true;
   clear(): void {
     super.clear();
+    this.selected = 'custom';
+    this.custom = true;
     this.expanded = true;
   }
 
@@ -259,6 +265,8 @@ class SevereToxicityFactor extends Field {
   expanded: boolean = true;
   clear(): void {
     super.clear();
+    this.selected = 'custom';
+    this.custom = true;
     this.expanded = true;
   }
 
