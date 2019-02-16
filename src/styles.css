@@ -8,13 +8,14 @@ html { overflow-y: scroll; }
 
 input[type=text].form-control.output {
   border-color: #28a745;
+  color: #28a745;
+  font-weight: bold;
   background-position: center left calc(2.25rem / 4);
   background-repeat: no-repeat;
   background-size: calc(2.25rem / 2) calc(2.25rem / 2);
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath stroke='%2328a745' stroke-linecap='round' d='M2 3L6 3M2 5L6 5'/%3e%3c/svg%3e");
 }
 input[type=text].form-control.output:focus {
-  border-color: #28a745;
   box-shadow: 0px 0px 0px 3px #c9e9d0;
 }
 input[type=text].form-control:not(.text-right):not(.output):not(.output-only) {
