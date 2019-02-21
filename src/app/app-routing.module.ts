@@ -10,9 +10,11 @@ import { BioavailCalcComponent } from './bioavailcalc/bioavailcalc.component';
 import { DefinitionsComponent } from './definitions/definitions.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { ExamplesComponent } from './examples/examples.component';
+import { TermsclickthroughComponent } from './termsclickthrough/termsclickthrough.component';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: LandingComponent },
+  { path: '', pathMatch: 'full', component: TermsclickthroughComponent },
+  { path: 'landing', component: LandingComponent },
   { path: 'TotalDoseCalc', component: TotalDoseCalcComponent },
   { path: 'HumanCalc', component: HumanCalcComponent },
   { path: 'InhaleCalc', component: InhaleCalcComponent },

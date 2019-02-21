@@ -25,6 +25,7 @@ import { SdCalculationLogComponent } from './sd-calculation-log/sd-calculation-l
 import { SdJustificationComponent } from './sd-justification/sd-justification.component';
 import { BioavailCalcComponent } from './bioavailcalc/bioavailcalc.component';
 import { ExamplesComponent } from './examples/examples.component';
+import { TermsclickthroughComponent } from './termsclickthrough/termsclickthrough.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { ExamplesComponent } from './examples/examples.component';
     SdSelectGroup,
     TotalDoseCalcComponent,
     ExamplesComponent,
+    TermsclickthroughComponent,
   ],
   imports: [
     AppRoutingModule,
