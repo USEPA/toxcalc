@@ -1,5 +1,5 @@
 <div class="input-group">
-  <div [ngClass]="{'input-group-append': append}" ngbDropdown>
+  <div [ngClass]="{'input-group-append': append}" ngbDropdown placement="bottom-left">
     <button class="btn btn-outline-secondary" ngbDropdownToggle type="button" name="selection">{{ selectedName }}</button>
     <div ngbDropdownMenu>
       <ng-container *ngFor="let group of groups">
