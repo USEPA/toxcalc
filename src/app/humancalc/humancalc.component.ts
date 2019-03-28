@@ -54,7 +54,7 @@ class AnimalWeight extends Field {
   private readonly G = new ScalarAndDimension(1, Dimension.initMass());
   private readonly KG = new ScalarAndDimension(1000, Dimension.initMass());
   get unit(): ScalarAndDimension {
-    return this.units!.selectedName == 'g' ? this.G : this.KG;
+    return this.units!.selectedName === 'g' ? this.G : this.KG;
   }
 }
 
@@ -74,8 +74,8 @@ class ConversionFactor extends Field {
   }
 
   readonly options = [
-    {display: 'FDA Standard (0.33)', value: (1/3), logvalue: '0.33 (FDA standard)'},
-    {display: 'EPA Standard (0.25)', value: (1/4), logvalue: '0.25 (EPA standard)'}
+    {display: 'FDA Standard (0.33)', value: (1 / 3), logvalue: '0.33 (FDA standard)'},
+    {display: 'EPA Standard (0.25)', value: (1 / 4), logvalue: '0.25 (EPA standard)'}
   ];
 }
 
@@ -151,7 +151,7 @@ export class HumanCalcComponent implements AfterViewInit {
   constructor() {
     library.add(faFilePdf);
 
-    let fdaMethodEq = new Equation(Equation.div(this.animalDose.var, Equation.mul(this.animalSpecies.var, this.humanEquivalentDose.var)), Equation.constantFromNumber(1));
+    const fdaMethodEq = new Equation(Equation.div(this.animalDose.var, Equation.mul(this.animalSpecies.var, this.humanEquivalentDose.var)), Equation.constantFromNumber(1));
     // Skip animalSpecies, it's never an output.
     this.animalDose.term = (<Equation>fdaMethodEq.solve(this.animalDose.var)).RHS;
     this.humanEquivalentDose.term = (<Equation>fdaMethodEq.solve(this.humanEquivalentDose.var)).RHS;
@@ -162,7 +162,7 @@ export class HumanCalcComponent implements AfterViewInit {
 
     this.fdaMethodForm.equationSnippet = this.humanEquivalentDose.equationSnippet(this.eqPrinter);
 
-    let weightMethodEq = new Equation(Equation.div(Equation.mul(this.weightAnimalDose.var, Equation.exp(Equation.div(this.animalWeight.var, this.humanWeight.var), this.conversionFactor.var)), this.weightHumanEquivalentDose.var), Equation.constantFromNumber(1));
+    const weightMethodEq = new Equation(Equation.div(Equation.mul(this.weightAnimalDose.var, Equation.exp(Equation.div(this.animalWeight.var, this.humanWeight.var), this.conversionFactor.var)), this.weightHumanEquivalentDose.var), Equation.constantFromNumber(1));
     this.weightAnimalDose.term = (<Equation>weightMethodEq.solve(this.weightAnimalDose.var)).RHS;
     this.animalWeight.term = (<Equation>weightMethodEq.solve(this.animalWeight.var)).RHS;
     this.humanWeight.term = (<Equation>weightMethodEq.solve(this.humanWeight.var)).RHS;

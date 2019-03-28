@@ -23,7 +23,7 @@ export abstract class Field {
   public set term(t: Term) { this.mTerm = t; }
   readonly unit: ScalarAndDimension;
 
-  output: boolean = false;
+  output = false;
   markAsOutput(): void { this.output = true; }
   unmarkAsOutput(): void { this.output = false; }
   isMarkedAsOutput(): boolean { return this.output; }
@@ -34,8 +34,8 @@ export abstract class Field {
     this.value = '';
   }
 
-  value: string = '';
-  get hasError(): boolean { return this.row.errorText != ''; }
+  value = '';
+  get hasError(): boolean { return this.row.errorText !== ''; }
   abstract get label(): string;
   get logColumnName(): string { return this.label; }
   get equationVarName(): string { return removeSoftHyphen(this.logColumnName); }
@@ -45,7 +45,7 @@ export abstract class Field {
   // Only look for errors that are certainly wrong given the state of this field,
   // ignoring the state of the of the rest of the form.
   updateErrorState(): void {
-    if (this.isMarkedAsOutput() || this.value == '') {
+    if (this.isMarkedAsOutput() || this.value === '') {
       this.row.errorText = '';
       return;
     }
@@ -53,7 +53,7 @@ export abstract class Field {
       this.row.errorText = 'One decimal point maximum.';
       return;
     }
-    let value = parseFloat(this.value);
+    const value = parseFloat(this.value);
     if (isNaN(value)) {
       this.row.errorText = 'Must be a number.';
       return;
@@ -72,7 +72,7 @@ export abstract class Field {
       this.var.setValue(this.ONE);
       return;
     }
-    if (this.value == '') {
+    if (this.value === '') {
       this.var.setValue(null);
       return;
     }

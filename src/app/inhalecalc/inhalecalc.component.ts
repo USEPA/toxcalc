@@ -172,7 +172,7 @@ export class InhaleCalcComponent implements AfterViewInit {
   }
 
   constructor() {
-    let conversionEq = new Equation(Equation.div(Equation.mul(this.concenVolVol.var, this.molarMass.var), Equation.mul(Equation.constantFromNumberDimension(SATP_RATIO, Dimension.initLength().exp(3).div(Dimension.initMolarMass())), this.concenMassVol.var)), Equation.constantFromNumber(1));
+    const conversionEq = new Equation(Equation.div(Equation.mul(this.concenVolVol.var, this.molarMass.var), Equation.mul(Equation.constantFromNumberDimension(SATP_RATIO, Dimension.initLength().exp(3).div(Dimension.initMolarMass())), this.concenMassVol.var)), Equation.constantFromNumber(1));
     this.concenVolVol.term = (<Equation>conversionEq.solve(this.concenVolVol.var)).RHS;
     this.molarMass.term = (<Equation>conversionEq.solve(this.molarMass.var)).RHS;
     this.concenMassVol.term = (<Equation>conversionEq.solve(this.concenMassVol.var)).RHS;
@@ -183,7 +183,7 @@ export class InhaleCalcComponent implements AfterViewInit {
 
     this.conversionForm.equationSnippet = this.concenMassVol.equationSnippet(this.eqPrinter);
 
-    let inhalationEq = new Equation(Equation.div(Equation.mul(this.concen.var, this.intake.var), Equation.mul(this.weight.var, this.dose.var)), Equation.constantFromNumber(1));
+    const inhalationEq = new Equation(Equation.div(Equation.mul(this.concen.var, this.intake.var), Equation.mul(this.weight.var, this.dose.var)), Equation.constantFromNumber(1));
     this.concen.term = (<Equation>inhalationEq.solve(this.concen.var)).RHS;
     this.intake.term = (<Equation>inhalationEq.solve(this.intake.var)).RHS;
     this.weight.term = (<Equation>inhalationEq.solve(this.weight.var)).RHS;

@@ -11,7 +11,7 @@ export class SdCalcRowLabel {
 
 @Directive({selector: 'ng-template[sdCalcRowInput]'})
 export class SdCalcRowInput {
-  @Input('sdCustomRowInput') custom: boolean = false;
+  @Input('sdCustomRowInput') custom = false;
   constructor(public templateRef: TemplateRef<any>) {}
 }
 
@@ -26,9 +26,9 @@ export class SdCalcRowHelp {
   styleUrls: ['./sd-calc-row.component.css']
 })
 export class SdCalcRowComponent {
-  @Input('sdShow') show: boolean = true;
-  showHelp: boolean = false;
-  errorText: string = '';
+  @Input('sdShow') show = true;
+  showHelp = false;
+  errorText = '';
 
   @ContentChild(SdCalcRowLabel) label: SdCalcRowLabel;
   @ContentChildren(SdCalcRowInput) inputs: QueryList<SdCalcRowInput>;

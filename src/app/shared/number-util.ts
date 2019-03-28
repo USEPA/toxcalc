@@ -1,15 +1,16 @@
-import { Directive, HostListener, ElementRef, EventEmitter, Output } from '@angular/core';
+import { Directive, HostBinding, HostListener, ElementRef, EventEmitter, Output } from '@angular/core';
 
 // Make sure that the values emitted by printNum are accepted by the pattern in
 // SdInputPositiveNumber and by parseFloat.
 
 @Directive({
-  selector: '[sdInputPosNum]',
-  host: {'class': 'text-right', type: 'text'}
+  selector: '[sdInputPosNum]'
 })
 export class SdInputPositiveNumber {
   constructor(public e: ElementRef<HTMLInputElement>) {}
-  @Output() ngModelChange : EventEmitter<any> = new EventEmitter()
+  @Output() ngModelChange: EventEmitter<any> = new EventEmitter()
+  @HostBinding('class.text-right') private readonly class = true;
+  @HostBinding('attr.type') private readonly type = 'text';
   @HostListener('input') onInput() {
     this.e.nativeElement.value = this.e.nativeElement.value.replace(/[^\d.]/g, '');
     this.ngModelChange.emit(this.e.nativeElement.value);
@@ -17,12 +18,12 @@ export class SdInputPositiveNumber {
 }
 
 @Directive({
-  selector: '[sdInputPosNumLeft]',
-  host: {type: 'text'}
+  selector: '[sdInputPosNumLeft]'
 })
 export class SdInputPositiveNumberLeft {
   constructor(public e: ElementRef<HTMLInputElement>) {}
-  @Output() ngModelChange : EventEmitter<any> = new EventEmitter()
+  @Output() ngModelChange: EventEmitter<any> = new EventEmitter()
+  @HostBinding('attr.type') private readonly type = 'text';
   @HostListener('input') onInput() {
     this.e.nativeElement.value = this.e.nativeElement.value.replace(/[^\d.]/g, '');
     this.ngModelChange.emit(this.e.nativeElement.value);

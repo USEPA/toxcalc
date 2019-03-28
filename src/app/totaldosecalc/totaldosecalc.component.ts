@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, isDevMode } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, isDevMode } from '@angular/core';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +15,7 @@ import { Field } from '../shared/field';
 import { Form } from '../shared/form';
 
 class Concentration extends Field {
-  get label(): string { return 'Con­cen­tra­tion'; } 
+  get label(): string { return 'Con­cen­tra­tion'; }
   readonly VOLUME = Dimension.initLength().exp(3);
   readonly MASS_VOLUME = Dimension.initMass().div(this.VOLUME);
   readonly MOL_VOLUME = Dimension.initMolarMass().div(this.VOLUME);
@@ -82,7 +82,7 @@ class MolarMass extends Field {
   get logColumnName(): string { return 'Molar mass'; }
   get equationVarName(): string { return 'Molar mass'; }
   get unitName(): string { return 'g/mol'; }
-  recip: boolean = false;
+  recip = false;
   recipVar: Variable = new Variable;
   recipTerm: Term;
   get var(): Variable { return this.recip ? this.recipVar : this.mVar; }
@@ -106,7 +106,7 @@ class MolarMass extends Field {
 
 class SolutionDensity extends Field {
   get label(): string { return 'Solvent or media density'; }
-  recip: boolean = false;
+  recip = false;
   recipVar: Variable = new Variable;
   recipTerm: Term;
   get var() { return this.recip ? this.recipVar : this.mVar; }
@@ -138,7 +138,7 @@ class BodyWeight extends Field {
   readonly KG_UNIT = new ScalarAndDimension(1000, Dimension.initMass());
   readonly G_UNIT = new ScalarAndDimension(1, Dimension.initMass());
   get unit(): ScalarAndDimension {
-    return this.units!.selectedName == 'g' ? this.G_UNIT : this.KG_UNIT;
+    return this.units!.selectedName === 'g' ? this.G_UNIT : this.KG_UNIT;
   }
 }
 
@@ -159,7 +159,7 @@ class TotalDoseCalcForm extends Form {
   constructor(eqPrinter: EquationPrinter, fields: Field[]) {
     super(eqPrinter, fields);
   }
-  underConstructionShow: boolean = false;
+  underConstructionShow = false;
   hasErrors(): boolean {
     return this.underConstructionShow || super.hasErrors();
   }
@@ -170,9 +170,10 @@ class TotalDoseCalcForm extends Form {
     this.fields.filter(f => f.row.show).forEach(function(f: Field) {
       f.updateErrorState();
       hasOutput = hasOutput || f.isMarkedAsOutput();
-      if (!f.hasError && f.value == '') {
-        if (required)
+      if (!f.hasError && f.value === '') {
+        if (required) {
           f.row.errorText = 'Please fill in a number.';
+        }
         hasEmptyField = true;
       }
     });
@@ -189,7 +190,7 @@ class TotalDoseCalcForm extends Form {
   templateUrl: './totaldosecalc.component.html',
   styleUrls: ['./totaldosecalc.component.css']
 })
-export class TotalDoseCalcComponent {
+export class TotalDoseCalcComponent implements AfterViewInit {
   @ViewChild('calculationLog') calculationLog: SdCalculationLogComponent;
   @ViewChild('concenRow') concenRow: SdCalcRowComponent;
   @ViewChild('concenInput') concenInput: ElementRef<HTMLInputElement>;
@@ -229,7 +230,7 @@ export class TotalDoseCalcComponent {
   constructor() {
     library.add(faFilePdf);
 
-    let calcEq = new Equation(Equation.div(Equation.mul(this.concen.var, this.intake.var, this.substanceDensity.var, this.molarMass.var, this.solutionDensity.var), Equation.mul(this.molarMass.recipVar, this.solutionDensity.recipVar, this.bodyWeight.var, this.dose.var)), Equation.constantFromNumber(1));
+    const calcEq = new Equation(Equation.div(Equation.mul(this.concen.var, this.intake.var, this.substanceDensity.var, this.molarMass.var, this.solutionDensity.var), Equation.mul(this.molarMass.recipVar, this.solutionDensity.recipVar, this.bodyWeight.var, this.dose.var)), Equation.constantFromNumber(1));
     this.concen.term = (<Equation>calcEq.solve(this.concen.var)).RHS;
     this.intake.term = (<Equation>calcEq.solve(this.intake.var)).RHS;
     this.substanceDensity.term = (<Equation>calcEq.solve(this.substanceDensity.var)).RHS;
@@ -274,10 +275,11 @@ export class TotalDoseCalcComponent {
 
   // Allow the template to iterate over unit labels filtered by dimension.
   iterUnits(table: {[index: string]: ScalarAndDimension}, d: Dimension | null): string[] {
-    let results: string[] = [];
+    const results: string[] = [];
     Object.keys(table).forEach(function(key) {
-      if (d == null || table[key].d.equal(d))
+      if (d == null || table[key].d.equal(d)) {
         results.push(key);
+      }
     });
     return results;
   }
@@ -348,8 +350,8 @@ export class TotalDoseCalcComponent {
     // Concentration of volume/volume and intake of mass/time has units that
     // line up, but the calculation would not be correct without considering the
     // volume of solvent per mass.
-    if (this.concenUnits.selectedGroupName == 'volume/volume' &&
-        this.intakeUnits.selectedGroupName == 'mass/time') {
+    if (this.concenUnits.selectedGroupName === 'volume/volume' &&
+        this.intakeUnits.selectedGroupName === 'mass/time') {
       this.substanceDensity.row.show = false;
       this.molarMass.row.show = false;
       this.solutionDensity.row.show = false;
@@ -361,10 +363,10 @@ export class TotalDoseCalcComponent {
 
     // Substance density and reciprocal solution density are indistinguishable.
     // Handle the three cases of reciprocal solution density up front.
-    if (this.concenUnits.selectedGroupName == 'mol/mass' &&
-        this.intakeUnits.selectedGroupName == 'volume/time' &&
-        (this.doseUnits.selectedName == 'mg/kg BW/day' ||
-         this.doseUnits.selectedName == 'µg/kg BW/day')) {
+    if (this.concenUnits.selectedGroupName === 'mol/mass' &&
+        this.intakeUnits.selectedGroupName === 'volume/time' &&
+        (this.doseUnits.selectedName === 'mg/kg BW/day' ||
+         this.doseUnits.selectedName === 'µg/kg BW/day')) {
       this.substanceDensity.row.show = false;
       this.molarMass.row.show = true;
       this.molarMass.recip = false;
@@ -375,10 +377,10 @@ export class TotalDoseCalcComponent {
       this.form.calculate();
       return;
     }
-    if (this.concenUnits.selectedGroupName == 'mol/mass' &&
-        this.intakeUnits.selectedGroupName == 'volume/time' &&
-        (this.doseUnits.selectedName == 'mol/kg BW/day' ||
-         this.doseUnits.selectedName == 'mmol/kg BW/day')) {
+    if (this.concenUnits.selectedGroupName === 'mol/mass' &&
+        this.intakeUnits.selectedGroupName === 'volume/time' &&
+        (this.doseUnits.selectedName === 'mol/kg BW/day' ||
+         this.doseUnits.selectedName === 'mmol/kg BW/day')) {
       this.substanceDensity.row.show = false;
       this.molarMass.row.show = false;
       this.solutionDensity.row.show = true;
@@ -388,12 +390,12 @@ export class TotalDoseCalcComponent {
       this.form.calculate();
       return;
     }
-    if (this.concenUnits.selectedGroupName == 'mass/mass' &&
-        this.intakeUnits.selectedGroupName == 'volume/time') {
+    if (this.concenUnits.selectedGroupName === 'mass/mass' &&
+        this.intakeUnits.selectedGroupName === 'volume/time') {
       this.substanceDensity.row.show = false;
       this.molarMass.row.show =
-          this.doseUnits.selectedName == 'mol/kg BW/day' ||
-          this.doseUnits.selectedName == 'mmol/kg BW/day';
+          this.doseUnits.selectedName === 'mol/kg BW/day' ||
+          this.doseUnits.selectedName === 'mmol/kg BW/day';
       this.molarMass.recip = true;
       this.solutionDensity.row.show = true;
       this.solutionDensity.recip = false;
@@ -404,7 +406,7 @@ export class TotalDoseCalcComponent {
     }
 
     // Use dimensional analysis to determine which rows to show.
-    let residual =
+    const residual =
         this.concen.unit.d
             .mul(this.intake.unit.d)
             .div(this.bodyWeight.unit.d)
@@ -507,8 +509,9 @@ export class TotalDoseCalcComponent {
       return;
     }
 
-    if (isDevMode())
+    if (isDevMode()) {
       console.log(residual);
+    }
 
     this.form.underConstructionShow = true;
     this.updateEquation();

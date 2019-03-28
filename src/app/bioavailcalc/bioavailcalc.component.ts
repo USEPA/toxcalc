@@ -37,7 +37,7 @@ class Alpha extends Field {
   templateUrl: './bioavailcalc.component.html',
   styleUrls: ['./bioavailcalc.component.css']
 })
-export class BioavailCalcComponent {
+export class BioavailCalcComponent implements AfterViewInit {
   variableMap: Map<Variable, string> = new Map();
   eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
 
@@ -56,7 +56,7 @@ export class BioavailCalcComponent {
   bcfForm = new Form(this.eqPrinter, [this.bioavailabilityPDE, this.bioavailabilityCriticalStudy, this.alpha]);
 
   constructor() {
-    let bcfeq = new Equation(Equation.div(this.bioavailabilityPDE.var, Equation.mul(this.bioavailabilityCriticalStudy.var, this.alpha.var)), Equation.constantFromNumber(1));
+    const bcfeq = new Equation(Equation.div(this.bioavailabilityPDE.var, Equation.mul(this.bioavailabilityCriticalStudy.var, this.alpha.var)), Equation.constantFromNumber(1));
     this.bioavailabilityPDE.term = (<Equation>bcfeq.solve(this.bioavailabilityPDE.var)).RHS;
     this.bioavailabilityCriticalStudy.term = (<Equation>bcfeq.solve(this.bioavailabilityCriticalStudy.var)).RHS;
     this.alpha.term = (<Equation>bcfeq.solve(this.alpha.var)).RHS;

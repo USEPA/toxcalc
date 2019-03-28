@@ -44,20 +44,22 @@ class BodyWeight extends Field {
     return this.enabled ? [this.value, this.unitName, this.isMarkedAsOutput() ? '(calculated)' : ''].filter(txt => txt.length > 0).join(' ') : 'n/a';
   }
 
-  customValue: string = '';
-  customSpeciesName: string = '';
-  custom: boolean = true;
-  selectedValue: string = '';
+  customValue = '';
+  customSpeciesName = '';
+  custom = true;
+  selectedValue = '';
   get value(): string {
-    if (!this.enabled)
+    if (!this.enabled) {
       return '1';
-    if (this.custom)
+    }
+    if (this.custom) {
       return this.customValue;
+    }
     return this.selectedValue;
   }
   set value(new_value: string) { this.customValue = new_value; }
 
-  selected: string = 'custom';
+  selected = 'custom';
 
   readonly options = [
     {label: '50 kg (ICH Q3C default)', value: 50, bold: true},
@@ -66,7 +68,7 @@ class BodyWeight extends Field {
     {label: '80 kg', value: 80, bold: false},
   ];
 
-  enabled: boolean = true;
+  enabled = true;
   disable(variableMap: Map<Variable, string>): void {
     this.enabled = false;
     variableMap.set(this.var, '');
@@ -76,7 +78,7 @@ class BodyWeight extends Field {
     variableMap.set(this.var, this.equationVarName);
   }
 
-  expanded: boolean = true;
+  expanded = true;
   clear(): void {
     super.clear();
     this.selected = 'custom';
@@ -91,7 +93,7 @@ class Species extends Field {
   get unitName(): string { return ''; }
   get logValue(): string {
     if (this.custom) {
-      if (this.customSpeciesName == '') {
+      if (this.customSpeciesName === '') {
         if (this.isMarkedAsOutput()) {
           return `custom (${this.customValue}) (calculated)`;
         }
@@ -105,25 +107,26 @@ class Species extends Field {
     return `${this.selectedName} (${this.selectedValue})`;
   }
   updateErrorState(): void {
-    if (!this.custom) return;
-    super.updateErrorState();
+    if (this.custom) {
+      super.updateErrorState();
+    }
   }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
-  customValue: string = '';
-  customSpeciesName: string = '';
-  custom: boolean = true;
-  selectedValue: string = '';
+  customValue = '';
+  customSpeciesName = '';
+  custom = true;
+  selectedValue = '';
   get selectedName() {
-    if (this.selected == 'custom') { return 'custom'; }
-    return this.options[parseInt(this.selected)].label;
+    if (this.selected === 'custom') { return 'custom'; }
+    return this.options[parseInt(this.selected, 10)].label;
   }
   get value(): string { return this.custom ? this.customValue : this.selectedValue; }
   set value(new_value: string) { this.customValue = new_value; }
 
-  selected: string = 'custom';
+  selected = 'custom';
 
-  expanded: boolean = true;
+  expanded = true;
   clear(): void {
     super.clear();
     this.selected = 'custom';
@@ -162,7 +165,7 @@ class StudyDurationFactor extends Field {
       }
       return this.customValue;
     }
-    return this.options()[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
+    return this.options()[parseInt(this.selected, 10)].label + ' (' + this.selectedValue + ')';
   }
   options(): {label: string; value: number}[] {
     switch (this.species) {
@@ -180,24 +183,25 @@ class StudyDurationFactor extends Field {
     }
   }
   updateErrorState(): void {
-    if (!this.custom) return;
-    super.updateErrorState();
+    if (this.custom) {
+      super.updateErrorState();
+    }
   }
-  species: string = 'custom';
+  species = 'custom';
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
   // The value shown in the custom box.
-  customValue: string = '';
+  customValue = '';
   // Whether 'custom value' is the currently selected radio button.
-  custom: boolean = true;
+  custom = true;
   // The value, if custom is not active.
-  selectedValue: string = '';
+  selectedValue = '';
   get value(): string { return this.custom ? this.customValue : this.selectedValue; }
   set value(new_value: string) { /* assert (this.custom) */ this.customValue = new_value; }
 
-  selected: string = 'custom';
+  selected = 'custom';
 
-  expanded: boolean = true;
+  expanded = true;
   clear(): void {
     super.clear();
     this.selected = 'custom';
@@ -242,27 +246,28 @@ class SevereToxicityFactor extends Field {
       }
       return this.customValue;
     }
-    return this.options[parseInt(this.selected)].label + ' (' + this.selectedValue + ')';
+    return this.options[parseInt(this.selected, 10)].label + ' (' + this.selectedValue + ')';
   }
   updateErrorState(): void {
-    if (!this.custom) return;
-    super.updateErrorState();
+    if (this.custom) {
+      super.updateErrorState();
+    }
   }
   private readonly UNIT = new ScalarAndDimension(1, Dimension.initUnit());
   get unit(): ScalarAndDimension { return this.UNIT; }
 
   // The value shown in the custom box.
-  customValue: string = '';
+  customValue = '';
   // Whether 'custom value' is the currently selected radio button.
-  custom: boolean = true;
+  custom = true;
   // The value, if custom is not active.
-  selectedValue: string = '';
+  selectedValue = '';
   get value(): string { return this.custom ? this.customValue : this.selectedValue; }
   set value(new_value: string) { /* assert (this.custom) */ this.customValue = new_value; }
 
-  selected: string = 'custom';
+  selected = 'custom';
 
-  expanded: boolean = true;
+  expanded = true;
   clear(): void {
     super.clear();
     this.selected = 'custom';
@@ -303,9 +308,9 @@ class ExtraFactors extends Field {
     return this.enabled ? [this.value, this.unitName, this.isMarkedAsOutput() ? '(calculated)' : ''].filter(txt => txt.length > 0).join(' ') : 'n/a';
   }
 
-  enabled: boolean = true;
-  textValue: string = '';
-  saveText: string = '';
+  enabled = true;
+  textValue = '';
+  saveText = '';
   disable(variableMap: Map<Variable, string>): void {
     this.enabled = false;
     this.saveText = this.textValue;
@@ -341,9 +346,9 @@ class Alpha extends Field {
     return this.enabled ? [this.value, this.unitName, this.isMarkedAsOutput() ? '(calculated)' : ''].filter(txt => txt.length > 0).join(' ') : 'n/a';
   }
 
-  enabled: boolean = true;
-  textValue: string = '';
-  saveText: string = '';
+  enabled = true;
+  textValue = '';
+  saveText = '';
   disable(variableMap: Map<Variable, string>): void {
     this.enabled = false;
     this.saveText = this.textValue;
@@ -419,7 +424,7 @@ class PDEForm extends Form {
   templateUrl: './hbelcalc.component.html',
   styleUrls: ['./hbelcalc.component.css']
 })
-export class HbelCalcComponent {
+export class HbelCalcComponent implements AfterViewInit {
   variableMap: Map<Variable, string> = new Map();
   eqPrinter: EquationPrinter = new EquationPrinter(this.variableMap);
 
@@ -472,7 +477,7 @@ export class HbelCalcComponent {
 
     // pdeForm
     this.compositeFactorsTerm = Equation.mul(this.species.var, this.safetyFactor.var, this.studyDurationFactor.var, this.severeToxicityFactor.var, this.noNoelFactor.var, this.extraFactors.var, this.alpha.var);
-    let eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.compositeFactorsTerm, this.pde.var)), Equation.constantFromNumber(1));
+    const eq = new Equation(Equation.div(Equation.mul(this.effectLimit.var, this.bodyWeight.var), Equation.mul(this.compositeFactorsTerm, this.pde.var)), Equation.constantFromNumber(1));
     this.effectLimit.term = (<Equation>eq.solve(this.effectLimit.var)).RHS;
     this.bodyWeight.term = (<Equation>eq.solve(this.bodyWeight.var)).RHS;
     this.species.term = (<Equation>eq.solve(this.species.var)).RHS;
@@ -626,28 +631,41 @@ export class HbelCalcComponent {
 
   // Allow the template to iterate over unit labels filtered by dimension.
   iterUnits(table: {[index: string]: ScalarAndDimension}, d: Dimension | null): string[] {
-    let results: string[] = [];
+    const results: string[] = [];
     Object.keys(table).forEach(function(key) {
-      if (d == null || table[key].d.equal(d))
+      if (d == null || table[key].d.equal(d)) {
         results.push(key);
+      }
     });
     return results;
   }
 
-  ready: boolean = false;
+  ready = false;
   compositeFactorsTerm: Term;
   getCompositeFactorsValue(): string {
-    if (!this.ready) return '';
-    let result = this.compositeFactorsTerm.getValue();
-    if (result == null) return '';
-    if (isCalculateError(result)) return '';
+    if (!this.ready) {
+      return '';
+    }
+    const result = this.compositeFactorsTerm.getValue();
+    if (result == null) {
+      return '';
+    }
+    if (isCalculateError(result)) {
+      return '';
+    }
     return printNum(result.n);
   }
   getCompositeFactorsTooHigh(): boolean {
-    if (!this.ready) return false;
-    let result = this.compositeFactorsTerm.getValue();
-    if (result == null) return false;
-    if (isCalculateError(result)) return false;
+    if (!this.ready) {
+      return false;
+    }
+    const result = this.compositeFactorsTerm.getValue();
+    if (result == null) {
+      return false;
+    }
+    if (isCalculateError(result)) {
+      return false;
+    }
     return result.n > 5000;
   }
 }

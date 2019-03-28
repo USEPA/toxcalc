@@ -1,14 +1,14 @@
-import { Directive, ElementRef, Input, OnChanges } from '@angular/core';
+import { Directive, ElementRef, HostBinding, Input, OnChanges } from '@angular/core';
 
 import * as katex from 'katex';
 
 @Directive({
-  selector: '[sdKatex]',
-  host: {'class': 'katex'}
+  selector: '[sdKatex]'
 })
 export class SdKatexDirective implements OnChanges {
+  @HostBinding('class.katex') private readonly class = true;
   @Input('sdKatex') private value: string;
-  @Input('sdKatexInline') private inlineMode: boolean = false;
+  @Input('sdKatexInline') private inlineMode = false;
 
   constructor(private element: ElementRef) { }
 

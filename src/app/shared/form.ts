@@ -19,7 +19,7 @@ export class Form {
   updateErrors(required: boolean): void {
     this.fields.filter(f => f.row.show).forEach(function(f: Field) {
       f.updateErrorState();
-      if (required && !f.hasError && f.value == '') {
+      if (required && !f.hasError && f.value === '') {
         f.row.errorText = 'Please fill in a number.';
       }
     });
@@ -29,9 +29,9 @@ export class Form {
     return this.fields.filter(f => f.row.show).some(function (f: Field) { return f.hasError; } );
   }
 
-  internalError: string = '';
+  internalError = '';
 
-  equationSnippet: string = '';
+  equationSnippet = '';
 
   clear(): void {
     this.internalError = '';
@@ -45,9 +45,9 @@ export class Form {
     this.updateErrors(false);
 
     let out_control: Field | null = null;
-    let fields = this.fields.filter(f => f.row.show);
-    for (let i = 0; i != fields.length; ++i) {
-      if (fields[i].isMarkedAsOutput() || fields[i].value == '') {
+    const fields = this.fields.filter(f => f.row.show);
+    for (let i = 0; i !== fields.length; ++i) {
+      if (fields[i].isMarkedAsOutput() || fields[i].value === '') {
         if (out_control == null) {
           out_control = fields[i];
         } else {
@@ -60,7 +60,7 @@ export class Form {
     if (!out_control) {
       // We might be here if there were multiple possible outputs found.
       // Wipe values and readonly state for all of them.
-      for (let i = 0; i != fields.length; ++i) {
+      for (let i = 0; i !== fields.length; ++i) {
         if (fields[i].isMarkedAsOutput()) {
           fields[i].unmarkAsOutput();
           fields[i].value = '';
@@ -73,13 +73,14 @@ export class Form {
     out_control.markAsOutput();
     out_control.value = '';
 
-    if (this.hasErrors())
+    if (this.hasErrors()) {
       return;
+    }
 
     this.updateVars();
     this.equationSnippet = out_control.equationSnippet(this.eqPrinter);
 
-    let result = out_control.term.getValue();
+    const result = out_control.term.getValue();
     if (result == null) {
       this.internalError = 'calculation returned null';
       return;

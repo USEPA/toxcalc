@@ -55,11 +55,11 @@ export class SdSelectComponent implements AfterContentInit {
   get selectedGroupIndex(): number { return this.selectedGroup.index; }
   get selectedGroupName(): string { return this.selectedGroup.label; }
 
-  private ready_: boolean = false;
+  private ready_ = false;
   get ready(): boolean { return this.ready_; }
 
   ngAfterContentInit() {
-    if (this.groups.length == 0) {
+    if (this.groups.length === 0) {
       this.selectedItem = this.items.first;
       this.items.forEach(function(item: SdSelectItem, index: number, array: SdSelectItem[]) { item.index = index; });
     } else {

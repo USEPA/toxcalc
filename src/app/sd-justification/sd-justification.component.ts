@@ -7,12 +7,12 @@ import { Component } from '@angular/core';
 })
 export class SdJustificationComponent {
   // Justification to return to when the user clicks cancel.
-  private backupJustification: string = '';
+  private backupJustification = '';
 
   // Whether we're showing the textarea to edit the justification.
-  showJustification: boolean = false;
+  showJustification = false;
 
-  justification: string = '';
+  justification = '';
 
   openJustificationEditor(): void {
     this.backupJustification = this.justification;
