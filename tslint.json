@@ -90,7 +90,6 @@
         "variable-declaration": "nospace"
       }
     ],
-    "typeof-compare": true,
     "unified-signatures": true,
     "variable-name": false,
     "whitespace": [
@@ -104,13 +103,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
+      ["app", "sd"],
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      ["app", "sd"],
       "kebab-case"
     ],
     "use-input-property-decorator": true,
