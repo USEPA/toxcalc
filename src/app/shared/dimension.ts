@@ -1,3 +1,29 @@
+// SPDX short identifier: BSD-2-Clause
+//
+// Copyright 2019 SafeDose Ltd.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright notice,
+// this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright notice,
+// this list of conditions and the following disclaimer in the documentation
+// and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
 // A dimension represents the non-scalar portion of units as an integer vector.
 // The vector is <mass, length, molar mass, time> where each integer is the
 // exponent. For instance one metre and ten metres are the same, but one meter
@@ -25,18 +51,18 @@ export class Dimension {
   static initTime(): Dimension { return this.TIME; }
 
   unit(): boolean {
-    return this.mass == 0 &&
-           this.length == 0 &&
-           this.molar_mass == 0 &&
-           this.time == 0;
+    return this.mass === 0 &&
+           this.length === 0 &&
+           this.molar_mass === 0 &&
+           this.time === 0;
   }
 
   equal(other: Dimension): boolean {
     return this === other ||
-           (this.mass == other.mass &&
-            this.length == other.length &&
-            this.molar_mass == other.molar_mass &&
-            this.time == other.time);
+           (this.mass === other.mass &&
+            this.length === other.length &&
+            this.molar_mass === other.molar_mass &&
+            this.time === other.time);
   }
 
   mul(other: Dimension): Dimension {
@@ -96,7 +122,7 @@ export class ScalarAndDimension {
 export type CalculateErrors = 'dimension conformity error' | 'zero to the power of zero' | 'complex exponential';
 
 export function isCalculateError(x: null | ScalarAndDimension | CalculateErrors): x is CalculateErrors {
-  return x == 'dimension conformity error' || x == 'zero to the power of zero' || x == 'complex exponential';
+  return x === 'dimension conformity error' || x === 'zero to the power of zero' || x === 'complex exponential';
 }
 
 export class ScalarAndDimensionMutable extends ScalarAndDimension {
@@ -111,8 +137,9 @@ export class ScalarAndDimensionMutable extends ScalarAndDimension {
   constructor(n: number, d: Dimension | null) { super(n, d); }
 
   addEq(other: ScalarAndDimension): void | CalculateErrors {
-    if (!this.d.equal(other.d))
+    if (!this.d.equal(other.d)) {
       return 'dimension conformity error';
+    }
     this.n += other.n;
   }
 
@@ -126,16 +153,19 @@ export class ScalarAndDimensionMutable extends ScalarAndDimension {
 
     // The exponent must have a unit dimension. It's not meaningful to take
     // (2g).exp(3mL).
-    if (!exponent.d.unit())
+    if (!exponent.d.unit()) {
       return 'dimension conformity error';
+    }
 
     // Has no defined value, and usually indicates a division by zero.
-    if (this.n == 0 && exponent.n == 0)
+    if (this.n === 0 && exponent.n === 0) {
       return 'zero to the power of zero';
+    }
 
     // Our scalar is notionally a real value, not a complex.
-    if (this.n < 0 && !Number.isInteger(exponent.n))
+    if (this.n < 0 && !Number.isInteger(exponent.n)) {
       return 'complex exponential';
+    }
 
     this.n **= exponent.n;
     this.d = this.d.exp(exponent.n);
