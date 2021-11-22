@@ -1,3 +1,6 @@
+// ToxCalc! by Safe Dose © 2018-2021. See LICENSE file for details.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { isDevMode } from '@angular/core';
 
 import { SdCalculationLogComponent } from '../sd-calculation-log/sd-calculation-log.component';

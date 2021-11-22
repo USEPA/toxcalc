@@ -1,3 +1,6 @@
+// ToxCalc! by Safe Dose © 2018-2021. See LICENSE file for details.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 

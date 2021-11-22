@@ -1,3 +1,6 @@
+// ToxCalc! by Safe Dose © 2018-2021. See LICENSE file for details.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 export const SPECIES_CONVERSION = [
     {species: 'mouse', factor: 12.3},
     {species: 'hamster', factor: 7.4},

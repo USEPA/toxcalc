@@ -1,3 +1,6 @@
+// ToxCalc! by Safe Dose © 2018-2021. See LICENSE file for details.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, Input, Output, QueryList, forwardRef } from '@angular/core';
 
 @Directive({selector: 'option'})

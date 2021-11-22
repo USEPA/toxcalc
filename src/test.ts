@@ -1,3 +1,6 @@
+// ToxCalc! by Safe Dose © 2018-2021. See LICENSE file for details.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
 import 'zone.js/dist/long-stack-trace-zone';

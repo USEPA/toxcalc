@@ -1,3 +1,6 @@
+// ToxCalc! by Safe Dose © 2018-2021. See LICENSE file for details.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { Directive, HostBinding, HostListener, ElementRef, EventEmitter, Output } from '@angular/core';
 
 // Make sure that the values emitted by printNum are accepted by the pattern in

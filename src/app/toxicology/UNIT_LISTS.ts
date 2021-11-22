@@ -1,3 +1,6 @@
+// ToxCalc! by Safe Dose © 2018-2021. See LICENSE file for details.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { ToxRatio } from './tox-ratio';
 
 export const CONCEN_RATIOS_MASS_VOL: ToxRatio[] = [
