@@ -29,6 +29,7 @@ import { SdJustificationComponent } from './sd-justification/sd-justification.co
 import { BioavailCalcComponent } from './bioavailcalc/bioavailcalc.component';
 import { ExamplesComponent } from './examples/examples.component';
 import { TermsclickthroughComponent } from './termsclickthrough/termsclickthrough.component';
+import { LicenseComponent } from './license/license.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { TermsclickthroughComponent } from './termsclickthrough/termsclickthroug
     TotalDoseCalcComponent,
     ExamplesComponent,
     TermsclickthroughComponent,
+    LicenseComponent,
   ],
   imports: [
     AppRoutingModule,
