@@ -23,7 +23,6 @@ import { SdInputPositiveNumber, SdInputPositiveNumberLeft } from './shared/numbe
 import { SdInternalCalcErrorComponent } from './sd-internal-calc-error/sd-internal-calc-error.component';
 import { SdKatexDirective } from './sd-katex.directive';
 import { DefinitionsComponent } from './definitions/definitions.component';
-import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { SdCalculationLogComponent } from './sd-calculation-log/sd-calculation-log.component';
 import { SdJustificationComponent } from './sd-justification/sd-justification.component';
 import { BioavailCalcComponent } from './bioavailcalc/bioavailcalc.component';
@@ -36,7 +35,6 @@ import { LicenseComponent } from './license/license.component';
     AppComponent,
     BioavailCalcComponent,
     DefinitionsComponent,
-    DisclaimerComponent,
     InhaleCalcComponent,
     HumanCalcComponent,
     HbelCalcComponent,

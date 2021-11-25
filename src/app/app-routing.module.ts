@@ -11,7 +11,6 @@ import { InhaleCalcComponent } from './inhalecalc/inhalecalc.component';
 import { HbelCalcComponent } from './hbelcalc/hbelcalc.component';
 import { BioavailCalcComponent } from './bioavailcalc/bioavailcalc.component';
 import { DefinitionsComponent } from './definitions/definitions.component';
-import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { LicenseComponent } from './license/license.component';
 import { ExamplesComponent } from './examples/examples.component';
 import { TermsclickthroughComponent } from './termsclickthrough/termsclickthrough.component';
@@ -25,7 +24,6 @@ const routes: Routes = [
   { path: 'HBELCalc', component: HbelCalcComponent },
   { path: 'BioavailCalc', component: BioavailCalcComponent },
   { path: 'definitions', component: DefinitionsComponent },
-  { path: 'disclaimer', component: DisclaimerComponent },
   { path: 'examples', component: ExamplesComponent },
   { path: 'license', component: LicenseComponent },
 ];
