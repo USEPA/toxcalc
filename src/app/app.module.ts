@@ -15,7 +15,6 @@ import { HbelCalcComponent } from './hbelcalc/hbelcalc.component';
 import { FormsModule } from '@angular/forms';
 import { SdProductListComponent, SdProductListItem, SdProductListItemDescription, SdProductListItemTitle } from './sd-product-list/sd-product-list.component';
 import { LandingComponent } from './landing/landing.component';
-import { SdReturnToCalculatorsComponent } from './sd-return-to-calculators/sd-return-to-calculators.component';
 import { SdSelectComponent, SdSelectItem, SdSelectGroup } from './sd-select/sd-select.component';
 import { SdCalcRowComponent, SdCalcRowLabel, SdCalcRowInput, SdCalcRowHelp } from './sd-calc-row/sd-calc-row.component';
 import { TotalDoseCalcComponent } from './totaldosecalc/totaldosecalc.component';
@@ -53,7 +52,6 @@ import { LicenseComponent } from './license/license.component';
     SdProductListItem,
     SdProductListItemDescription,
     SdProductListItemTitle,
-    SdReturnToCalculatorsComponent,
     SdSelectComponent,
     SdSelectItem,
     SdSelectGroup,
