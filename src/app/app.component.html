@@ -6,10 +6,10 @@
 <header>
   <nav class="d-flex px-3 py-3 justify-content-between border-bottom">
     <div class="mr-3">
-      <h1><img src="/assets/b9157e0b89eaa4022787/toxcalc-logo.png"></h1>
+      <h1><img src="assets/b9157e0b89eaa4022787/toxcalc-logo.png"></h1>
     </div>
     <ul class="nav">
-      <li class="nav-item ml-3 align-self-center active">
+      <li class="ml-3 align-self-center">
         <a routerLink="/landing">⮎ All calculators</a>
       </li>
     </ul>
@@ -17,12 +17,9 @@
 </header>
 <router-outlet></router-outlet>
 <footer class="mt-2">
-  <div class="border-top border-bottom p-2 fluid-container text-muted bg-light">
-    <p>Calculators are being provided for information purposes only and are not a replacement for manual calculation and confirmation of the results rendered therefrom. As each case may be influenced by a series of different contextual and situational specific factors, the results rendered may not cover all aspects of your particular situation. SafeDose Ltd. assumes no responsibility for any errors or omissions within or as a result of the use of the calculators. The formulae used within this calculator may change at any time without notice.</p>
-    <p>SafeDose Ltd. makes no representation or warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, accuracy or efficacy of the calculator and its results. In no event shall SafeDose Ltd. be liable for any claim, damages, injury, death, loss or other liability, whether in contract, negligence, tort or otherwise, arising from, out of or in connection with the calculator or the use of or other dealings with the calculator.</p>
-    <p>SafeDose Ltd. does not retain any of the data entered into the calculator.</p>
-  </div>
-  <div class="p-2 text-center text-muted">
-    © 2019 by SafeDose™ Ltd.
+  <div class="d-flex align-items-center w-100 border-top border-bottom p-2 fluid-container text-muted bg-light">
+    <div style="flex: 1 1 0px"></div>
+    <div style="flex: 1 1 0px" class="text-center"><a href="https://github.com/USEPA/toxcalc" rel="noreferrer noopener"><img style="height: 2em" src="data:image/svg+xml;utf8,%3Csvg fill=%27none%27 viewBox=%270 0 1024 1024%27 xmlns=%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath transform=%27scale%2864%29%27 d=%27m8 0c-4.42 0-8 3.58-8 8 0 3.54 2.29 6.53 5.47 7.59 0.4 0.07 0.55-0.17 0.55-0.38 0-0.19-0.01-0.82-0.01-1.49-2.01 0.37-2.53-0.49-2.69-0.94-0.09-0.23-0.48-0.94-0.82-1.13-0.28-0.15-0.68-0.52-0.01-0.53 0.63-0.01 1.08 0.58 1.23 0.82 0.72 1.21 1.87 0.87 2.33 0.66 0.07-0.52 0.28-0.87 0.51-1.07-1.78-0.2-3.64-0.89-3.64-3.95 0-0.87 0.31-1.59 0.82-2.15-0.08-0.2-0.36-1.02 0.08-2.12 0 0 0.67-0.21 2.2 0.82 0.64-0.18 1.32-0.27 2-0.27s1.36 0.09 2 0.27c1.53-1.04 2.2-0.82 2.2-0.82 0.44 1.1 0.16 1.92 0.08 2.12 0.51 0.56 0.82 1.27 0.82 2.15 0 3.07-1.87 3.75-3.65 3.95 0.29 0.25 0.54 0.73 0.54 1.48 0 1.07-0.01 1.93-0.01 2.2 0 0.21 0.15 0.46 0.55 0.38 3.16-1.06 5.45-4.06 5.45-7.59 0-4.42-3.58-8-8-8z%27 clip-rule=%27evenodd%27 fill=%27%231B1F23%27 fill-rule=%27evenodd%27%2F%3E%3C%2Fsvg%3E" alt="GitHub"></a></div>
+    <div style="flex: 1 1 0px" class="text-right"><a routerLink="/license">Source code license</a></div>
   </div>
 </footer>
