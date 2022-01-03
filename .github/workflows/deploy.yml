@@ -26,7 +26,9 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
       - name: Build toxcalc
-        run: npm run ng build
+        run: |
+          npm install
+          npm run ng build
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
