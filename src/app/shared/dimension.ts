@@ -93,8 +93,8 @@ export class ScalarAndDimension {
 };
 
 // ScalarAndDimensionMutable provides functions that perform calculations which
-// preserve the dimensions. These types indicate difference causes of failure
-// encountered when calculating.
+// preserve the dimensions. The CalculateErrors type indicates different causes
+// of failures encountered when calculating.
 
 export type CalculateErrors = 'dimension conformity error' | 'zero to the power of zero' | 'complex exponential';
 
