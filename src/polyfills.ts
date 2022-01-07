@@ -1,3 +1,7 @@
+/***************************************************************************************************
+ * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
+ */
+import '@angular/localize/init';
 // ToxCalc! by Safe Dose © 2018-2021. See LICENSE file for details.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
