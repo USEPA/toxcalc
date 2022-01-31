@@ -6,7 +6,8 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faFilePdf, faQuestionCircle, faFileDownload, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { AppComponent } from './app.component';
 import { InhaleCalcComponent } from './inhalecalc/inhalecalc.component';
@@ -69,4 +70,11 @@ import { LicenseComponent } from './license/license.component';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIcons(faFilePdf);
+    library.addIcons(faQuestionCircle);
+    library.addIcons(faFileDownload);
+    library.addIcons(faTrashAlt);
+  }
+}

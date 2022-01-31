@@ -98,13 +98,4 @@ export class SdCalculationLogService {
       URL.revokeObjectURL(oldunsafeuri);
     }
   }
-
-  // Hacks for IE browsers that don't support blob URIs.
-  downloadclick(): boolean {
-    if (window.navigator && navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(this.blob, 'Calculator Log.csv');
-      return false;
-    }
-    return true;
-  }
 }

@@ -24,7 +24,7 @@ export abstract class Field {
   protected mTerm: Term;
   public get term(): Term { return this.mTerm; }
   public set term(t: Term) { this.mTerm = t; }
-  readonly unit: ScalarAndDimension;
+  abstract get unit(): ScalarAndDimension;
 
   output = false;
   markAsOutput(): void { this.output = true; }
@@ -37,7 +37,9 @@ export abstract class Field {
     this.value = '';
   }
 
-  value = '';
+  value_ = '';
+  get value(): string { return this.value_; }
+  set value(v: string) { this.value_ = v; }
   get hasError(): boolean { return this.row.errorText !== ''; }
   abstract get label(): string;
   get logColumnName(): string { return this.label; }
